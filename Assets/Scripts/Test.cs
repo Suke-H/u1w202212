@@ -5,20 +5,23 @@ using NCMB;
 
 public class Test : MonoBehaviour
 {
+    [SerializeField] private CustomButton Button100;
+    [SerializeField] private CustomButton Button200;
+    [SerializeField] private CustomButton Button300;
     
     void Start()
     {
-        // // クラスのNCMBObjectを作成
-        // NCMBObject testClass = new NCMBObject("TestClass");
-        //
-        // // オブジェクトに値を設定
-        // testClass["message"] = "Hello, NCMB!";
-        //
-        // // データストアへの登録
-        // testClass.SaveAsync();
-
-        // Type == Number の場合
-        naichilab.RankingLoader.Instance.SendScoreAndShowRanking (500);
+        Button100.onClickCallback = () => { 
+            naichilab.RankingLoader.Instance.SendScoreAndShowRanking (100);
+        };
+        
+        Button200.onClickCallback = () => { 
+            naichilab.RankingLoader.Instance.SendScoreAndShowRanking (200);
+        };
+        
+        Button300.onClickCallback = () => { 
+            naichilab.RankingLoader.Instance.SendScoreAndShowRanking (300);
+        };
     }
 
 }
