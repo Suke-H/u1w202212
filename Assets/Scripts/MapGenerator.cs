@@ -19,6 +19,9 @@ public class MapGenerator : MonoBehaviour
 
     public bool isMapGenerated = false;
 
+    public List<GameObject> currentTeamObj {get; set;} = new List<GameObject>();
+    public List<GameObject> nextTeamObj {get; set;} = new List<GameObject>();
+
     int turn = 0;
 
     void Start()
@@ -32,23 +35,55 @@ public class MapGenerator : MonoBehaviour
         isMapGenerated = true;
         drawMap();
 
-        // Vector2Int position = searchNode(0);
-        // if (position.x != -1){
-        //     GameObject team = Instantiate(Team) as GameObject;
-        //     team.transform.parent = this.transform; // Supplyの子にする
-        //     team.transform.position = GetTeamPostion(position.x, position.y);
-        //     team.name = $"team_{position.y}_{position.x}";
-        // }
+        
+        Vector2Int position = searchNode(0);
+        if (position.x != -1){
+            GameObject team = Instantiate(Team) as GameObject;
+            team.transform.parent = this.transform; // Supplyの子にする
+            team.transform.position = GetTeamPostion(position.x, position.y);
+            team.name = $"team_{position.y}_{position.x}";
 
-        // List<Vector2Int> positions = searchNextNodes();
+            currentTeamObj.Add(team);
+        }
 
-        // foreach(Vector2Int pos in positions){
-        //     GameObject team = Instantiate(Team) as GameObject;
-        //     team.transform.parent = this.transform; // Supplyの子にする
-        //     team.transform.position = GetTeamPostion(pos.x, pos.y);
-        //     team.name = $"team_{pos.y}_{pos.x}";
-        // }
+        List<Vector2Int> positions = searchNextNodes();
 
+        foreach(Vector2Int pos in positions){
+            GameObject team = Instantiate(Team) as GameObject;
+            team.transform.parent = this.transform; // Supplyの子にする
+            team.transform.position = GetTeamPostion(pos.x, pos.y);
+            team.name = $"team_{pos.y}_{pos.x}";
+
+            nextTeamObj.Add(team);
+        }
+    }
+
+
+    public Vector2Int searchNode(int order)
+    {
+        for (int y = 0; y < projectNodes.Count; y++){
+            for (int x = 0; x < projectNodes[0].Count; x++){
+                if (projectNodes[y][x] == order)
+                {
+                    return new Vector2Int(x, y);
+                }
+            }
+        }
+
+        return new Vector2Int(-1, -1);
+    }
+
+    public List<Vector2Int> searchNextNodes(){
+
+        List<Vector2Int> nodes = new List<Vector2Int>();
+
+        for (int y = 0; y < projectNodes.Count; y++){
+            if (projectNodes[y][turn+1] != -1){
+                nodes.Add(new Vector2Int(turn+1, y));
+            }
+        }
+
+        return nodes;
     }
     
     public Vector2 GetActualPostion(int x, int y){
@@ -61,10 +96,10 @@ public class MapGenerator : MonoBehaviour
             (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize);
     }
 
-    // public Vector2 GetTeamPostion(int x, int y){
-    //     return new Vector2
-    //         (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/2);
-    // }
+    public Vector2 GetTeamPostion(int x, int y){
+        return new Vector2
+            (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/2);
+    }    
 
     public void ordering()
     {
@@ -91,34 +126,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    // public Vector2Int searchNode(int order)
-    // {
-    //     for (int y = 0; y < projectNodes.Count; y++){
-    //         for (int x = 0; x < projectNodes[0].Count; x++){
-    //             if (projectNodes[y][x] == order)
-    //             {
-    //                 return new Vector2Int(x, y);
-    //             }
-    //         }
-    //     }
-
-    //     return new Vector2Int(-1, -1);
-    // }
-
-    // public List<Vector2Int> searchNextNodes(){
-
-    //     List<Vector2Int> nodes = new List<Vector2Int>();
-
-    //     for (int y = 0; y < projectNodes.Count; y++){
-    //         if (projectNodes[y][turn+1] != -1){
-    //             nodes.Add(new Vector2Int(turn+1, y));
-    //         }
-    //     }
-
-    //     return nodes;
-    // }
-
-    async public UniTask generateMap()
+    public void generateMap()
     {
         projectNodes.Add(new List<int>() { -1, -1, 1, 4, -1 });
         projectNodes.Add(new List<int>() { 0, 1, 2, 1, 1 });
@@ -129,7 +137,7 @@ public class MapGenerator : MonoBehaviour
         projectEdges.Add(new List<int>(){ 3, 1, 5, -1 });
     }
 
-    void drawLine(int x, int y, Vector3[] positions){
+    public void drawLine(int x, int y, Vector3[] positions){
         GameObject lineObj = new GameObject();
         lineObj.name = $"{y}_{x}_line";
         lineObj.transform.parent = this.transform; // Supplyの子にする
@@ -151,7 +159,7 @@ public class MapGenerator : MonoBehaviour
         line.SetPositions(positions);
     }
 
-    void drawMap()
+    public void drawMap()
     {
         for(int y=0; y<projectNodes.Count; y++){
             for (int x=0; x<projectNodes[0].Count; x++){
@@ -237,8 +245,4 @@ public class MapGenerator : MonoBehaviour
         
     }
 
-    void Update()
-    {
-        
-    }
 }

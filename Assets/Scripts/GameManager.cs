@@ -6,51 +6,36 @@ using Cysharp.Threading.Tasks;
 public class GameManager : MonoBehaviour
 {
 
-    [SerializeField] CustomButton startButton;
-    bool startFlag = false;
+    // private bool startFlag = false;
+    public bool startFlag { get; set; } = false;
 
-    List<TeamState> AllTeamState = new List<TeamState>();
+    TeamManager teamManager;
+
+    List<TeamState> CurrentTeamStates = new List<TeamState>();
     EventManager eventManager;
 
-    void Start()
+    async void Start()
     {
-        var members = new Dictionary<string, int>();
-        members.Add("sales", 4);
-        members.Add("design", 4);
-        members.Add("program", 4);
+        teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
 
-        TeamState initialTeamState = new TeamState(){members=members, panel=0}; 
-        AllTeamState.Add(initialTeamState);
-
-        startButton.onClickCallback = () => { 
-            startFlag = true;
-        };
+        await UniTask.WaitUntil(() => teamManager.isInitialized); // フラグが上がるまで待機
+        
+        await EntireLoop();
+        
     }
 
     void eventSwitch(TeamState teamState){
         eventManager.battleEvent(teamState);
     }
 
-    async UniTask memberSelectTurn(TeamState teamState){
-
-        int currentPanel = teamState.panel;
-        
-
-        while(!startFlag){
-
-        }
-    }
-
     async UniTask EntireLoop(){
         while(true){
 
-            // await UniTask.WaitUntil(() => startFlag); // フラグが上がるまで待機
-            foreach(TeamState teamState in AllTeamState){
-                await memberSelectTurn(teamState);
-            }
-            
+            // await memberSelectTurn(teamState);
 
-            foreach(TeamState teamState in AllTeamState){
+            await UniTask.WaitUntil(() => startFlag); // フラグが上がるまで待機
+
+            foreach(TeamState teamState in CurrentTeamStates){
                 eventSwitch(teamState);
             }
 
