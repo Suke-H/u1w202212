@@ -48,9 +48,9 @@ public class MapGenerator : MonoBehaviour
         teamAssign = new TeamAssign();
 
         // 色の追加
-        colors.Add(new Color(46/255f,82/255f,143/255f,1.0f)); // 青
-        colors.Add(new Color(220/255f,20/255f,60/255f,1.0f)); // 赤
-        colors.Add(new Color(146/255f,208/255f,80/255f,1.0f)); // 緑
+        colors.Add(new Color(46/255f,82/255f,143/255f,255/255f)); // 青
+        colors.Add(new Color(220/255f,20/255f,60/255f,255/255f)); // 赤
+        colors.Add(new Color(146/255f,208/255f,80/255f,255/255f)); // 緑
         
         // 本オブジェクトの位置を基準とする
         StandardPos = new Vector2(this.transform.position.x, this.transform.position.y);
@@ -115,7 +115,6 @@ public class MapGenerator : MonoBehaviour
             (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/2);
     }
 
-
     public void drawLine(int current, int next, int y, Vector3[] positions){
         GameObject lineObj = new GameObject();
         lineObj.name = $"{current}_{next}_line";
@@ -168,7 +167,7 @@ public class MapGenerator : MonoBehaviour
             Vector2Int pos0 = listUtils.searchNodePos(NodeOrders, edge[0]);
             Vector2Int pos1 = listUtils.searchNodePos(NodeOrders, edge[1]);
             int xSpan = Math.Abs(pos1.x - pos0.x);
-            Debug.Log($"edge: {edge[0]}-{edge[1]}, pos0: ({pos0.x}, {pos0.y}), pos1: ({pos1.x}, {pos1.y})");
+            // Debug.Log($"edge: {edge[0]}-{edge[1]}, pos0: ({pos0.x}, {pos0.y}), pos1: ({pos1.x}, {pos1.y})");
 
             Vector3[] positions = new Vector3[]{
                         GetActualPostion(pos0.x, pos0.y),

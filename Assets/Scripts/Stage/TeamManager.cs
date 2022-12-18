@@ -9,17 +9,26 @@ public class TeamManager : MonoBehaviour
     [SerializeField] GameObject canvas;//キャンバス
     // public GameObject text;
 
+    ColorPallet pallet = new ColorPallet();
+
     Camera mainCamera;
 
-    void Start(){
-        mainCamera = Camera.main;
-    }
+    // void Start(){
+    //     mainCamera = Camera.main;
+    //     Debug.Log($"mainCamera: {mainCamera}");
+    // }
+
+    // public GameObject createTeam(){
+
+    // }
 
     // member表示（UI座標変換）
     public void displayMember(Vector2 pos){
+        mainCamera = Camera.main;
 
         // ワールド座標 -> スクリーン座標変換
         var targetWorldPos = new Vector3(pos.x, pos.y, 0);
+        Debug.Log($"target: {targetWorldPos}");
         var targetScreenPos = mainCamera.WorldToScreenPoint(targetWorldPos);
 
         // スクリーン座標 -> UIローカル座標変換
@@ -35,10 +44,12 @@ public class TeamManager : MonoBehaviour
         GameObject member = Instantiate(Member) as GameObject;
         member.transform.SetParent (canvas.transform, false);
         member.transform.localPosition = uiLocalPos;
-        // member.name = $"team_{pos.y}_{pos.x}";
 
-        Debug.Log(uiLocalPos);
+        MemberState memberState = member.GetComponent<MemberState>();
 
+        Debug.Log(pallet.redFloat);
+        Debug.Log(pallet.redInt);
+        memberState.initialize(color: "red", type: "sales");
     }
 
     
