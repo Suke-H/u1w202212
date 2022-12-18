@@ -1,130 +1,47 @@
-// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
-// using Cysharp.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Cysharp.Threading.Tasks;
 
-// public class TeamManager : MonoBehaviour
-// {
-//     // [SerializeField] CustomButton AssignButton;
-//     [SerializeField] CustomButton startButton;
+public class TeamManager : MonoBehaviour
+{
+    [SerializeField] GameObject Member;
+    [SerializeField] GameObject canvas;//キャンバス
+    // public GameObject text;
 
-//     GameManager gameManager;
-//     MapGenerator mapGenerator;
+    Camera mainCamera;
 
-//     public bool isInitialized { get; set; } = false;
+    void Start(){
+        mainCamera = Camera.main;
+    }
 
-//     public List<TeamState> currentTeamStates {get; set;} = new List<TeamState>();
-//     public List<TeamState> nextTeamStates {get; set;} = new List<TeamState>();
+    // member表示（UI座標変換）
+    public void displayMember(Vector2 pos){
 
-//     public List<GameObject> currentTeamObj;
-//     public List<GameObject> nextTeamObj;
+        // ワールド座標 -> スクリーン座標変換
+        var targetWorldPos = new Vector3(pos.x, pos.y, 0);
+        var targetScreenPos = mainCamera.WorldToScreenPoint(targetWorldPos);
 
-//     void Start()
-//     {
-//         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-//         mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
+        // スクリーン座標 -> UIローカル座標変換
+        RectTransform parentUI = this.gameObject.GetComponent<RectTransform>();
 
-//         startButton.onClickCallback = () => { 
-//             gameManager.startFlag = true;
-//         };
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            parentUI,
+            targetScreenPos,
+            mainCamera, // オーバーレイモードの場合はnull
+            out var uiLocalPos // この変数に出力される
+        );
 
-//         var members = new Dictionary<string, int>();
-//         members.Add("sales", 4);
-//         members.Add("design", 4);
-//         members.Add("program", 4);
+        GameObject member = Instantiate(Member) as GameObject;
+        member.transform.SetParent (canvas.transform, false);
+        member.transform.localPosition = uiLocalPos;
+        // member.name = $"team_{pos.y}_{pos.x}";
 
-//         TeamState initialTeamState = new TeamState(){members=members, mas=0}; 
-//         currentTeamStates.Add(initialTeamState);
+        Debug.Log(uiLocalPos);
 
-//         currentTeamObj = mapGenerator.currentTeamObj;
-//         nextTeamObj = mapGenerator.nextTeamObj;
-
-//         isInitialized = true;
-//     }
-
-//     public void updateMemberDisplay(int source, int target, string memberType){
-//         var text = transform.Find("Child1/Child2").gameObject;
-//     }
-
-//     // public void moveMember(TeamState source, TeamState target, string memberType){
-//     public void moveMember(int source, int target, string memberType){
-//         // source.members[memberType] -= 1;
-//         // target.members[memberType] += 1;
-//         currentTeamStates[source].members[memberType] -= 1;
-//         nextTeamStates[target].members[memberType] += 1;
-//     }
-
-//     public int searchC(int mas){
-//         int i=0; 
-//         foreach (TeamState teamState in currentTeamStates){
-//             if (teamState.mas == mas) { return i; }
-//             i++;
-//         }
-
-//         return -1;
-//     }
-
-//     public int searchN(int mas){
-//         int i=0; 
-//         foreach (TeamState teamState in nextTeamStates){
-//             if (teamState.mas == mas) { return i; }
-//             i++;
-//         }
-
-//         return -1;
-//     }
-
-//     async public UniTask memberSelectTurn(){
-        
-//         while (gameManager.startFlag){
-//             // assignボタンを推したらCurrent/Next TeamStates内の対応するTeamStateの人数を増減
-//             // sourceの人数が0じゃなかったら注意出してほしい
-//         }
-
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(1)], "program");
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(1)], "program");
-
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(1)], "sales");
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(1)], "sales");
-
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(1)], "design");
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(1)], "design");
-
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(2)], "program");
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(2)], "program");
-
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(2)], "sales");
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(2)], "sales");
-
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(2)], "design");
-//         // moveMember(AllTeamStates[searchC(0)], AllTeamStates[searchN(2)], "design");
-
-//         moveMember(searchC(0), searchN(1), "program");
-//         moveMember(searchC(0), searchN(1), "program");
-
-//         moveMember(searchC(0), searchN(1), "sales");
-//         moveMember(searchC(0), searchN(1), "sales");
-
-//         moveMember(searchC(0), searchN(1), "design");
-//         moveMember(searchC(0), searchN(1), "design");
-
-//         moveMember(searchC(0), searchN(2), "program");
-//         moveMember(searchC(0), searchN(2), "program");
-
-//         moveMember(searchC(0), searchN(2), "sales");
-//         moveMember(searchC(0), searchN(2), "sales");
-
-//         moveMember(searchC(0), searchN(2), "design");
-//         moveMember(searchC(0), searchN(2), "design");
-
-//     }
+    }
 
     
-// }
+}
 
-// public class TeamState{
 
-//     public Dictionary<string, int> members;
-//     public int mas;
-
-// }

@@ -36,6 +36,12 @@ public class MapGenerator : MonoBehaviour
     ListUtils listUtils;
     TeamAssign teamAssign;
 
+    TeamManager teamManager;
+
+    void Start(){
+        teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
+    }
+
     /* 主関数 */
     public void generateMap(string stageName){
         listUtils = new ListUtils();
@@ -62,22 +68,28 @@ public class MapGenerator : MonoBehaviour
         nextNodeOrders = listUtils.searchNextNodeOrders(EdgeMap, 0);
 
         // 初期チーム描画
-        // initTeamDisplay();
+        initTeamDisplay();
     }
 
-    // public void initTeamDisplay(){
-    //     // 現在チームに追加
-    //     Vector2Int position = listUtils.searchNodePos(NodeOrders, 0);
-    //     if (position.x != -1){
-    //         currentTeamObj.Add(createTeamObject(position));
-    //     }
+    public void initTeamDisplay(){
+        // // 現在チームに追加
+        // Vector2Int position = listUtils.searchNodePos(NodeOrders, 0);
+        // if (position.x != -1){
+        //     currentTeamObj.Add(createTeamObject(position));
+        // }
 
-    //     // 次チームに追加
-    //     List<Vector2Int> positions = listUtils.searchNextNodes(NodeMap, EdgeMap, 0);
-    //     foreach(Vector2Int pos in positions){
-    //         nextTeamObj.Add(createTeamObject(pos));
-    //     }
-    // }
+        // // 次チームに追加
+        // List<Vector2Int> positions = listUtils.searchNextNodes(NodeMap, EdgeMap, 0);
+        // foreach(Vector2Int pos in positions){
+        //     nextTeamObj.Add(createTeamObject(pos));
+        // }
+
+
+        Vector2Int posXY = listUtils.searchNodePos(NodeOrders, 0);
+        var pos = GetTeamPostion(posXY.x, posXY.y);
+        teamManager.displayMember(pos);
+
+    }
 
     // public GameObject createTeamObject(Vector2Int pos){
     //     GameObject team = Instantiate(Team) as GameObject;
