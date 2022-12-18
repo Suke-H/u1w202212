@@ -9,16 +9,16 @@ public class GameManager : MonoBehaviour
     // private bool startFlag = false;
     public bool startFlag { get; set; } = false;
 
-    TeamManager teamManager;
+    // TeamManager teamManager;
 
     List<TeamState> CurrentTeamStates = new List<TeamState>();
     EventManager eventManager;
 
     async void Start()
     {
-        teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
+        // teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
 
-        await UniTask.WaitUntil(() => teamManager.isInitialized); // フラグが上がるまで待機
+        // await UniTask.WaitUntil(() => teamManager.isInitialized); // フラグが上がるまで待機
         
         await EntireLoop();
         
