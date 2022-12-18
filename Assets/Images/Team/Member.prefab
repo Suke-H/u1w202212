@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 10, y: -50}
+  m_AnchoredPosition: {x: 10, y: -45}
   m_SizeDelta: {x: 20, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4325542185406698948
@@ -663,7 +663,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 15}
+  m_AnchoredPosition: {x: 0, y: 20}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8299887419844917523
@@ -730,7 +730,7 @@ RectTransform:
   m_GameObject: {fileID: 8299887419898531443}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 54}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8299887419632581757}
@@ -763,8 +763,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   typeText: {fileID: 4325542185436206907}
   numberText: {fileID: 4325542185406698955}
-  plusButton: {fileID: 5703938744122222325}
-  minusButton: {fileID: 5703938744122222323}
+  plusButton: {fileID: 4325542185587455811}
+  minusButton: {fileID: 4325542186193616256}
+  plusButtonSpec: {fileID: 5703938744122222325}
+  minusButtonSpec: {fileID: 5703938744122222323}
   frame: {fileID: 8299887419632581758}
   kakeru: {fileID: 8299887420402179555}
 --- !u!1 &8299887420402179553
@@ -802,7 +804,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -15, y: -50}
+  m_AnchoredPosition: {x: -15, y: -45}
   m_SizeDelta: {x: 20, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8299887420402179564

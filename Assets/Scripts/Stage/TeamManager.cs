@@ -5,7 +5,8 @@ using Cysharp.Threading.Tasks;
 
 public class TeamManager : MonoBehaviour
 {
-    [SerializeField] GameObject Member;
+    // [SerializeField] GameObject Member;
+    [SerializeField] GameObject Team;
     [SerializeField] GameObject canvas;//キャンバス
     // public GameObject text;
 
@@ -41,15 +42,11 @@ public class TeamManager : MonoBehaviour
             out var uiLocalPos // この変数に出力される
         );
 
-        GameObject member = Instantiate(Member) as GameObject;
-        member.transform.SetParent (canvas.transform, false);
-        member.transform.localPosition = uiLocalPos;
-
-        MemberState memberState = member.GetComponent<MemberState>();
-
-        Debug.Log(pallet.redFloat);
-        Debug.Log(pallet.redInt);
-        memberState.initialize(color: "red", type: "sales");
+        GameObject team = Instantiate(Team) as GameObject;
+        team.transform.SetParent (canvas.transform, false);
+        team.transform.localPosition = uiLocalPos;
+        TeamState teamState = team.GetComponent<TeamState>();
+        teamState.initialize(new int[]{4, 4}, true);
     }
 
     
