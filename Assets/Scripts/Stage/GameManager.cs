@@ -10,17 +10,39 @@ public class GameManager : MonoBehaviour
     public bool startFlag { get; set; } = false;
 
     // TeamManager teamManager;
+    MapGenerator mapGenerator;
+    // TeamAssign teamAssign;
 
     List<TeamState> CurrentTeamStates = new List<TeamState>();
     EventManager eventManager;
 
+    async public UniTask teamAssignSequence(){
+
+        List<int> nextNodeOrders = mapGenerator.nextNodeOrders;
+
+        if (nextNodeOrders.Count > 1){
+
+            // チーム割り振り変更処理
+            while (!startFlag){
+                Debug.Log("チーム割り振りを変更");
+                // teamAssign.changeTeamAssign()
+            }
+        }
+
+    }
+
     async void Start()
     {
-        // teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
 
+        mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
+
+        mapGenerator.generateMap("Stage2");
+
+        // teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
         // await UniTask.WaitUntil(() => teamManager.isInitialized); // フラグが上がるまで待機
+
         
-        await EntireLoop();
+        // await EntireLoop();
         
     }
 
@@ -33,7 +55,8 @@ public class GameManager : MonoBehaviour
 
             // await memberSelectTurn(teamState);
 
-            await UniTask.WaitUntil(() => startFlag); // フラグが上がるまで待機
+            await teamAssignSequence();
+            // await UniTask.WaitUntil(() => startFlag); // フラグが上がるまで待機
 
             foreach(TeamState teamState in CurrentTeamStates){
                 eventSwitch(teamState);
