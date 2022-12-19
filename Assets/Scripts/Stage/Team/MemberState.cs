@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -10,13 +8,13 @@ public class MemberState : MonoBehaviour
     [SerializeField] TextMeshProUGUI numberText;
     [SerializeField] GameObject plusButton;
     [SerializeField] GameObject minusButton;
-    
 
     [SerializeField] Image frame;
     [SerializeField] TextMeshProUGUI kakeru;
 
-    public string type { get; protected set; }
-    public int number { get; protected set; } = 0;
+    public string type { get; set; }
+    public int number { get; set; } = 0;
+    public int teamNo { get; set; }
 
     ColorPallet pallet = new ColorPallet();
     private Color defaultColor;
@@ -24,21 +22,20 @@ public class MemberState : MonoBehaviour
     CustomButton plusSpec;
     CustomButton minusSpec;
 
-    // void Start(){
-    //     plusButton.onClickCallback = () => {
-    //         number++;
-    //         numberText.text = number.ToString();
-    //     };
+    TeamManager teamManager;
 
-    //     minusButton.onClickCallback = () => {
-    //         if (number > 0){ 
-    //             number--; 
-    //             numberText.text = number.ToString();
-    //         }
-    //     };
-    // }
+    void Start(){
+        teamManager =  GameObject.Find("TeamManager").GetComponent<TeamManager>();
+    }
 
-    public void initialize(string color="blue", string type="engineer", int number=0, bool isNext=true){
+    public void updateNumber(int number){
+        this.number = number;
+        numberText.text = this.number.ToString();
+    }
+
+    public void initialize(string color, string type, int number, int teamNo, bool isNext){
+    // public void initialize(string color="blue", string type="engineer", int number=0, bool isNext=true){
+    // public void initialize(Func<int, string> buttonFunc, string color="blue", string type="engineer", int number=0,){
         // 色
         if (color == "blue"){
             frame.color = pallet.blue;
@@ -63,6 +60,9 @@ public class MemberState : MonoBehaviour
         this.number = number;
         numberText.text = this.number.ToString();
 
+        // チームNo
+        this.teamNo = teamNo;
+
         // 次ノードの場合
         plusSpec = plusButton.GetComponent<CustomButton>();
         minusSpec = minusButton.GetComponent<CustomButton>();
@@ -71,12 +71,14 @@ public class MemberState : MonoBehaviour
             plusSpec.onClickCallback = () => {
                 number++;
                 numberText.text = number.ToString();
+                teamManager.buttonFunc(this.teamNo, this.type, "plus");
             };
 
             minusSpec.onClickCallback = () => {
                 if (number > 0){ 
                     number--; 
                     numberText.text = number.ToString();
+                    teamManager.buttonFunc(this.teamNo, this.type, "minus");
                 }
             };
         }

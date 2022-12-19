@@ -12,7 +12,7 @@ public class EventManager : MonoBehaviour
         
     }
 
-    public void battleEvent(TeamState teamState){
+    public void battleEvent(){
         // GameObject battleDialog = Instantiate(BattleDialog) as GameObject;
         Debug.Log("バトルだよ！");
     }

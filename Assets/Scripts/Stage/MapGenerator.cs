@@ -13,46 +13,21 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private GameObject[] nodeTypes;
     [SerializeField] private GameObject Team;
 
-    public (float, GameObject) getSerializeField(){
-        return (gridSize, Team);
-    }
-
-    // [SerializeField] public float gridSize {get;}
-    // [SerializeField] public GameObject nodeBase {get;}
-    // [SerializeField] public GameObject[] nodeTypes {get;}
-    // [SerializeField] public GameObject Team {get;}
-
     public List<List<int>> NodeMap {get; protected set;} = new List<List<int>>(); 
     public List<List<int>> EdgeMap {get; protected set;} = new List<List<int>>();
     public List<List<int>> OrderMap {get; protected set;} = new List<List<int>>();
-    // public List<List<int>> TeamPositions {get; protected set;} = new List<List<int>>();
 
     public List<int> currentOrders {get; set;} = new List<int>();
     public List<int> nextOrders {get; set;} = new List<int>();
 
     public Vector2 StandardPos {get; protected set;} // 基準タイル（左上(0,0)）の中心座標
 
-    // [SerializeField] float gridSize;
-    // [SerializeField] private GameObject nodeBase;
-    // [SerializeField] private GameObject[] nodeTypes;
-    // [SerializeField] private GameObject Team;
-
-    // private List<List<int>> NodeMap = new List<List<int>>();
-    // private List<List<int>> EdgeMap = new List<List<int>>();
-    // private List<List<int>> OrderMap = new List<List<int>>();
-    // private List<List<int>> TeamPositions = new List<List<int>>();
-
-    // public List<int> currentOrders {get; set;} = new List<int>();
-    // public List<int> nextOrders {get; set;} = new List<int>();
-
     private int nodeNum;
-    // private int turn = 0;
     private List<Color> colors = new List<Color>();
 
     ListUtils listUtils = new ListUtils();
     ColorPallet pallet = new ColorPallet();
     TeamManager teamManager;
-    // TeamAssign teamAssign = new TeamAssign();
 
     void Start(){
         teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
@@ -87,21 +62,6 @@ public class MapGenerator : MonoBehaviour
         Vector2Int posXY = listUtils.searchNodePos(OrderMap, order);
         return GetTeamPostion(posXY.x, posXY.y);
     }
-
-    // public void initTeamDisplay(){
-    //     Vector2Int posXY = listUtils.searchNodePos(OrderMap, 0);
-    //     var pos = GetTeamPostion(posXY.x, posXY.y);
-    //     teamManager.displayTeam(pos);
-    // }
-
-    // public GameObject createTeamObject(Vector2Int pos){
-    //     GameObject team = Instantiate(Team) as GameObject;
-    //     team.transform.parent = this.transform; // 本オブジェクトの子にする
-    //     team.transform.position = GetTeamPostion(pos.x, pos.y);
-    //     team.name = $"team_{pos.y}_{pos.x}";
-
-    //     return team;
-    // }
 
     public Vector2 GetActualPostion(int x, int y){
         return new Vector2

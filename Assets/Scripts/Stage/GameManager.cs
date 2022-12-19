@@ -6,12 +6,10 @@ using Cysharp.Threading.Tasks;
 public class GameManager : MonoBehaviour
 {
 
-    // private bool startFlag = false;
     public bool startFlag { get; set; } = false;
 
     TeamManager teamManager;
     MapGenerator mapGenerator;
-    // TeamAssign teamAssign;
 
     List<TeamState> CurrentTeamStates = new List<TeamState>();
     EventManager eventManager;
@@ -24,7 +22,7 @@ public class GameManager : MonoBehaviour
         if (nextOrders.Count >= 2){
 
             // チームアサイン
-            teamManager.assignTeams();
+            teamManager.assignTeams(new int[] {4, 4});
 
             // チーム割り振り変更処理
             Debug.Log("チーム割り振りを変更");
@@ -45,8 +43,8 @@ public class GameManager : MonoBehaviour
         await EntireLoop();
     }
 
-    void eventSwitch(TeamState teamState){
-        eventManager.battleEvent(teamState);
+    void eventSwitch(){
+        eventManager.battleEvent();
     }
 
     async UniTask EntireLoop(){
