@@ -8,35 +8,51 @@ using System.IO;
 
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField] float gridSize;
+    [SerializeField] private float gridSize;
     [SerializeField] private GameObject nodeBase;
     [SerializeField] private GameObject[] nodeTypes;
     [SerializeField] private GameObject Team;
 
-    [SerializeField] private int[] initTeamMembers;
+    public (float, GameObject) getSerializeField(){
+        return (gridSize, Team);
+    }
 
-    Vector2 StandardPos; // 基準タイル（左上(0,0)）の中心座標
-    private List<List<int>> NodeMap = new List<List<int>>();
-    private List<List<int>> EdgeMap = new List<List<int>>();
-    private List<List<int>> NodeOrders = new List<List<int>>();
-    private List<List<int>> TeamPositions = new List<List<int>>();
+    // [SerializeField] public float gridSize {get;}
+    // [SerializeField] public GameObject nodeBase {get;}
+    // [SerializeField] public GameObject[] nodeTypes {get;}
+    // [SerializeField] public GameObject Team {get;}
 
-    public List<int> currentNodeOrders {get; set;} = new List<int>();
-    public List<int> nextNodeOrders {get; set;} = new List<int>();
+    public List<List<int>> NodeMap {get; protected set;} = new List<List<int>>(); 
+    public List<List<int>> EdgeMap {get; protected set;} = new List<List<int>>();
+    public List<List<int>> OrderMap {get; protected set;} = new List<List<int>>();
+    // public List<List<int>> TeamPositions {get; protected set;} = new List<List<int>>();
+
+    public List<int> currentOrders {get; set;} = new List<int>();
+    public List<int> nextOrders {get; set;} = new List<int>();
+
+    public Vector2 StandardPos {get; protected set;} // 基準タイル（左上(0,0)）の中心座標
+
+    // [SerializeField] float gridSize;
+    // [SerializeField] private GameObject nodeBase;
+    // [SerializeField] private GameObject[] nodeTypes;
+    // [SerializeField] private GameObject Team;
+
+    // private List<List<int>> NodeMap = new List<List<int>>();
+    // private List<List<int>> EdgeMap = new List<List<int>>();
+    // private List<List<int>> OrderMap = new List<List<int>>();
+    // private List<List<int>> TeamPositions = new List<List<int>>();
+
+    // public List<int> currentOrders {get; set;} = new List<int>();
+    // public List<int> nextOrders {get; set;} = new List<int>();
 
     private int nodeNum;
-
+    // private int turn = 0;
     private List<Color> colors = new List<Color>();
 
-    public List<GameObject> currentTeamObj {get; set;} = new List<GameObject>();
-    public List<GameObject> nextTeamObj {get; set;} = new List<GameObject>();
-
-    int turn = 0;
-
-    ListUtils listUtils;
-    TeamAssign teamAssign;
-
+    ListUtils listUtils = new ListUtils();
+    ColorPallet pallet = new ColorPallet();
     TeamManager teamManager;
+    // TeamAssign teamAssign = new TeamAssign();
 
     void Start(){
         teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
@@ -44,13 +60,9 @@ public class MapGenerator : MonoBehaviour
 
     /* 主関数 */
     public void generateMap(string stageName){
-        listUtils = new ListUtils();
-        teamAssign = new TeamAssign();
-
-        // 色の追加
-        colors.Add(new Color(46/255f,82/255f,143/255f,255/255f)); // 青
-        colors.Add(new Color(220/255f,20/255f,60/255f,255/255f)); // 赤
-        colors.Add(new Color(146/255f,208/255f,80/255f,255/255f)); // 緑
+        colors.Add(pallet.blue); // 青
+        colors.Add(pallet.red); // 赤
+        colors.Add(pallet.green); // 緑
         
         // 本オブジェクトの位置を基準とする
         StandardPos = new Vector2(this.transform.position.x, this.transform.position.y);
@@ -58,38 +70,29 @@ public class MapGenerator : MonoBehaviour
         // マップ生成
         NodeMap = listUtils.read2DListFromCSV($"{stageName}/NodeMap"); // ノード行列
         EdgeMap = listUtils.read2DListFromCSV($"{stageName}/EdgeMap"); // エッジリスト
-        (NodeOrders, nodeNum) = listUtils.orderingNodes(NodeMap); // ノード番号リスト
+        (OrderMap, nodeNum) = listUtils.orderingNodes(NodeMap); // ノード番号リスト
 
         // マップ描画
         drawMap();
 
         // チーム初期化
-        currentNodeOrders.Add(0);
-        nextNodeOrders = listUtils.searchNextNodeOrders(EdgeMap, 0);
+        currentOrders.Add(0);
+        nextOrders = listUtils.searchNextOrders(EdgeMap, 0);
 
         // 初期チーム描画
-        initTeamDisplay();
+        // initTeamDisplay();
     }
 
-    public void initTeamDisplay(){
-        // // 現在チームに追加
-        // Vector2Int position = listUtils.searchNodePos(NodeOrders, 0);
-        // if (position.x != -1){
-        //     currentTeamObj.Add(createTeamObject(position));
-        // }
-
-        // // 次チームに追加
-        // List<Vector2Int> positions = listUtils.searchNextNodes(NodeMap, EdgeMap, 0);
-        // foreach(Vector2Int pos in positions){
-        //     nextTeamObj.Add(createTeamObject(pos));
-        // }
-
-
-        Vector2Int posXY = listUtils.searchNodePos(NodeOrders, 0);
-        var pos = GetTeamPostion(posXY.x, posXY.y);
-        teamManager.displayMember(pos);
-
+    public Vector2 getTeamPositionByOrder(int order){
+        Vector2Int posXY = listUtils.searchNodePos(OrderMap, order);
+        return GetTeamPostion(posXY.x, posXY.y);
     }
+
+    // public void initTeamDisplay(){
+    //     Vector2Int posXY = listUtils.searchNodePos(OrderMap, 0);
+    //     var pos = GetTeamPostion(posXY.x, posXY.y);
+    //     teamManager.displayTeam(pos);
+    // }
 
     // public GameObject createTeamObject(Vector2Int pos){
     //     GameObject team = Instantiate(Team) as GameObject;
@@ -164,8 +167,8 @@ public class MapGenerator : MonoBehaviour
 
         /* エッジの描画 */
         foreach (List<int> edge in EdgeMap){
-            Vector2Int pos0 = listUtils.searchNodePos(NodeOrders, edge[0]);
-            Vector2Int pos1 = listUtils.searchNodePos(NodeOrders, edge[1]);
+            Vector2Int pos0 = listUtils.searchNodePos(OrderMap, edge[0]);
+            Vector2Int pos1 = listUtils.searchNodePos(OrderMap, edge[1]);
             int xSpan = Math.Abs(pos1.x - pos0.x);
             // Debug.Log($"edge: {edge[0]}-{edge[1]}, pos0: ({pos0.x}, {pos0.y}), pos1: ({pos1.x}, {pos1.y})");
 

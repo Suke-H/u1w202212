@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     // private bool startFlag = false;
     public bool startFlag { get; set; } = false;
 
-    // TeamManager teamManager;
+    TeamManager teamManager;
     MapGenerator mapGenerator;
     // TeamAssign teamAssign;
 
@@ -18,32 +18,31 @@ public class GameManager : MonoBehaviour
 
     async public UniTask teamAssignSequence(){
 
-        List<int> nextNodeOrders = mapGenerator.nextNodeOrders;
+        List<int> nextOrders = mapGenerator.nextOrders;
 
-        if (nextNodeOrders.Count > 1){
+        // 次ノードが2つ以上なら
+        if (nextOrders.Count >= 2){
+
+            // チームアサイン
+            teamManager.assignTeams();
 
             // チーム割り振り変更処理
-            while (!startFlag){
-                Debug.Log("チーム割り振りを変更");
+            Debug.Log("チーム割り振りを変更");
+            // while (!startFlag){
                 // teamAssign.changeTeamAssign()
-            }
+            // }
         }
 
     }
 
     async void Start()
     {
-
         mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
-
         mapGenerator.generateMap("Stage2");
 
-        // teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
-        // await UniTask.WaitUntil(() => teamManager.isInitialized); // フラグが上がるまで待機
+        teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
 
-        
-        // await EntireLoop();
-        
+        await EntireLoop();
     }
 
     void eventSwitch(TeamState teamState){
@@ -51,18 +50,15 @@ public class GameManager : MonoBehaviour
     }
 
     async UniTask EntireLoop(){
-        while(true){
-
-            // await memberSelectTurn(teamState);
+        // while(true){
 
             await teamAssignSequence();
-            // await UniTask.WaitUntil(() => startFlag); // フラグが上がるまで待機
 
-            foreach(TeamState teamState in CurrentTeamStates){
-                eventSwitch(teamState);
-            }
+            // foreach(TeamState teamState in CurrentTeamStates){
+            //     eventSwitch(teamState);
+            // }
 
-        }
+        // }
 
     }
 }

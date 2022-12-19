@@ -50,12 +50,11 @@ public class ListUtils
         return (tmpList, count);
     }
 
-
-    public Vector2Int searchNodePos(List<List<int>> NodeOrders, int order)
+    public Vector2Int searchNodePos(List<List<int>> OrderMap, int order)
     {
-        for (int y = 0; y < NodeOrders.Count; y++){
-            for (int x = 0; x < NodeOrders[0].Count; x++){
-                if (NodeOrders[y][x] == order){
+        for (int y = 0; y < OrderMap.Count; y++){
+            for (int x = 0; x < OrderMap[0].Count; x++){
+                if (OrderMap[y][x] == order){
                     return new Vector2Int(x, y);
                 }
             }
@@ -65,7 +64,7 @@ public class ListUtils
         return new Vector2Int(-1, -1);
     }
 
-    public List<int> searchNextNodeOrders(List<List<int>> EdgeMap, int currentOrder){
+    public List<int> searchNextOrders(List<List<int>> EdgeMap, int currentOrder){
         List<int> nodes = new List<int>();
 
         for (int y = 0; y < EdgeMap.Count; y++){

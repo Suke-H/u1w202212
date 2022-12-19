@@ -253,15 +253,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d14a9561c702b4d9ae03dd53c6761b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: 3
+  gridSize: 3.5
   nodeBase: {fileID: 822458046050270915, guid: da9609ff788043045ba50e3183fab2fd, type: 3}
   nodeTypes:
   - {fileID: 6104429735797623115, guid: b9e6838ec92f1c642b5b54234ccc3e3d, type: 3}
+  - {fileID: 1765152479977750297, guid: fd4ae444acde9c049b47f3bd903b3c9b, type: 3}
   - {fileID: 2694886837166648409, guid: e2d86293eb8190c41a7645fb591c2842, type: 3}
   - {fileID: 7094488281753016524, guid: 7a19ed3e38037ce4fa147d46506f5af4, type: 3}
-  - {fileID: 1765152479977750297, guid: fd4ae444acde9c049b47f3bd903b3c9b, type: 3}
-  Team: {fileID: 1850193104845705209, guid: 588d0659c193c4a48ae523a3d43528ee, type: 3}
-  initTeamMembers: 
+  Team: {fileID: 7406754317000082211, guid: d2c54aecfd55fa24db087ee66cf5bf75, type: 3}
 --- !u!212 &31276405
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -322,7 +321,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 31276402}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6, y: 3, z: 0}
+  m_LocalPosition: {x: -7.05, y: 3.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EventManager : MonoBehaviour
 {
-
     [SerializeField] GameObject BattleDialog; 
 
 
@@ -14,7 +13,8 @@ public class EventManager : MonoBehaviour
     }
 
     public void battleEvent(TeamState teamState){
-        GameObject battleDialog = Instantiate(BattleDialog) as GameObject;
+        // GameObject battleDialog = Instantiate(BattleDialog) as GameObject;
+        Debug.Log("バトルだよ！");
     }
 
     void Update()
