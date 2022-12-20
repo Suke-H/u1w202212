@@ -28,73 +28,48 @@ public class ListUtils
         return tmpList;
     }
 
-    public (List<List<int>>, int) orderingNodes(List<List<int>> NodeMap)
-    {
-        // Listを-1で初期化
-        List<List<int>> tmpList = initList(NodeMap[0].Count, NodeMap.Count, -1);
+    // public (List<List<int>>, int) orderingNodes(List<List<int>> NodeMap)
+    // {
+    //     // Listを-1で初期化
+    //     List<List<int>> tmpList = initList(NodeMap[0].Count, NodeMap.Count, -1);
 
-        int count = 0;
+    //     int count = 0;
         
-        // 「左から→上から」の順で番号を振っていく
-        for (int x = 0; x < NodeMap[0].Count; x++) {
-            for (int y = 0; y < NodeMap.Count; y++) {
+    //     // 「左から→上から」の順で番号を振っていく
+    //     for (int x = 0; x < NodeMap[0].Count; x++) {
+    //         for (int y = 0; y < NodeMap.Count; y++) {
 
-                if (NodeMap[y][x] != -1)
-                {
-                    tmpList[y][x] = count;
-                    count++;
-                }
-            }
-        }
-
-        return (tmpList, count);
-    }
-
-    public Vector2Int searchNodePos(List<List<int>> OrderMap, int order)
-    {
-        for (int y = 0; y < OrderMap.Count; y++){
-            for (int x = 0; x < OrderMap[0].Count; x++){
-                if (OrderMap[y][x] == order){
-                    return new Vector2Int(x, y);
-                }
-            }
-        }
-
-        Debug.Log("エラーが来るぞ！！！");
-        return new Vector2Int(-1, -1);
-    }
-
-    public List<int> searchNextOrders(List<List<int>> EdgeMap, int currentOrder){
-        List<int> nodes = new List<int>();
-
-        for (int y = 0; y < EdgeMap.Count; y++){
-            if (EdgeMap[y][0] == currentOrder){
-                nodes.Add(EdgeMap[y][1]);
-            }
-        }
-
-        return nodes;
-    }
-
-    // public List<Vector2Int> searchNextNodePositions(List<List<int>> NodeMap, int turn){
-
-    //     List<Vector2Int> nodes = new List<Vector2Int>();
-
-    //     for (int y = 0; y < NodeMap.Count; y++){
-    //         if (NodeMap[y][turn+1] != -1){
-    //             nodes.Add(new Vector2Int(turn+1, y));
+    //             if (NodeMap[y][x] != -1)
+    //             {
+    //                 tmpList[y][x] = count;
+    //                 count++;
+    //             }
     //         }
     //     }
 
-    //     return nodes;
+    //     return (tmpList, count);
     // }
 
-    // public List<Vector2Int> searchNextNodePositions(List<List<int>> NodeMap, List<List<int>> EdgeMap, int currentOrder){
-    //     List<Vector2Int> nodes = new List<Vector2Int>();
+    // public Vector2Int searchNodePos(List<List<int>> OrderMap, int order)
+    // {
+    //     for (int y = 0; y < OrderMap.Count; y++){
+    //         for (int x = 0; x < OrderMap[0].Count; x++){
+    //             if (OrderMap[y][x] == order){
+    //                 return new Vector2Int(x, y);
+    //             }
+    //         }
+    //     }
+
+    //     Debug.Log("エラーが来るぞ！！！");
+    //     return new Vector2Int(-1, -1);
+    // }
+
+    // public List<int> searchNextOrders(List<List<int>> EdgeMap, int currentOrder){
+    //     List<int> nodes = new List<int>();
 
     //     for (int y = 0; y < EdgeMap.Count; y++){
     //         if (EdgeMap[y][0] == currentOrder){
-    //             nodes.Add(searchNodePos(NodeMap, EdgeMap[y][1]));
+    //             nodes.Add(EdgeMap[y][1]);
     //         }
     //     }
 

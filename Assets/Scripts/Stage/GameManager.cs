@@ -5,14 +5,22 @@ using Cysharp.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
-
     public bool startFlag { get; set; } = false;
+    [SerializeField] int[] initTeamComp;
 
     TeamManager teamManager;
     MapGenerator mapGenerator;
 
     List<TeamState> CurrentTeamStates = new List<TeamState>();
     EventManager eventManager;
+
+    // private List<TeamState> currentTeams;
+    // private List<TeamState> nextTeams;
+
+    public void updateNextTeams(){
+        
+
+    }
 
     async public UniTask teamAssignSequence(){
 
@@ -21,8 +29,10 @@ public class GameManager : MonoBehaviour
         // 次ノードが2つ以上なら
         if (nextOrders.Count >= 2){
 
-            // チームアサイン
-            teamManager.assignTeams(new int[] {4, 4});
+            // foreach(TeamState currentTeam in currentTeams){
+                // チームアサイン
+                teamManager.assignTeams(initTeamComp);
+            // }
 
             // チーム割り振り変更処理
             Debug.Log("チーム割り振りを変更");
@@ -30,6 +40,8 @@ public class GameManager : MonoBehaviour
                 // teamAssign.changeTeamAssign()
             // }
         }
+
+        // nextTeams = new List<TeamState>(teamManager.nextTeams);
 
     }
 
@@ -48,6 +60,7 @@ public class GameManager : MonoBehaviour
     }
 
     async UniTask EntireLoop(){
+
         // while(true){
 
             await teamAssignSequence();

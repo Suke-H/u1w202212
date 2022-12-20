@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System;
 
 public class TeamManager : MonoBehaviour
 {
@@ -9,10 +10,14 @@ public class TeamManager : MonoBehaviour
     [SerializeField] GameObject canvas;//キャンバス
 
     // チーム
-    int[] currentTeamComp;
-    List<int[]> nextTeamComps = new List<int[]>();
-    GameObject currentTeam;
-    List<GameObject> nextTeams = new List<GameObject>();
+    // int[] currentTeamComp;
+    // List<int[]> nextTeamComps = new List<int[]>();
+
+    // GameObject currentTeam;
+    TeamState currentTeam;
+    // List<GameObject> nextTeams = new List<GameObject>();
+    public List<TeamState> nextTeams {get; set;} = new List<TeamState>();
+    // List<TeamState> nextTeamStates = new List<TeamState>();
 
     ColorPallet pallet = new ColorPallet();
     Camera mainCamera;
@@ -30,12 +35,14 @@ public class TeamManager : MonoBehaviour
 
         // プラスマイナス
         if (sign == "plus"){
-            currentTeamComp[i] -= 1;
-            nextTeamComps[teamNo][i] += 1;
+            // currentTeamComp[i] -= 1;
+            // nextTeamComps[teamNo][i] += 1;
+            currentTeam.teamComp[i] -= 1;
+            nextTeams[teamNo].teamComp[i] += 1;
         }
         else if (sign == "minus"){
-            currentTeamComp[i] += 1;
-            nextTeamComps[teamNo][i] -= 1;
+            currentTeam.teamComp[i] += 1;
+            nextTeams[teamNo].teamComp[i] -= 1;
         }
         else {
             Debug.Log("+でも-でもない何か");
@@ -43,16 +50,16 @@ public class TeamManager : MonoBehaviour
 
         var team = currentTeam.GetComponent<TeamState>();
         var member = team.getMember(i).GetComponent<MemberState>();
-        member.updateNumber(currentTeamComp[i]);
+        // member.updateNumber(currentTeamComp[i]);
+        member.updateNumber(currentTeam.teamComp[i]);
 
-        Debug.Log($"{currentTeamComp[0]}, {currentTeamComp[1]}");
-        Debug.Log($"{nextTeamComps[0][0]}, {nextTeamComps[0][1]}");
-        Debug.Log($"{nextTeamComps[1][0]}, {nextTeamComps[1][1]}");
+        // Debug.Log($"{currentTeamComp[0]}, {currentTeamComp[1]}");
+        // Debug.Log($"{nextTeamComps[0][0]}, {nextTeamComps[0][1]}");
+        // Debug.Log($"{nextTeamComps[1][0]}, {nextTeamComps[1][1]}");
         
     }
 
     public void assignTeams(int[] currentComp){
-
         if (firstFlag){
             mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
             teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
@@ -62,36 +69,40 @@ public class TeamManager : MonoBehaviour
         initialTeams();
 
         List<int> currentOrders = mapGenerator.currentOrders;
-        currentTeamComp = currentComp;
-
+        // currentTeamComp = currentComp;
+        
         List<int> nextOrders = mapGenerator.nextOrders;
-        for (int j=0; j<nextOrders.Count; j++){
-            nextTeamComps.Add(new int[]{0, 0});
-        }
+        // for (int j=0; j<nextOrders.Count; j++){
+        //     nextTeamComps.Add(new int[]{0, 0});
+        // }
 
         // 現ノードにチーム生成
         int i = -1;
         foreach (int order in currentOrders){
-            var pos = mapGenerator.getTeamPositionByOrder(order);
-            teamManager.displayTeam(pos, i, "current");
+            var (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
+            teamManager.displayTeam(pos, nodeType, i, "current");
             i++;
         }
 
         // 次ノードにチーム生成
         foreach (int order in nextOrders){
-            var pos = mapGenerator.getTeamPositionByOrder(order);
-            teamManager.displayTeam(pos, i, "next");
+            var (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
+            teamManager.displayTeam(pos, nodeType, i, "next");
             i++;
         }
+
+        Debug.Log(currentComp);
+        Debug.Log(currentTeam);
+        Array.Copy(currentComp, currentTeam.teamComp, currentComp.Length);
     }
 
     public void initialTeams(){
-        // currentTeams = new List<GameObject>();
-        nextTeams = new List<GameObject>();
+        // nextTeams = new List<GameObject>();
+        nextTeams = new List<TeamState>();
     }
 
     // チーム表示（UI座標変換）
-    public void displayTeam(Vector2 pos, int teamNo, string condition){
+    public void displayTeam(Vector2 pos, string nodeType, int teamNo, string condition){
         mainCamera = Camera.main;
 
         // ワールド座標 -> スクリーン座標変換
@@ -113,20 +124,25 @@ public class TeamManager : MonoBehaviour
         team.transform.SetParent (canvas.transform, false);
         team.transform.localPosition = uiLocalPos;
 
-        // ボタン関数
-
         // チームの初期化
         TeamState teamState = team.GetComponent<TeamState>();
-        if (condition == "current"){ teamState.initialize(currentTeamComp, teamNo, true); }
+        // if (condition == "current"){ teamState.initialize(nodeType, currentTeamComp, teamNo, false); }
+        if (condition == "current"){ teamState.initialize(currentTeam.teamComp, teamNo, false); }
         else if (condition == "next"){ teamState.initialize(new int[]{0, 0}, teamNo, true); }
+        // if (condition == "current"){ teamState.initialize(nodeType, currentTeam.teamComp, teamNo, false); }
+        // else if (condition == "next"){ teamState.initialize(nodeType, new int[]{0, 0}, teamNo, true);
         else { Debug.Log("気をつけろ！"); }
         
 
         // チームを格納して管理
-        if (condition == "current"){ currentTeam = team; }
-        else if (condition == "next"){ nextTeams.Add(team); }
+        // if (condition == "current"){ currentTeam = team; }
+        // else if (condition == "next"){ nextTeams.Add(team); }
+        // else { Debug.Log("気をつけろ！"); }
+        if (condition == "current"){ currentTeam = teamState; }
+        else if (condition == "next"){ nextTeams.Add(teamState); }
         else { Debug.Log("気をつけろ！"); }
     }
+    
 
 }
 

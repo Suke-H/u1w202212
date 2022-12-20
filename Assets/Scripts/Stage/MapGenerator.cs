@@ -25,12 +25,18 @@ public class MapGenerator : MonoBehaviour
     private int nodeNum;
     private List<Color> colors = new List<Color>();
 
+    Dictionary<int, string> nodeTypeDict = new Dictionary<int, string>();
+
     ListUtils listUtils = new ListUtils();
     ColorPallet pallet = new ColorPallet();
     TeamManager teamManager;
 
     void Start(){
         teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
+        nodeTypeDict.Add(0, "battle");  
+        nodeTypeDict.Add(1, "happening");  
+        nodeTypeDict.Add(2, "money"); 
+        nodeTypeDict.Add(3, "refresh"); 
     }
 
     /* 主関数 */
@@ -38,29 +44,36 @@ public class MapGenerator : MonoBehaviour
         colors.Add(pallet.blue); // 青
         colors.Add(pallet.red); // 赤
         colors.Add(pallet.green); // 緑
-        
+
         // 本オブジェクトの位置を基準とする
         StandardPos = new Vector2(this.transform.position.x, this.transform.position.y);
 
         // マップ生成
         NodeMap = listUtils.read2DListFromCSV($"{stageName}/NodeMap"); // ノード行列
         EdgeMap = listUtils.read2DListFromCSV($"{stageName}/EdgeMap"); // エッジリスト
-        (OrderMap, nodeNum) = listUtils.orderingNodes(NodeMap); // ノード番号リスト
+        // (OrderMap, nodeNum) = listUtils.orderingNodes(NodeMap); // ノード番号リスト
+        (OrderMap, nodeNum) = orderingNodes(); // ノード番号リスト
 
         // マップ描画
         drawMap();
 
         // チーム初期化
-        currentOrders.Add(0);
-        nextOrders = listUtils.searchNextOrders(EdgeMap, 0);
+        // currentOrders.Add(0);
+        // nextOrders = listUtils.searchNextOrders(EdgeMap, 0);
 
         // 初期チーム描画
         // initTeamDisplay();
     }
 
-    public Vector2 getTeamPositionByOrder(int order){
-        Vector2Int posXY = listUtils.searchNodePos(OrderMap, order);
-        return GetTeamPostion(posXY.x, posXY.y);
+    /* 座標 */
+
+    public (Vector2, string) getTeamNodeInfo(int order){
+        Vector2Int posXY = searchNodePos(order);
+        Vector2 pos = GetTeamPostion(posXY.x, posXY.y);
+
+        string nodeType = nodeTypeDict[NodeMap[posXY.y][posXY.x]];
+
+        return (pos, nodeType);
     }
 
     public Vector2 GetActualPostion(int x, int y){
@@ -77,6 +90,58 @@ public class MapGenerator : MonoBehaviour
         return new Vector2
             (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/2);
     }
+
+    /* マップ系処理 */
+
+    public (List<List<int>>, int) orderingNodes()
+    {
+        // Listを-1で初期化
+        List<List<int>> tmpList = listUtils.initList(NodeMap[0].Count, NodeMap.Count, -1);
+
+        int count = 0;
+        
+        // 「左から→上から」の順で番号を振っていく
+        for (int x = 0; x < NodeMap[0].Count; x++) {
+            for (int y = 0; y < NodeMap.Count; y++) {
+
+                if (NodeMap[y][x] != -1)
+                {
+                    tmpList[y][x] = count;
+                    count++;
+                }
+            }
+        }
+
+        return (tmpList, count);
+    }
+
+    public Vector2Int searchNodePos(int order)
+    {
+        for (int y = 0; y < OrderMap.Count; y++){
+            for (int x = 0; x < OrderMap[0].Count; x++){
+                if (OrderMap[y][x] == order){
+                    return new Vector2Int(x, y);
+                }
+            }
+        }
+
+        Debug.Log("エラーが来るぞ！！！");
+        return new Vector2Int(-1, -1);
+    }
+
+    public List<int> searchNextOrders(int currentOrder){
+        List<int> nodes = new List<int>();
+
+        for (int y = 0; y < EdgeMap.Count; y++){
+            if (EdgeMap[y][0] == currentOrder){
+                nodes.Add(EdgeMap[y][1]);
+            }
+        }
+
+        return nodes;
+    }
+
+    /* 描画処理 */
 
     public void drawLine(int current, int next, int y, Vector3[] positions){
         GameObject lineObj = new GameObject();
@@ -127,8 +192,10 @@ public class MapGenerator : MonoBehaviour
 
         /* エッジの描画 */
         foreach (List<int> edge in EdgeMap){
-            Vector2Int pos0 = listUtils.searchNodePos(OrderMap, edge[0]);
-            Vector2Int pos1 = listUtils.searchNodePos(OrderMap, edge[1]);
+            // Vector2Int pos0 = listUtils.searchNodePos(OrderMap, edge[0]);
+            // Vector2Int pos1 = listUtils.searchNodePos(OrderMap, edge[1]);
+            Vector2Int pos0 = searchNodePos(edge[0]);
+            Vector2Int pos1 = searchNodePos(edge[1]);
             int xSpan = Math.Abs(pos1.x - pos0.x);
             // Debug.Log($"edge: {edge[0]}-{edge[1]}, pos0: ({pos0.x}, {pos0.y}), pos1: ({pos1.x}, {pos1.y})");
 
