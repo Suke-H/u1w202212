@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public bool startFlag { get; set; } = false;
     [SerializeField] int[] initTeamComp;
+    [SerializeField] CustomButton startButtton;
 
     TeamManager teamManager;
     MapGenerator mapGenerator;
@@ -14,32 +15,11 @@ public class GameManager : MonoBehaviour
     List<TeamState> CurrentTeamStates = new List<TeamState>();
     EventManager eventManager;
 
-    // private List<TeamState> currentTeams;
-    // private List<TeamState> nextTeams;
+    // チーム割り振り変更シークエンス
+    async public UniTask teamAssignSequence(int currentNodeOrder){
+        teamManager.assignTeams(currentNodeOrder, initTeamComp);
 
-    async public UniTask teamAssignSequence(){
-
-        // List<int> nextOrders = mapGenerator.nextOrders;
-
-        teamManager.assignTeams(0, initTeamComp);
-
-        // 次ノードが2つ以上なら
-        // if (nextOrders.Count >= 2){
-
-            // foreach(TeamState currentTeam in currentTeams){
-                // チームアサイン
-                // teamManager.assignTeams(0, initTeamComp);
-            // }
-
-            // チーム割り振り変更処理
-            Debug.Log("チーム割り振りを変更");
-            // while (!startFlag){
-                // teamAssign.changeTeamAssign()
-            // }
-        // }
-
-        // nextTeams = new List<TeamState>(teamManager.nextTeams);
-
+        await UniTask.WaitUntil(() => startFlag);
     }
 
     async void Start()
@@ -48,6 +28,10 @@ public class GameManager : MonoBehaviour
         mapGenerator.generateMap("Stage2");
 
         teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
+
+        startButtton.onClickCallback = () => {
+            startFlag = true;
+        };
 
         await EntireLoop();
     }
@@ -60,13 +44,23 @@ public class GameManager : MonoBehaviour
 
         // while(true){
 
-            await teamAssignSequence();
+        for (int i=0; i<5; i++){
+
+            int currentNodeOrder = i; 
+
+            var nextOrders = mapGenerator.searchNextOrders(currentNodeOrder);
+            if (nextOrders.Count >= 2){
+                await teamAssignSequence(currentNodeOrder);
+            }
+
+            startFlag = false;
 
             // foreach(TeamState teamState in CurrentTeamStates){
             //     eventSwitch(teamState);
             // }
 
         // }
+        }
 
     }
 }

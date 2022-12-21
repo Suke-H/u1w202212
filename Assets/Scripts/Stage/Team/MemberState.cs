@@ -28,10 +28,20 @@ public class MemberState : MonoBehaviour
         teamManager =  GameObject.Find("TeamManager").GetComponent<TeamManager>();
     }
 
-    public void updateNumber(int number){
-        this.number = number;
+    public void plusMembers(){
+        this.number++;
         numberText.text = this.number.ToString();
     }
+
+    public void minusMembers(){
+        this.number--;
+        numberText.text = this.number.ToString();
+    }
+
+    // public void updateNumber(int number){
+    //     this.number = number;
+    //     numberText.text = this.number.ToString();
+    // }
 
     public void initialize(string color, string type, int number, int teamNo){
         // 色

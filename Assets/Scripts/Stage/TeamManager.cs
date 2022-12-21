@@ -8,22 +8,16 @@ public class TeamManager : MonoBehaviour
 {
     [SerializeField] GameObject Team;
     [SerializeField] GameObject canvas;//キャンバス
-
-    // チーム
-    // int[] currentTeamComp;
-    // List<int[]> nextTeamComps = new List<int[]>();
-
-    // GameObject currentTeam;
-    TeamState currentTeam;
-    // List<GameObject> nextTeams = new List<GameObject>();
-    public List<TeamState> nextTeams {get; set;} = new List<TeamState>();
-    // List<TeamState> nextTeamStates = new List<TeamState>();
+    
+    TeamState currentTeamState;
+    public List<TeamState> nextTeamStates {get; set;} = new List<TeamState>();
+    GameObject currentTeamObject;
+    public List<GameObject> nextTeamObjects {get; set;} = new List<GameObject>();
 
     ColorPallet pallet = new ColorPallet();
     Camera mainCamera;
 
     MapGenerator mapGenerator;
-    TeamManager teamManager;
     bool firstFlag = true;
 
     public void buttonFunc(int teamNo, string type, string sign){
@@ -35,91 +29,75 @@ public class TeamManager : MonoBehaviour
 
         // プラスマイナス
         if (sign == "plus"){
-            // currentTeamComp[i] -= 1;
-            // nextTeamComps[teamNo][i] += 1;
-            currentTeam.teamComp[i] -= 1;
-            nextTeams[teamNo].teamComp[i] += 1;
+            // currentTeamState.teamComp[i] -= 1;
+            // nextTeamStates[teamNo].teamComp[i] += 1;
+            currentTeamState.minusTeam(i);
+            nextTeamStates[teamNo].plusTeam(i);
         }
         else if (sign == "minus"){
-            currentTeam.teamComp[i] += 1;
-            nextTeams[teamNo].teamComp[i] -= 1;
+            // currentTeamState.teamComp[i] += 1;
+            // nextTeamStates[teamNo].teamComp[i] -= 1;
+            currentTeamState.plusTeam(i);
+            nextTeamStates[teamNo].minusTeam(i);
         }
         else {
             Debug.Log("+でも-でもない何か");
         }
 
-        var team = currentTeam.GetComponent<TeamState>();
-        var member = team.getMember(i).GetComponent<MemberState>();
-        // member.updateNumber(currentTeamComp[i]);
-        member.updateNumber(currentTeam.teamComp[i]);
+        // var team = currentTeam.GetComponent<TeamState>();
+        // var member = currentTeamState.getMember(i).GetComponent<MemberState>();
+        // member.updateNumber(currentTeamState.teamComp[i]);
 
         // Debug.Log($"{currentTeamComp[0]}, {currentTeamComp[1]}");
         // Debug.Log($"{nextTeamComps[0][0]}, {nextTeamComps[0][1]}");
         // Debug.Log($"{nextTeamComps[1][0]}, {nextTeamComps[1][1]}");
-        
     }
 
     public void assignTeams(int currentNodeOrder, int[] currentComp){
         if (firstFlag){
             mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
-            teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
             firstFlag = false;
         }
-
-        initialTeams();
-
-        // List<int> currentOrders = mapGenerator.currentOrders;
-        // currentTeamComp = currentComp;
-        
-        // List<int> nextOrders = mapGenerator.nextOrders;
-        // for (int j=0; j<nextOrders.Count; j++){
-        //     nextTeamComps.Add(new int[]{0, 0});
-        // }
 
         // 現ノードの番号から次ノードの番号を検索
         List<int> nextOrders = mapGenerator.searchNextOrders(currentNodeOrder);
 
-        // // 現ノードにチーム生成
-        // int i = -1;
-        // foreach (int order in currentOrders){
-        //     var (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
-        //     teamManager.displayTeam(pos, nodeType, i, "current");
-        //     i++;
-        // }
-
-        // Debug.Log(currentComp);
-        // Debug.Log(currentTeam);
-        // Array.Copy(currentComp, currentTeam.teamComp, currentComp.Length);
-
-
         // 現ノードにチーム生成
         var (pos, nodeType) = mapGenerator.getTeamNodeInfo(currentNodeOrder);
-        currentTeam = teamManager.displayTeam(pos, nodeType, -1, currentComp);
+        (currentTeamObject, currentTeamState) = createTeam(-1, currentComp);
+        displayTeam(currentTeamObject, pos);
 
         // 次ノードにチーム生成
-        nextTeams = new List<TeamState>(); // リセット
-        int i = 0;
-        foreach (int order in nextOrders){
-            (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
-            var nextTeam = teamManager.displayTeam(pos, nodeType, i, new int[]{0, 0});
-            nextTeams.Add(nextTeam);
-            i++;
-        }
+        nextTeamStates = new List<TeamState>(); // リセット
+        for (int i=0; i<nextOrders.Count; i++){
+            (pos, nodeType) = mapGenerator.getTeamNodeInfo(nextOrders[i]);
+            var (nextTeamObject, nextTeamState) = createTeam(i, new int[]{0, 0});
+            displayTeam(nextTeamObject, pos);
 
+            // 追加
+            nextTeamObjects.Add(nextTeamObject);
+            nextTeamStates.Add(nextTeamState);
+        }
         
     }
 
-    public void initialTeams(){
-        // nextTeams = new List<GameObject>();
-        nextTeams = new List<TeamState>();
+    public (GameObject, TeamState) createTeam(int teamNo, int[] comp){
+
+        // チームオブジェクト生成し、場所指定
+        GameObject team = Instantiate(Team) as GameObject;
+        team.transform.SetParent (canvas.transform, false);
+        // team.transform.localPosition = uiLocalPos;
+
+        // チームの初期化
+        TeamState teamState = team.GetComponent<TeamState>();
+        teamState.initialize(comp, teamNo); 
+
+        return (team, teamState);
     }
 
-    int[] defaultArr = new int[]{0, 0};
-
     // チーム表示（UI座標変換）
-    public TeamState displayTeam(Vector2 pos, string nodeType, int teamNo, int[] comp){
+    public void displayTeam(GameObject team, Vector2 pos){
 
-        Debug.Log("ここにはきてるんよね？");
         mainCamera = Camera.main;
 
         // ワールド座標 -> スクリーン座標変換
@@ -136,18 +114,7 @@ public class TeamManager : MonoBehaviour
             out var uiLocalPos // この変数に出力される
         );
 
-        // チームオブジェクト生成し、場所指定
-        GameObject team = Instantiate(Team) as GameObject;
-        team.transform.SetParent (canvas.transform, false);
         team.transform.localPosition = uiLocalPos;
-
-        // チームの初期化
-        TeamState teamState = team.GetComponent<TeamState>();
-        // if (teamNo == -1){ teamState.initialize(comp, teamNo); }
-        // else { teamState.initialize(new int[]{0, 0}, teamNo); }
-        teamState.initialize(comp, teamNo); 
-
-        return teamState;
     }
 
 }

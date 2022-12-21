@@ -17,9 +17,6 @@ public class MapGenerator : MonoBehaviour
     public List<List<int>> EdgeMap {get; protected set;} = new List<List<int>>();
     public List<List<int>> OrderMap {get; protected set;} = new List<List<int>>();
 
-    // public List<int> currentOrders {get; set;} = new List<int>();
-    // public List<int> nextOrders {get; set;} = new List<int>();
-
     public Vector2 StandardPos {get; protected set;} // 基準タイル（左上(0,0)）の中心座標
 
     private int nodeNum;
