@@ -14,7 +14,7 @@ public class MemberState : MonoBehaviour
 
     public string type { get; set; }
     public int number { get; set; } = 0;
-    public int teamNo { get; set; }
+    public int teamNo { get; set; } // -1は現チーム 0,1,2..は次チーム
 
     ColorPallet pallet = new ColorPallet();
     private Color defaultColor;
@@ -33,9 +33,7 @@ public class MemberState : MonoBehaviour
         numberText.text = this.number.ToString();
     }
 
-    public void initialize(string color, string type, int number, int teamNo, bool isNext){
-    // public void initialize(string color="blue", string type="engineer", int number=0, bool isNext=true){
-    // public void initialize(Func<int, string> buttonFunc, string color="blue", string type="engineer", int number=0,){
+    public void initialize(string color, string type, int number, int teamNo){
         // 色
         if (color == "blue"){
             frame.color = pallet.blue;
@@ -67,7 +65,7 @@ public class MemberState : MonoBehaviour
         plusSpec = plusButton.GetComponent<CustomButton>();
         minusSpec = minusButton.GetComponent<CustomButton>();
 
-        if (isNext){
+        if (teamNo != -1){
             plusSpec.onClickCallback = () => {
                 number++;
                 numberText.text = number.ToString();

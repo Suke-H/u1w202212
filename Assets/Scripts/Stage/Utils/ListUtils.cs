@@ -4,7 +4,6 @@ using System.Linq;
 using Cysharp.Threading.Tasks;  
 using System.IO;
 
-
 public class ListUtils
 {
     public void printMap(List<List<int>> oriList, string text){
@@ -27,54 +26,6 @@ public class ListUtils
 
         return tmpList;
     }
-
-    // public (List<List<int>>, int) orderingNodes(List<List<int>> NodeMap)
-    // {
-    //     // Listを-1で初期化
-    //     List<List<int>> tmpList = initList(NodeMap[0].Count, NodeMap.Count, -1);
-
-    //     int count = 0;
-        
-    //     // 「左から→上から」の順で番号を振っていく
-    //     for (int x = 0; x < NodeMap[0].Count; x++) {
-    //         for (int y = 0; y < NodeMap.Count; y++) {
-
-    //             if (NodeMap[y][x] != -1)
-    //             {
-    //                 tmpList[y][x] = count;
-    //                 count++;
-    //             }
-    //         }
-    //     }
-
-    //     return (tmpList, count);
-    // }
-
-    // public Vector2Int searchNodePos(List<List<int>> OrderMap, int order)
-    // {
-    //     for (int y = 0; y < OrderMap.Count; y++){
-    //         for (int x = 0; x < OrderMap[0].Count; x++){
-    //             if (OrderMap[y][x] == order){
-    //                 return new Vector2Int(x, y);
-    //             }
-    //         }
-    //     }
-
-    //     Debug.Log("エラーが来るぞ！！！");
-    //     return new Vector2Int(-1, -1);
-    // }
-
-    // public List<int> searchNextOrders(List<List<int>> EdgeMap, int currentOrder){
-    //     List<int> nodes = new List<int>();
-
-    //     for (int y = 0; y < EdgeMap.Count; y++){
-    //         if (EdgeMap[y][0] == currentOrder){
-    //             nodes.Add(EdgeMap[y][1]);
-    //         }
-    //     }
-
-    //     return nodes;
-    // }
 
     public List<string[]> readCSV(string path)
     {

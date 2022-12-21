@@ -59,7 +59,7 @@ public class TeamManager : MonoBehaviour
         
     }
 
-    public void assignTeams(int[] currentComp){
+    public void assignTeams(int currentNodeOrder, int[] currentComp){
         if (firstFlag){
             mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
             teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
@@ -68,32 +68,45 @@ public class TeamManager : MonoBehaviour
 
         initialTeams();
 
-        List<int> currentOrders = mapGenerator.currentOrders;
+        // List<int> currentOrders = mapGenerator.currentOrders;
         // currentTeamComp = currentComp;
         
-        List<int> nextOrders = mapGenerator.nextOrders;
+        // List<int> nextOrders = mapGenerator.nextOrders;
         // for (int j=0; j<nextOrders.Count; j++){
         //     nextTeamComps.Add(new int[]{0, 0});
         // }
 
+        // 現ノードの番号から次ノードの番号を検索
+        List<int> nextOrders = mapGenerator.searchNextOrders(currentNodeOrder);
+
+        // // 現ノードにチーム生成
+        // int i = -1;
+        // foreach (int order in currentOrders){
+        //     var (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
+        //     teamManager.displayTeam(pos, nodeType, i, "current");
+        //     i++;
+        // }
+
+        // Debug.Log(currentComp);
+        // Debug.Log(currentTeam);
+        // Array.Copy(currentComp, currentTeam.teamComp, currentComp.Length);
+
+
         // 現ノードにチーム生成
-        int i = -1;
-        foreach (int order in currentOrders){
-            var (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
-            teamManager.displayTeam(pos, nodeType, i, "current");
-            i++;
-        }
+        var (pos, nodeType) = mapGenerator.getTeamNodeInfo(currentNodeOrder);
+        currentTeam = teamManager.displayTeam(pos, nodeType, -1, currentComp);
 
         // 次ノードにチーム生成
+        nextTeams = new List<TeamState>(); // リセット
+        int i = 0;
         foreach (int order in nextOrders){
-            var (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
-            teamManager.displayTeam(pos, nodeType, i, "next");
+            (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
+            var nextTeam = teamManager.displayTeam(pos, nodeType, i, new int[]{0, 0});
+            nextTeams.Add(nextTeam);
             i++;
         }
 
-        Debug.Log(currentComp);
-        Debug.Log(currentTeam);
-        Array.Copy(currentComp, currentTeam.teamComp, currentComp.Length);
+        
     }
 
     public void initialTeams(){
@@ -101,8 +114,12 @@ public class TeamManager : MonoBehaviour
         nextTeams = new List<TeamState>();
     }
 
+    int[] defaultArr = new int[]{0, 0};
+
     // チーム表示（UI座標変換）
-    public void displayTeam(Vector2 pos, string nodeType, int teamNo, string condition){
+    public TeamState displayTeam(Vector2 pos, string nodeType, int teamNo, int[] comp){
+
+        Debug.Log("ここにはきてるんよね？");
         mainCamera = Camera.main;
 
         // ワールド座標 -> スクリーン座標変換
@@ -126,23 +143,12 @@ public class TeamManager : MonoBehaviour
 
         // チームの初期化
         TeamState teamState = team.GetComponent<TeamState>();
-        // if (condition == "current"){ teamState.initialize(nodeType, currentTeamComp, teamNo, false); }
-        if (condition == "current"){ teamState.initialize(currentTeam.teamComp, teamNo, false); }
-        else if (condition == "next"){ teamState.initialize(new int[]{0, 0}, teamNo, true); }
-        // if (condition == "current"){ teamState.initialize(nodeType, currentTeam.teamComp, teamNo, false); }
-        // else if (condition == "next"){ teamState.initialize(nodeType, new int[]{0, 0}, teamNo, true);
-        else { Debug.Log("気をつけろ！"); }
-        
+        // if (teamNo == -1){ teamState.initialize(comp, teamNo); }
+        // else { teamState.initialize(new int[]{0, 0}, teamNo); }
+        teamState.initialize(comp, teamNo); 
 
-        // チームを格納して管理
-        // if (condition == "current"){ currentTeam = team; }
-        // else if (condition == "next"){ nextTeams.Add(team); }
-        // else { Debug.Log("気をつけろ！"); }
-        if (condition == "current"){ currentTeam = teamState; }
-        else if (condition == "next"){ nextTeams.Add(teamState); }
-        else { Debug.Log("気をつけろ！"); }
+        return teamState;
     }
-    
 
 }
 

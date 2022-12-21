@@ -17,8 +17,8 @@ public class MapGenerator : MonoBehaviour
     public List<List<int>> EdgeMap {get; protected set;} = new List<List<int>>();
     public List<List<int>> OrderMap {get; protected set;} = new List<List<int>>();
 
-    public List<int> currentOrders {get; set;} = new List<int>();
-    public List<int> nextOrders {get; set;} = new List<int>();
+    // public List<int> currentOrders {get; set;} = new List<int>();
+    // public List<int> nextOrders {get; set;} = new List<int>();
 
     public Vector2 StandardPos {get; protected set;} // 基準タイル（左上(0,0)）の中心座標
 
@@ -51,18 +51,10 @@ public class MapGenerator : MonoBehaviour
         // マップ生成
         NodeMap = listUtils.read2DListFromCSV($"{stageName}/NodeMap"); // ノード行列
         EdgeMap = listUtils.read2DListFromCSV($"{stageName}/EdgeMap"); // エッジリスト
-        // (OrderMap, nodeNum) = listUtils.orderingNodes(NodeMap); // ノード番号リスト
         (OrderMap, nodeNum) = orderingNodes(); // ノード番号リスト
 
         // マップ描画
         drawMap();
-
-        // チーム初期化
-        // currentOrders.Add(0);
-        // nextOrders = listUtils.searchNextOrders(EdgeMap, 0);
-
-        // 初期チーム描画
-        // initTeamDisplay();
     }
 
     /* 座標 */
@@ -192,8 +184,6 @@ public class MapGenerator : MonoBehaviour
 
         /* エッジの描画 */
         foreach (List<int> edge in EdgeMap){
-            // Vector2Int pos0 = listUtils.searchNodePos(OrderMap, edge[0]);
-            // Vector2Int pos1 = listUtils.searchNodePos(OrderMap, edge[1]);
             Vector2Int pos0 = searchNodePos(edge[0]);
             Vector2Int pos1 = searchNodePos(edge[1]);
             int xSpan = Math.Abs(pos1.x - pos0.x);

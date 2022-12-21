@@ -17,21 +17,18 @@ public class GameManager : MonoBehaviour
     // private List<TeamState> currentTeams;
     // private List<TeamState> nextTeams;
 
-    public void updateNextTeams(){
-        
-
-    }
-
     async public UniTask teamAssignSequence(){
 
-        List<int> nextOrders = mapGenerator.nextOrders;
+        // List<int> nextOrders = mapGenerator.nextOrders;
+
+        teamManager.assignTeams(0, initTeamComp);
 
         // 次ノードが2つ以上なら
-        if (nextOrders.Count >= 2){
+        // if (nextOrders.Count >= 2){
 
             // foreach(TeamState currentTeam in currentTeams){
                 // チームアサイン
-                teamManager.assignTeams(initTeamComp);
+                // teamManager.assignTeams(0, initTeamComp);
             // }
 
             // チーム割り振り変更処理
@@ -39,7 +36,7 @@ public class GameManager : MonoBehaviour
             // while (!startFlag){
                 // teamAssign.changeTeamAssign()
             // }
-        }
+        // }
 
         // nextTeams = new List<TeamState>(teamManager.nextTeams);
 
