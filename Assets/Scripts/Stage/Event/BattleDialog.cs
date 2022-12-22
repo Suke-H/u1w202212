@@ -6,10 +6,12 @@ using System;
 
 public class BattleDialog : MonoBehaviour
 {
-
     [SerializeField] TextMeshProUGUI[] teamLevelTexts;
     [SerializeField] TextMeshProUGUI[] enemyLevelTexts;
     [SerializeField] TextMeshProUGUI[] successRateTexts;
+
+    [SerializeField] CustomButton yesButton;
+    [SerializeField] CustomButton noButton;
 
     [SerializeField] TeamUI teamUI;
 
@@ -31,6 +33,17 @@ public class BattleDialog : MonoBehaviour
 
         successRateTexts[0].text = args[4];
         successRateTexts[1].text = args[5];
+
+        var battleEvent = GameObject.Find("EventManager").GetComponent<BattleEvent>();
+
+        // ボタン
+        yesButton.onClickCallback = () => {
+            battleEvent.battleTry = 1;
+        };
+
+        noButton.onClickCallback = () => {
+            battleEvent.battleTry = 0;
+        };
         
     }
 

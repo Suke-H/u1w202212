@@ -9,11 +9,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] int[] initTeamComp;
     [SerializeField] CustomButton startButtton;
 
-    TeamManager teamManager;
-    MapGenerator mapGenerator;
+    [SerializeField] MapGenerator mapGenerator;
+    [SerializeField] TeamManager teamManager;
+    [SerializeField] EventManager eventManager;
+
+    // TeamManager teamManager;
+    // MapGenerator mapGenerator;
+    // EventManager eventManager;
 
     List<TeamState> CurrentTeamStates = new List<TeamState>();
-    EventManager eventManager;
 
     // チーム割り振り変更シークエンス
     async public UniTask teamAssignSequence(int currentNodeOrder){
@@ -24,10 +28,11 @@ public class GameManager : MonoBehaviour
 
     async void Start()
     {
-        mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
+        // mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
         mapGenerator.generateMap("Stage2");
 
-        teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
+        // teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
+        // eventManager = GameObject.Find("EventManager").GetComponent<EventManager>();
 
         startButtton.onClickCallback = () => {
             startFlag = true;
@@ -36,31 +41,33 @@ public class GameManager : MonoBehaviour
         await EntireLoop();
     }
 
-    void eventSwitch(){
-        eventManager.battleEvent();
+    async UniTask eventSwitch(int[] teamComp){
+        eventManager.eventSwitch(teamComp);
     }
 
     async UniTask EntireLoop(){
 
+        await eventSwitch(new int[]{8, 8});
+
         // while(true){
 
-        for (int i=0; i<5; i++){
+        // for (int i=0; i<5; i++){
 
-            int currentNodeOrder = i; 
+        //     int currentNodeOrder = i; 
 
-            var nextOrders = mapGenerator.searchNextOrders(currentNodeOrder);
-            if (nextOrders.Count >= 2){
-                await teamAssignSequence(currentNodeOrder);
-            }
+        //     var nextOrders = mapGenerator.searchNextOrders(currentNodeOrder);
+        //     if (nextOrders.Count >= 2){
+        //         await teamAssignSequence(currentNodeOrder);
+        //     }
 
-            startFlag = false;
+        //     startFlag = false;
 
             // foreach(TeamState teamState in CurrentTeamStates){
             //     eventSwitch(teamState);
             // }
 
         // }
-        }
+        // }
 
     }
 }

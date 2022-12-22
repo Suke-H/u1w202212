@@ -29,14 +29,10 @@ public class TeamManager : MonoBehaviour
 
         // プラスマイナス
         if (sign == "plus"){
-            // currentTeamState.teamComp[i] -= 1;
-            // nextTeamStates[teamNo].teamComp[i] += 1;
             currentTeamState.minusTeam(i);
             nextTeamStates[teamNo].plusTeam(i);
         }
         else if (sign == "minus"){
-            // currentTeamState.teamComp[i] += 1;
-            // nextTeamStates[teamNo].teamComp[i] -= 1;
             currentTeamState.plusTeam(i);
             nextTeamStates[teamNo].minusTeam(i);
         }
@@ -44,13 +40,6 @@ public class TeamManager : MonoBehaviour
             Debug.Log("+でも-でもない何か");
         }
 
-        // var team = currentTeam.GetComponent<TeamState>();
-        // var member = currentTeamState.getMember(i).GetComponent<MemberState>();
-        // member.updateNumber(currentTeamState.teamComp[i]);
-
-        // Debug.Log($"{currentTeamComp[0]}, {currentTeamComp[1]}");
-        // Debug.Log($"{nextTeamComps[0][0]}, {nextTeamComps[0][1]}");
-        // Debug.Log($"{nextTeamComps[1][0]}, {nextTeamComps[1][1]}");
     }
 
     public void assignTeams(int currentNodeOrder, int[] currentComp){

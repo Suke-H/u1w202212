@@ -2,23 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Cysharp.Threading.Tasks;  
 
 public class BattleEvent : MonoBehaviour
 {
     [SerializeField] GameObject BattleDialog;
-
     [SerializeField] GameObject canvas;//キャンバス
-
     [SerializeField] int PowerPerLevel;
 
+    // -1: 選択待ち, 0: バトル辞退, 1: バトル決定
+    public int battleTry {get; set;} = -1;
+
+    // EventManagerに集約
     int skill = 5;
     int[] enemyLevels = new int[]{3, 4};
 
-    void Start()
+    async public UniTask BattleEventSequence(int[] teamComp)
     {
+        // 初期化
+        battleTry = -1;
+
         // Lv計算
-        int salesLv = calcLv(skill, 4);
-        int engineerLv = calcLv(skill, 4);
+        int salesLv = calcLv(skill, teamComp[0]);
+        int engineerLv = calcLv(skill, teamComp[1]);
 
         // 成功率を計算
         int negotiateRate = calcNegotiateRate(salesLv, enemyLevels[0]);
@@ -38,17 +44,19 @@ public class BattleEvent : MonoBehaviour
         battleDialog.transform.SetParent (canvas.transform, false);
         
         BattleDialog BD = battleDialog.GetComponent<BattleDialog>();
-        BD.initialize(new int[]{4, 4}, false, teamArgs);
+        BD.initialize(teamComp, false, teamArgs);
+
+        // バトル選択待ち
+        await UniTask.WaitUntil(() => (battleTry != -1));
+
+        if (battleTry == 1){
+            Debug.Log("商談開始！！！！！");
+        }
+
+        else {
+            Debug.Log("辞退！！！！！");
+        }
         
-    }
-
-    public void BattleEventSequence(int[] teamComp){
-        // ダイアログ生成
-        GameObject battleDialog = Instantiate(BattleDialog) as GameObject;
-        battleDialog.transform.SetParent (canvas.transform, false);
-
-        // 
-        int engineerLv = calcLv(skill, teamComp[0]);
     }
 
     int calcLv(int skill, int number){
