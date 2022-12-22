@@ -33,10 +33,15 @@ public class GameManager : MonoBehaviour
     }
 
     // チームアサイン待ちシークエンス
-    async public UniTask teamAssignSequence(int currentNodeOrder){
-        teamManager.assignTeams(currentNodeOrder, initTeamComp);
+    async public UniTask teamAssignSequence(TeamInfo current, List<TeamInfo> nexts){
+
+        startFlag = false;
+
+        teamManager.assignTeams(current, nexts);
 
         await UniTask.WaitUntil(() => startFlag);
+
+        teamManager.destroyTeams();
     }
 
     async void Start()
@@ -60,23 +65,24 @@ public class GameManager : MonoBehaviour
 
         // チームの初期化
         // （チーム情報生成まで）
-        var currentInfo = createTeamInfo(0, initTeamComp);
-        currentTeamInfos.Add(currentInfo);
+        var initInfo = createTeamInfo(0, initTeamComp);
+        currentTeamInfos.Add(initInfo);
 
         // ステージ開始
         while (true){ 
 
             // デバッグ
+            Debug.Log("==================");
             Debug.Log("現在チーム");
             foreach(var CI in currentTeamInfos){
                 CI.printInfo();
             }
 
             // 現在チームごとに処理
-            foreach (TeamInfo info in currentTeamInfos){
+            foreach (TeamInfo currentInfo in currentTeamInfos){
 
                 // 次ノードを探索
-                var nextOrders = mapGenerator.searchNextOrders(info.nodeOrder);
+                var nextOrders = mapGenerator.searchNextOrders(currentInfo.nodeOrder);
 
                 // チーム情報を生成
                 // List<TeamInfo> tmpInfos = new List<TeamInfo>();
@@ -87,11 +93,10 @@ public class GameManager : MonoBehaviour
                     nextTeamInfos.Add(nextInfo);
                 }
 
-
                 // 次チームの数が2つ以上なら、チームアサイン処理へ
-                // if (tmpInfos.Count >= 2){
-                //     await teamAssignSequence(info.nodeOrder);
-                // }
+                if (nextTeamInfos.Count >= 2){
+                    await teamAssignSequence(currentInfo, nextTeamInfos);
+                }
 
                 // 次チームごとにイベント開始
                 // foreach(TeamState teamState in CurrentTeamStates){

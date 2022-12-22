@@ -42,51 +42,32 @@ public class TeamManager : MonoBehaviour
 
     }
 
-    public void assignTeams(int currentNodeOrder, int[] currentComp){
-        if (firstFlag){
-            mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
-            firstFlag = false;
-        }
-        
+    public void assignTeams(TeamInfo currentTeamInfo, List<TeamInfo> nextTeamInfos){
+        // 現チーム
 
-        // 現ノードの情報
-        var (pos, nodeType) = mapGenerator.getTeamNodeInfo(currentNodeOrder);
-        
-        TeamInfo currentTeamInfo = new TeamInfo(){teamComp=currentComp, 
-        nodeOrder=currentNodeOrder, nodeType=nodeType, nodePos=pos};
-
-        currentTeamInfo.printInfo();
-        
         // チーム生成
         // (currentTeamObject, currentTeamState) = createTeam(-1, currentComp);
+        (currentTeamObject, currentTeamState) = createTeam(-1, currentTeamInfo.teamComp);
 
         // チーム描画
-        // displayTeam(currentTeamObject, pos);
+        displayTeam(currentTeamObject, currentTeamInfo.nodePos);
 
-        // 現ノードの番号から次ノードの番号を検索
-        List<int> nextOrders = mapGenerator.searchNextOrders(currentNodeOrder);
 
-        // 次ノードにチーム生成
-        List<TeamInfo> nextTeamInfos = new List<TeamInfo>();
-
+        // 次チーム
+        nextTeamObjects = new List<GameObject>(); // リセット
         nextTeamStates = new List<TeamState>(); // リセット
-        for (int i=0; i<nextOrders.Count; i++){
-            (pos, nodeType) = mapGenerator.getTeamNodeInfo(nextOrders[i]);
-
-            TeamInfo nextTeamInfo = new TeamInfo(){teamComp=new int[]{0, 0}, 
-            nodeOrder=nextOrders[i], nodeType=nodeType, nodePos=pos};
-
-            nextTeamInfos.Add(nextTeamInfo);
+        for (int i=0; i<nextTeamInfos.Count; i++){
 
             // チーム生成
-            // var (nextTeamObject, nextTeamState) = createTeam(i, new int[]{0, 0});
+            var (nextTeamObject, nextTeamState) = createTeam(i, new int[]{0, 0});
             // チーム描画
-            // displayTeam(nextTeamObject, pos);
+            displayTeam(nextTeamObject, nextTeamInfos[i].nodePos);
 
             // 追加
-            // nextTeamObjects.Add(nextTeamObject);
-            // nextTeamStates.Add(nextTeamState);
+            nextTeamObjects.Add(nextTeamObject);
+            nextTeamStates.Add(nextTeamState);
         }
+
         
     }
 
@@ -124,6 +105,17 @@ public class TeamManager : MonoBehaviour
         );
 
         team.transform.localPosition = uiLocalPos;
+    }
+
+    public void destroyTeams(){
+        Destroy(currentTeamObject);
+
+        foreach (GameObject team in nextTeamObjects){
+            Destroy(team);
+        }
+
+        nextTeamObjects = new List<GameObject>();
+        nextTeamStates = new List<TeamState>();
     }
 
 }
