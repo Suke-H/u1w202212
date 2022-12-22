@@ -17,7 +17,6 @@ public class EventManager : MonoBehaviour
     }
 
     async public UniTask eventSwitch(int[] teamComp){
-    // public void eventSwitch(int[] teamComp, string nodeType){
 
         battleEvent.BattleEventSequence(teamComp);
 

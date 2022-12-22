@@ -30,10 +30,11 @@ public class MapGenerator : MonoBehaviour
 
     void Start(){
         teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
-        nodeTypeDict.Add(0, "battle");  
-        nodeTypeDict.Add(1, "happening");  
-        nodeTypeDict.Add(2, "money"); 
-        nodeTypeDict.Add(3, "refresh"); 
+        nodeTypeDict.Add(0, "none");  
+        nodeTypeDict.Add(1, "battle");  
+        nodeTypeDict.Add(2, "happening");  
+        nodeTypeDict.Add(3, "money"); 
+        nodeTypeDict.Add(4, "refresh"); 
     }
 
     /* 主関数 */

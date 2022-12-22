@@ -6,20 +6,33 @@ using Cysharp.Threading.Tasks;
 public class GameManager : MonoBehaviour
 {
     public bool startFlag { get; set; } = false;
+
+    // 初期情報
     [SerializeField] int[] initTeamComp;
+
+    // ボタン
     [SerializeField] CustomButton startButtton;
 
+    // マネージャー陣
     [SerializeField] MapGenerator mapGenerator;
     [SerializeField] TeamManager teamManager;
     [SerializeField] EventManager eventManager;
 
-    // TeamManager teamManager;
-    // MapGenerator mapGenerator;
-    // EventManager eventManager;
+    // チーム情報
+    private List<TeamInfo> currentTeamInfos = new List<TeamInfo>();
+    private List<TeamInfo> nextTeamInfos = new List<TeamInfo>();
 
-    List<TeamState> CurrentTeamStates = new List<TeamState>();
+    // チーム情報の生成
+    public TeamInfo createTeamInfo(int order, int[] teamComp){
+        var (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
+        
+        TeamInfo teamInfo = new TeamInfo(){teamComp=teamComp, 
+        nodeOrder=order, nodeType=nodeType, nodePos=pos};
 
-    // チーム割り振り変更シークエンス
+        return teamInfo;
+    }
+
+    // チームアサイン待ちシークエンス
     async public UniTask teamAssignSequence(int currentNodeOrder){
         teamManager.assignTeams(currentNodeOrder, initTeamComp);
 
@@ -28,46 +41,74 @@ public class GameManager : MonoBehaviour
 
     async void Start()
     {
-        // mapGenerator = GameObject.Find("MapGenerator").GetComponent<MapGenerator>();
-        mapGenerator.generateMap("Stage2");
-
-        // teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
-        // eventManager = GameObject.Find("EventManager").GetComponent<EventManager>();
-
+        // 初期設定
         startButtton.onClickCallback = () => {
             startFlag = true;
         };
 
-        await EntireLoop();
+        // ステージ処理開始
+        await StageLoop();
     }
 
     async UniTask eventSwitch(int[] teamComp){
         eventManager.eventSwitch(teamComp);
     }
 
-    async UniTask EntireLoop(){
+    async UniTask StageLoop(){
+        // マップ生成
+        mapGenerator.generateMap("Stage2");
 
-        await eventSwitch(new int[]{8, 8});
+        // チームの初期化
+        // （チーム情報生成まで）
+        var currentInfo = createTeamInfo(0, initTeamComp);
+        currentTeamInfos.Add(currentInfo);
 
-        // while(true){
+        // ステージ開始
+        while (true){ 
 
-        // for (int i=0; i<5; i++){
+            // デバッグ
+            Debug.Log("現在チーム");
+            foreach(var CI in currentTeamInfos){
+                CI.printInfo();
+            }
 
-        //     int currentNodeOrder = i; 
+            // 現在チームごとに処理
+            foreach (TeamInfo info in currentTeamInfos){
 
-        //     var nextOrders = mapGenerator.searchNextOrders(currentNodeOrder);
-        //     if (nextOrders.Count >= 2){
-        //         await teamAssignSequence(currentNodeOrder);
-        //     }
+                // 次ノードを探索
+                var nextOrders = mapGenerator.searchNextOrders(info.nodeOrder);
 
-        //     startFlag = false;
+                // チーム情報を生成
+                // List<TeamInfo> tmpInfos = new List<TeamInfo>();
+                Debug.Log("次チーム");
+                foreach (int order in nextOrders){
+                    var nextInfo = createTeamInfo(order, new int[]{0, 0});
+                    nextInfo.printInfo();
+                    nextTeamInfos.Add(nextInfo);
+                }
 
-            // foreach(TeamState teamState in CurrentTeamStates){
-            //     eventSwitch(teamState);
-            // }
 
-        // }
-        // }
+                // 次チームの数が2つ以上なら、チームアサイン処理へ
+                // if (tmpInfos.Count >= 2){
+                //     await teamAssignSequence(info.nodeOrder);
+                // }
 
+                // 次チームごとにイベント開始
+                // foreach(TeamState teamState in CurrentTeamStates){
+                //     eventSwitch(teamState);
+                //     await eventSwitch(new int[]{8, 8});
+
+                await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
+            }
+
+            // 次チームを現在チームに
+            currentTeamInfos = new List<TeamInfo>(nextTeamInfos);
+            nextTeamInfos = new List<TeamInfo>();
+
+
+
+        }
     }
+
 }

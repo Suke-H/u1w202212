@@ -38,11 +38,6 @@ public class MemberState : MonoBehaviour
         numberText.text = this.number.ToString();
     }
 
-    // public void updateNumber(int number){
-    //     this.number = number;
-    //     numberText.text = this.number.ToString();
-    // }
-
     public void initialize(string color, string type, int number, int teamNo){
         // 色
         if (color == "blue"){
