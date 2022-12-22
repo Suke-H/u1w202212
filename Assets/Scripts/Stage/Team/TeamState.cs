@@ -10,8 +10,6 @@ public class TeamState : MonoBehaviour
     public int[] teamComp { get; set; } = new int[] { 0, 0 };
     public int teamNo { get; set; }
 
-    // public TeamCond teamCond = new TeamCond(teamComp=)
-
     public void initialize(int[] teamComp, int teamNo){
 
         // チーム構成

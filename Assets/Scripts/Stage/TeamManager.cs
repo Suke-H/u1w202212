@@ -9,16 +9,18 @@ public class TeamManager : MonoBehaviour
     [SerializeField] GameObject Team;
     [SerializeField] GameObject canvas;//キャンバス
     
+    // 保存用
+    TeamInfo currentTeamInfo;
     TeamState currentTeamState;
-    public List<TeamState> nextTeamStates {get; set;} = new List<TeamState>();
     GameObject currentTeamObject;
+    
+    public List<TeamInfo> nextTeamInfos {get; set;} = new List<TeamInfo>();
     public List<GameObject> nextTeamObjects {get; set;} = new List<GameObject>();
-
+    public List<TeamState> nextTeamStates {get; set;} = new List<TeamState>();
+    
     ColorPallet pallet = new ColorPallet();
     Camera mainCamera;
-
-    MapGenerator mapGenerator;
-    bool firstFlag = true;
+    
 
     public void buttonFunc(int teamNo, string type, string sign){
         // 役職
@@ -31,10 +33,16 @@ public class TeamManager : MonoBehaviour
         if (sign == "plus"){
             currentTeamState.minusTeam(i);
             nextTeamStates[teamNo].plusTeam(i);
+
+            currentTeamInfo.minusMember(i);
+            nextTeamInfos[teamNo].plusMember(i);
         }
         else if (sign == "minus"){
             currentTeamState.plusTeam(i);
             nextTeamStates[teamNo].minusTeam(i);
+
+            currentTeamInfo.plusMember(i);
+            nextTeamInfos[teamNo].minusMember(i);
         }
         else {
             Debug.Log("+でも-でもない何か");
@@ -42,7 +50,11 @@ public class TeamManager : MonoBehaviour
 
     }
 
-    public void assignTeams(TeamInfo currentTeamInfo, List<TeamInfo> nextTeamInfos){
+    public void assignTeams(TeamInfo currentInfo, List<TeamInfo> nextInfos){
+        // 保存
+        currentTeamInfo = currentInfo;
+        nextTeamInfos = new List<TeamInfo>(nextInfos);
+
         // 現チーム
 
         // チーム生成

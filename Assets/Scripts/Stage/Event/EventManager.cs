@@ -16,9 +16,9 @@ public class EventManager : MonoBehaviour
         battleEvent = this.GetComponent<BattleEvent>();
     }
 
-    async public UniTask eventSwitch(int[] teamComp){
+    async public UniTask eventSwitch(TeamInfo teamInfo){
 
-        battleEvent.BattleEventSequence(teamComp);
+        await battleEvent.BattleEventSequence(teamInfo);
 
     }
 

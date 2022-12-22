@@ -34,14 +34,29 @@ public class GameManager : MonoBehaviour
 
     // チームアサイン待ちシークエンス
     async public UniTask teamAssignSequence(TeamInfo current, List<TeamInfo> nexts){
-
         startFlag = false;
-
         teamManager.assignTeams(current, nexts);
-
-        await UniTask.WaitUntil(() => startFlag);
-
+        // await UniTask.WaitUntil(() => startFlag);
+        await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
         teamManager.destroyTeams();
+    }
+
+    // 無人チームを削除
+    public List<TeamInfo> deleteNonMemberTeam(List<TeamInfo> teams){
+        int i = 0;
+        while (true){
+            if (i >= teams.Count){ break; }
+
+            var comp = teams[i].teamComp;
+            if (comp[0] == 0 & comp[1] == 0){
+                teams.RemoveAt(i);
+                Debug.Log($"{i}削除");
+                continue;
+            }
+            i++;
+        }
+
+        return teams;
     }
 
     async void Start()
@@ -55,13 +70,15 @@ public class GameManager : MonoBehaviour
         await StageLoop();
     }
 
-    async UniTask eventSwitch(int[] teamComp){
-        eventManager.eventSwitch(teamComp);
-    }
+    // async UniTask eventSwitch(int[] teamComp){
+    //     eventManager.eventSwitch(teamComp);
+    // }
 
     async UniTask StageLoop(){
         // マップ生成
         mapGenerator.generateMap("Stage2");
+        int endNodeOrder = mapGenerator.nodeNum - 1;
+        Debug.Log($"終了ノード: {endNodeOrder}");
 
         // チームの初期化
         // （チーム情報生成まで）
@@ -75,7 +92,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("==================");
             Debug.Log("現在チーム");
             foreach(var CI in currentTeamInfos){
-                CI.printInfo();
+                CI.printOrder();
             }
 
             // 現在チームごとに処理
@@ -85,20 +102,31 @@ public class GameManager : MonoBehaviour
                 var nextOrders = mapGenerator.searchNextOrders(currentInfo.nodeOrder);
 
                 // チーム情報を生成
-                // List<TeamInfo> tmpInfos = new List<TeamInfo>();
                 Debug.Log("次チーム");
                 foreach (int order in nextOrders){
                     var nextInfo = createTeamInfo(order, new int[]{0, 0});
-                    nextInfo.printInfo();
+                    nextInfo.printOrder();
                     nextTeamInfos.Add(nextInfo);
                 }
 
                 // 次チームの数が2つ以上なら、チームアサイン処理へ
                 if (nextTeamInfos.Count >= 2){
                     await teamAssignSequence(currentInfo, nextTeamInfos);
-                }
 
-                // 次チームごとにイベント開始
+                    // メンバーが一人もいないチームを削除
+                    var teams = deleteNonMemberTeam(nextTeamInfos);
+                    nextTeamInfos = new List<TeamInfo>(teams);
+
+                    // 次チームごとにイベント！！！！！
+                    foreach (TeamInfo team in nextTeamInfos){
+                        Debug.Log("battle");
+                        team.printOrder();
+                        await eventManager.eventSwitch(team);
+                    }
+
+                } 
+
+                // // 次チームごとにイベント開始
                 // foreach(TeamState teamState in CurrentTeamStates){
                 //     eventSwitch(teamState);
                 //     await eventSwitch(new int[]{8, 8});
@@ -110,6 +138,11 @@ public class GameManager : MonoBehaviour
             // 次チームを現在チームに
             currentTeamInfos = new List<TeamInfo>(nextTeamInfos);
             nextTeamInfos = new List<TeamInfo>();
+
+            if (currentTeamInfos[0].nodeOrder == 8){
+                Debug.Log("ごーーーーーる");
+                break;
+            }
 
 
 

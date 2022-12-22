@@ -17,8 +17,10 @@ public class BattleEvent : MonoBehaviour
     int skill = 5;
     int[] enemyLevels = new int[]{3, 4};
 
-    async public UniTask BattleEventSequence(int[] teamComp)
+    async public UniTask BattleEventSequence(TeamInfo teamInfo)
     {
+        var teamComp = teamInfo.teamComp;
+
         // 初期化
         battleTry = -1;
 
@@ -56,6 +58,8 @@ public class BattleEvent : MonoBehaviour
         else {
             Debug.Log("辞退！！！！！");
         }
+
+        Destroy(battleDialog);
         
     }
 

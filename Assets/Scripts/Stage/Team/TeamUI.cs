@@ -11,8 +11,6 @@ public class TeamUI : MonoBehaviour
     [SerializeField] GameObject[] plusButtons;
     [SerializeField] GameObject[] minusButtons;
 
-    
-
     public int[] teamComp { get; set; } = new int[] { 0, 0 };
     public bool isButtonExist { get; set; }
 

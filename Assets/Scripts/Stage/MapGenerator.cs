@@ -19,7 +19,7 @@ public class MapGenerator : MonoBehaviour
 
     public Vector2 StandardPos {get; protected set;} // 基準タイル（左上(0,0)）の中心座標
 
-    private int nodeNum;
+    public int nodeNum {get; set;}
     private List<Color> colors = new List<Color>();
 
     Dictionary<int, string> nodeTypeDict = new Dictionary<int, string>();
