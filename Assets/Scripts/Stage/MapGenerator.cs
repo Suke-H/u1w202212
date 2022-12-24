@@ -35,6 +35,7 @@ public class MapGenerator : MonoBehaviour
         nodeTypeDict.Add(2, "happening");  
         nodeTypeDict.Add(3, "money"); 
         nodeTypeDict.Add(4, "refresh"); 
+        nodeTypeDict.Add(5, "boss"); 
     }
 
     /* 主関数 */
@@ -78,7 +79,7 @@ public class MapGenerator : MonoBehaviour
 
     public Vector2 GetTeamPostion(int x, int y){
         return new Vector2
-            (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/2);
+            (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/3);
     }
 
     /* マップ系処理 */

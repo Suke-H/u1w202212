@@ -44,7 +44,8 @@ public class BattleDialog : MonoBehaviour
         noButton.onClickCallback = () => {
             battleEvent.battleTry = 0;
         };
-        
     }
+
+
 
 }

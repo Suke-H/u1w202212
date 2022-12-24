@@ -10,7 +10,7 @@ public class MemberState : MonoBehaviour
     [SerializeField] GameObject minusButton;
 
     [SerializeField] Image frame;
-    [SerializeField] TextMeshProUGUI kakeru;
+    // [SerializeField] TextMeshProUGUI kakeru;
 
     public string type { get; set; }
     public int number { get; set; } = 0;
@@ -42,14 +42,14 @@ public class MemberState : MonoBehaviour
         // 色
         if (color == "blue"){
             frame.color = pallet.blue;
-            kakeru.color = pallet.blue;
+            // kakeru.color = pallet.blue;
             typeText.color = pallet.blue;
             numberText.color = pallet.blue;
         }
 
         else if (color == "red"){
             frame.color = pallet.red;
-            kakeru.color = pallet.red;
+            // kakeru.color = pallet.red;
             typeText.color = pallet.red;
             numberText.color = pallet.red;
         }

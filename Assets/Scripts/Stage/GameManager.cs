@@ -101,24 +101,33 @@ public class GameManager : MonoBehaviour
                 // 次ノードを探索
                 var nextOrders = mapGenerator.searchNextOrders(currentInfo.nodeOrder);
 
+                // 次ノードのリストを一旦作成
+                var tmpTeamInfos = new List<TeamInfo>();
+
                 // チーム情報を生成
                 Debug.Log("次チーム");
                 foreach (int order in nextOrders){
                     var nextInfo = createTeamInfo(order, new int[]{0, 0});
                     nextInfo.printOrder();
-                    nextTeamInfos.Add(nextInfo);
+                    // nextTeamInfos.Add(nextInfo);
+                    tmpTeamInfos.Add(nextInfo);
                 }
 
                 // 次チームの数が2つ以上なら、チームアサイン処理へ
-                if (nextTeamInfos.Count >= 2){
-                    await teamAssignSequence(currentInfo, nextTeamInfos);
+                // if (nextTeamInfos.Count >= 2){
+                if (tmpTeamInfos.Count >= 2){
+                    // await teamAssignSequence(currentInfo, nextTeamInfos);
+                    await teamAssignSequence(currentInfo, tmpTeamInfos);
 
                     // メンバーが一人もいないチームを削除
-                    var teams = deleteNonMemberTeam(nextTeamInfos);
-                    nextTeamInfos = new List<TeamInfo>(teams);
+                    // var teams = deleteNonMemberTeam(nextTeamInfos);
+                    // nextTeamInfos = new List<TeamInfo>(teams);
+                    var teams = deleteNonMemberTeam(tmpTeamInfos);
+                    tmpTeamInfos = new List<TeamInfo>(teams);
 
                     // 次チームごとにイベント！！！！！
-                    foreach (TeamInfo team in nextTeamInfos){
+                    // foreach (TeamInfo team in nextTeamInfos){
+                    foreach (TeamInfo team in tmpTeamInfos){
                         Debug.Log("battle");
                         team.printOrder();
                         await eventManager.eventSwitch(team);
@@ -126,10 +135,7 @@ public class GameManager : MonoBehaviour
 
                 } 
 
-                // // 次チームごとにイベント開始
-                // foreach(TeamState teamState in CurrentTeamStates){
-                //     eventSwitch(teamState);
-                //     await eventSwitch(new int[]{8, 8});
+                nextTeamInfos.AddRange(tmpTeamInfos);
 
                 await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 

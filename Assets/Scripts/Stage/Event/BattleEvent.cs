@@ -7,11 +7,15 @@ using Cysharp.Threading.Tasks;
 public class BattleEvent : MonoBehaviour
 {
     [SerializeField] GameObject BattleDialog;
+    [SerializeField] GameObject SuccessDialog;
+    [SerializeField] GameObject FailDialog;
     [SerializeField] GameObject canvas;//キャンバス
     [SerializeField] int PowerPerLevel;
 
     // -1: 選択待ち, 0: バトル辞退, 1: バトル決定
     public int battleTry {get; set;} = -1;
+    // どの報酬を選択したか;
+    public int rewardNo {get; set; }
 
     // EventManagerに集約
     int skill = 5;
@@ -52,14 +56,22 @@ public class BattleEvent : MonoBehaviour
         await UniTask.WaitUntil(() => (battleTry != -1));
 
         if (battleTry == 1){
-            Debug.Log("商談開始！！！！！");
+            // 成功したら、成功ダイアログ表示
+            Destroy(battleDialog);
+            GameObject successDialog = Instantiate(SuccessDialog) as GameObject;
+            successDialog.transform.SetParent (canvas.transform, false);
+
+            SuccessDialog SD = successDialog.GetComponent<SuccessDialog>();
+            SD.initialize();
+
+            // 失敗したら
+
         }
 
         else {
             Debug.Log("辞退！！！！！");
         }
 
-        Destroy(battleDialog);
         
     }
 

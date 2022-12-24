@@ -256,10 +256,11 @@ MonoBehaviour:
   gridSize: 3.5
   nodeBase: {fileID: 822458046050270915, guid: da9609ff788043045ba50e3183fab2fd, type: 3}
   nodeTypes:
-  - {fileID: 6104429735797623115, guid: b9e6838ec92f1c642b5b54234ccc3e3d, type: 3}
+  - {fileID: 4336873967870287012, guid: a3df68717402b094b8d38fa1035eea94, type: 3}
   - {fileID: 1765152479977750297, guid: fd4ae444acde9c049b47f3bd903b3c9b, type: 3}
   - {fileID: 2694886837166648409, guid: e2d86293eb8190c41a7645fb591c2842, type: 3}
   - {fileID: 7094488281753016524, guid: 7a19ed3e38037ce4fa147d46506f5af4, type: 3}
+  - {fileID: 2806926038124074013, guid: a3601030278c1e64fac33d6d9301c2c5, type: 3}
   Team: {fileID: 7406754317000082211, guid: d2c54aecfd55fa24db087ee66cf5bf75, type: 3}
 --- !u!212 &31276405
 SpriteRenderer:
@@ -359,6 +360,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BattleDialog: {fileID: 7257621732621372874, guid: 2a2641c8f861bac4895441c15b0b6eb9, type: 3}
+  SuccessDialog: {fileID: 4309500741511226076, guid: ac793cfbff18bba4ebdd675e1fa9c7b4, type: 3}
+  FailDialog: {fileID: 0}
   canvas: {fileID: 1722787640}
   PowerPerLevel: 10
 --- !u!4 &338531958
