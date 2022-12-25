@@ -361,7 +361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BattleDialog: {fileID: 7257621732621372874, guid: 2a2641c8f861bac4895441c15b0b6eb9, type: 3}
   SuccessDialog: {fileID: 4309500741511226076, guid: ac793cfbff18bba4ebdd675e1fa9c7b4, type: 3}
-  FailDialog: {fileID: 0}
+  FailDialog: {fileID: 3064086204705501288, guid: 3c0801537bab83c41a024a9756df986c, type: 3}
   canvas: {fileID: 1722787640}
   PowerPerLevel: 10
 --- !u!4 &338531958
@@ -483,7 +483,7 @@ RectTransform:
   m_GameObject: {fileID: 457979071}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0000799, y: 1.0000799, z: 1.0000799}
+  m_LocalScale: {x: 1.0000798, y: 1.0000798, z: 1.0000798}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 937813013}
@@ -637,12 +637,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Start
-
-'
+  m_text: "\u884C\u52D5\u958B\u59CB!"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}
+  m_sharedMaterial: {fileID: -6448188821289821790, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -666,8 +664,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

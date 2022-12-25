@@ -22,31 +22,43 @@ public class TeamManager : MonoBehaviour
     Camera mainCamera;
     
 
-    public void buttonFunc(int teamNo, string type, string sign){
+    public bool buttonFunc(int teamNo, string type, string sign){
         // 役職
         int i;
         if (type == "sales"){ i = 0; }
         else if (type == "engineer"){ i = 1; }
         else { Debug.Log("バグ！");  i = -1; }
 
-        // プラスマイナス
+        // プラス
         if (sign == "plus"){
-            currentTeamState.minusTeam(i);
-            nextTeamStates[teamNo].plusTeam(i);
 
-            currentTeamInfo.minusMember(i);
-            nextTeamInfos[teamNo].plusMember(i);
+            // 現チームのメンバーが1人以上いれば、次チームに1人アサイン
+            if (currentTeamInfo.teamComp[i] > 0){
+                currentTeamState.minusTeam(i);
+                nextTeamStates[teamNo].plusTeam(i);
+
+                currentTeamInfo.minusMember(i);
+                nextTeamInfos[teamNo].plusMember(i);
+
+                return true;
+            }
+
         }
         else if (sign == "minus"){
-            currentTeamState.plusTeam(i);
-            nextTeamStates[teamNo].minusTeam(i);
+            // 次チームのメンバーが1人以上いれば、現チームに1人戻す
+            if(nextTeamInfos[teamNo].teamComp[i] > 0){
+                currentTeamState.plusTeam(i);
+                nextTeamStates[teamNo].minusTeam(i);
 
-            currentTeamInfo.plusMember(i);
-            nextTeamInfos[teamNo].minusMember(i);
+                currentTeamInfo.plusMember(i);
+                nextTeamInfos[teamNo].minusMember(i);
+
+                return true;
+            }
+            
         }
-        else {
-            Debug.Log("+でも-でもない何か");
-        }
+
+        return false;
 
     }
 
@@ -55,17 +67,17 @@ public class TeamManager : MonoBehaviour
         currentTeamInfo = currentInfo;
         nextTeamInfos = new List<TeamInfo>(nextInfos);
 
-        // 現チーム
+        // 現チームの処理開始
 
         // チーム生成
-        // (currentTeamObject, currentTeamState) = createTeam(-1, currentComp);
         (currentTeamObject, currentTeamState) = createTeam(-1, currentTeamInfo.teamComp);
 
         // チーム描画
         displayTeam(currentTeamObject, currentTeamInfo.nodePos);
 
 
-        // 次チーム
+        // 次チームの処理開始
+
         nextTeamObjects = new List<GameObject>(); // リセット
         nextTeamStates = new List<TeamState>(); // リセット
         for (int i=0; i<nextTeamInfos.Count; i++){

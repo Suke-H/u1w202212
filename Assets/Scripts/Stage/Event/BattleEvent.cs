@@ -17,62 +17,74 @@ public class BattleEvent : MonoBehaviour
     // どの報酬を選択したか;
     public int rewardNo {get; set; }
 
-    // EventManagerに集約
-    int skill = 5;
+    // スキル力
+    int[] skills = new int[]{5, 5};
+
+    // 自分のレベル
+    int[] playerLevels = new int[]{0, 0};
+
+    // 相手のレベル
     int[] enemyLevels = new int[]{3, 4};
+
+    // 交渉成功率
+    int negotiateSuccessRate;
+    // システム完成度
+    int systemCompleteRate;
 
     async public UniTask BattleEventSequence(TeamInfo teamInfo)
     {
-        var teamComp = teamInfo.teamComp;
-
         // 初期化
         battleTry = -1;
 
         // Lv計算
-        int salesLv = calcLv(skill, teamComp[0]);
-        int engineerLv = calcLv(skill, teamComp[1]);
+        int salesLv = calcLv(skills[0], teamInfo.teamComp[0]);
+        int engineerLv = calcLv(skills[1], teamInfo.teamComp[1]);
 
-        // 成功率を計算
-        int negotiateRate = calcNegotiateRate(salesLv, enemyLevels[0]);
-        int systemRate = calcSystemRate(engineerLv, enemyLevels[1]);
+        playerLevels[0] = salesLv;
+        playerLevels[1] = engineerLv;
 
-        // 文字
-        List<string> teamArgs = new List<string>();
-        teamArgs.Add(salesLv.ToString());
-        teamArgs.Add(engineerLv.ToString());
-        teamArgs.Add(enemyLevels[0].ToString());
-        teamArgs.Add(enemyLevels[1].ToString());
-        teamArgs.Add(negotiateRate.ToString() + "%");
-        teamArgs.Add(systemRate.ToString() + "%");
+        // 成功率を計算(%)
+        negotiateSuccessRate = calcNegotiateRate(playerLevels[0], enemyLevels[0]);
+        systemCompleteRate = calcSystemRate(playerLevels[1], enemyLevels[1]);
 
-        // ダイアログ生成
-        GameObject battleDialog = Instantiate(BattleDialog) as GameObject;
-        battleDialog.transform.SetParent (canvas.transform, false);
-        
-        BattleDialog BD = battleDialog.GetComponent<BattleDialog>();
-        BD.initialize(teamComp, false, teamArgs);
+        // ダイアログを初期化
+        var battleDialog = initializeDialog(teamInfo.teamComp);
 
         // バトル選択待ち
         await UniTask.WaitUntil(() => (battleTry != -1));
 
         if (battleTry == 1){
-            // 成功したら、成功ダイアログ表示
+
+            // 一旦ダイアログ削除
             Destroy(battleDialog);
-            GameObject successDialog = Instantiate(SuccessDialog) as GameObject;
-            successDialog.transform.SetParent (canvas.transform, false);
 
-            SuccessDialog SD = successDialog.GetComponent<SuccessDialog>();
-            SD.initialize();
+            // 判定
+            bool result = battleJudge(negotiateSuccessRate);
 
-            // 失敗したら
+            // 成功ダイアログ
+            if (result){
+                GameObject successDialog = Instantiate(SuccessDialog) as GameObject;
+                successDialog.transform.SetParent (canvas.transform, false);
 
+                SuccessDialog SD = successDialog.GetComponent<SuccessDialog>();
+                SD.initialize();
+            }
+
+            // 失敗ダイアログ
+            else {
+                GameObject failDialog = Instantiate(FailDialog) as GameObject;
+                failDialog.transform.SetParent (canvas.transform, false);
+
+                FailDialog FD = failDialog.GetComponent<FailDialog>();
+                FD.initialize();
+            }
+            
         }
 
         else {
             Debug.Log("辞退！！！！！");
         }
 
-        
     }
 
     int calcLv(int skill, int number){
@@ -87,5 +99,39 @@ public class BattleEvent : MonoBehaviour
     int calcSystemRate(int playerLv, int enemyLv){
         return (playerLv - enemyLv) * 10 + 50;
     }
+
+    public bool battleJudge(int percent){
+        float rate = percent * 0.01f;
+
+        // 0~1のランダム値
+        float value = Random.value;
+
+        Debug.Log($"value: {value}, rate: {rate}");
+
+        if (value <= rate) { return true; }
+        else { return false; }
+    }
+
+    public GameObject initializeDialog(int[] teamComp){
+        // 文字
+        List<string> teamArgs = new List<string>();
+        teamArgs.Add(playerLevels[0].ToString());
+        teamArgs.Add(playerLevels[1].ToString());
+        teamArgs.Add(enemyLevels[0].ToString());
+        teamArgs.Add(enemyLevels[1].ToString());
+        teamArgs.Add(negotiateSuccessRate.ToString() + "%");
+        teamArgs.Add(systemCompleteRate.ToString() + "%");
+
+        // ダイアログ生成
+        GameObject battleDialog = Instantiate(BattleDialog) as GameObject;
+        battleDialog.transform.SetParent (canvas.transform, false);
+        
+        BattleDialog BD = battleDialog.GetComponent<BattleDialog>();
+        BD.initialize(teamComp, false, teamArgs);
+
+        return battleDialog;
+    }
+
+
 
 }

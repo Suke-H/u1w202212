@@ -2411,11 +2411,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamLevelTexts:
-  - {fileID: 7257621731748457654}
   - {fileID: 7257621731300343429}
+  - {fileID: 7257621731748457654}
   enemyLevelTexts:
-  - {fileID: 7257621731247020895}
   - {fileID: 7257621732981305615}
+  - {fileID: 7257621731247020895}
   successRateTexts:
   - {fileID: 7257621732516492193}
   - {fileID: 7257621731803324259}

@@ -10,7 +10,6 @@ public class MemberState : MonoBehaviour
     [SerializeField] GameObject minusButton;
 
     [SerializeField] Image frame;
-    // [SerializeField] TextMeshProUGUI kakeru;
 
     public string type { get; set; }
     public int number { get; set; } = 0;
@@ -42,14 +41,12 @@ public class MemberState : MonoBehaviour
         // 色
         if (color == "blue"){
             frame.color = pallet.blue;
-            // kakeru.color = pallet.blue;
             typeText.color = pallet.blue;
             numberText.color = pallet.blue;
         }
 
         else if (color == "red"){
             frame.color = pallet.red;
-            // kakeru.color = pallet.red;
             typeText.color = pallet.red;
             numberText.color = pallet.red;
         }
@@ -72,17 +69,29 @@ public class MemberState : MonoBehaviour
 
         if (teamNo != -1){
             plusSpec.onClickCallback = () => {
-                number++;
-                numberText.text = number.ToString();
-                teamManager.buttonFunc(this.teamNo, this.type, "plus");
+                // number++;
+                // numberText.text = number.ToString();
+                // teamManager.buttonFunc(this.teamNo, this.type, "plus");
+                
+                bool result = teamManager.buttonFunc(this.teamNo, this.type, "plus");
+                numberText.text = this.number.ToString();
+                // if (result){
+                //     plusMembers();
+                // }
             };
 
             minusSpec.onClickCallback = () => {
-                if (number > 0){ 
-                    number--; 
-                    numberText.text = number.ToString();
-                    teamManager.buttonFunc(this.teamNo, this.type, "minus");
-                }
+                // if (number > 0){ 
+                //     number--; 
+                //     numberText.text = number.ToString();
+                //     teamManager.buttonFunc(this.teamNo, this.type, "minus");
+                // }
+
+                bool result = teamManager.buttonFunc(this.teamNo, this.type, "minus");
+                numberText.text = this.number.ToString();
+                // if (result){
+                //     minusMembers();
+                // }
             };
         }
 

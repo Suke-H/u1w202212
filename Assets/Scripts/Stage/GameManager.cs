@@ -5,13 +5,14 @@ using Cysharp.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
-    public bool startFlag { get; set; } = false;
 
     // 初期情報
     [SerializeField] int[] initTeamComp;
 
-    // ボタン
+    // ボタン、フラグ系
     [SerializeField] CustomButton startButtton;
+    public bool startFlag { get; set; } = false;
+    // public bool isAssignComplete {get; set;} = false;
 
     // マネージャー陣
     [SerializeField] MapGenerator mapGenerator;
@@ -37,7 +38,16 @@ public class GameManager : MonoBehaviour
         startFlag = false;
         teamManager.assignTeams(current, nexts);
         // await UniTask.WaitUntil(() => startFlag);
-        await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
+        while (true){
+            await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
+            if (current.teamComp[0] == 0 & current.teamComp[1] == 0){
+                break;
+            }
+
+        }
+
         teamManager.destroyTeams();
     }
 
@@ -63,16 +73,14 @@ public class GameManager : MonoBehaviour
     {
         // 初期設定
         startButtton.onClickCallback = () => {
-            startFlag = true;
+            // if (condition){
+                startFlag = true;
+            // }
         };
 
         // ステージ処理開始
         await StageLoop();
     }
-
-    // async UniTask eventSwitch(int[] teamComp){
-    //     eventManager.eventSwitch(teamComp);
-    // }
 
     async UniTask StageLoop(){
         // マップ生成
@@ -109,24 +117,18 @@ public class GameManager : MonoBehaviour
                 foreach (int order in nextOrders){
                     var nextInfo = createTeamInfo(order, new int[]{0, 0});
                     nextInfo.printOrder();
-                    // nextTeamInfos.Add(nextInfo);
                     tmpTeamInfos.Add(nextInfo);
                 }
 
                 // 次チームの数が2つ以上なら、チームアサイン処理へ
-                // if (nextTeamInfos.Count >= 2){
                 if (tmpTeamInfos.Count >= 2){
-                    // await teamAssignSequence(currentInfo, nextTeamInfos);
                     await teamAssignSequence(currentInfo, tmpTeamInfos);
 
                     // メンバーが一人もいないチームを削除
-                    // var teams = deleteNonMemberTeam(nextTeamInfos);
-                    // nextTeamInfos = new List<TeamInfo>(teams);
                     var teams = deleteNonMemberTeam(tmpTeamInfos);
                     tmpTeamInfos = new List<TeamInfo>(teams);
 
                     // 次チームごとにイベント！！！！！
-                    // foreach (TeamInfo team in nextTeamInfos){
                     foreach (TeamInfo team in tmpTeamInfos){
                         Debug.Log("battle");
                         team.printOrder();
@@ -134,10 +136,7 @@ public class GameManager : MonoBehaviour
                     }
 
                 } 
-
                 nextTeamInfos.AddRange(tmpTeamInfos);
-
-                await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 
             }
 
