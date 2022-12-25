@@ -55,7 +55,6 @@ public class TeamManager : MonoBehaviour
 
                 return true;
             }
-            
         }
 
         return false;
@@ -96,11 +95,9 @@ public class TeamManager : MonoBehaviour
     }
 
     public (GameObject, TeamState) createTeam(int teamNo, int[] comp){
-
         // チームオブジェクト生成し、場所指定
         GameObject team = Instantiate(Team) as GameObject;
         team.transform.SetParent (canvas.transform, false);
-        // team.transform.localPosition = uiLocalPos;
 
         // チームの初期化
         TeamState teamState = team.GetComponent<TeamState>();

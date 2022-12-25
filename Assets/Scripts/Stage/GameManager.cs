@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cysharp.Threading.Tasks;  
+using Cysharp.Threading.Tasks;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -103,6 +104,40 @@ public class GameManager : MonoBehaviour
                 CI.printOrder();
             }
 
+            // 合流チームがいないか判定
+
+            // 次ノードを格納していく
+            var nextOrderCandidates = new List<int>(){};
+            foreach (TeamInfo currentInfo in currentTeamInfos){
+                // 次ノードを探索
+                var nextOrders = mapGenerator.searchNextOrders(currentInfo.nodeOrder);
+
+                // 分岐があった場合、無視(-1を挿入)
+                if (nextOrders.Count > 1){
+                    nextOrderCandidates.Add(-1);
+                }
+
+                // 分岐がない1本道の場合、ノード番号を追加
+                else {
+                    nextOrderCandidates.Add(nextOrders[0]);
+                }
+            }
+
+            // 一致判定
+            var duplicates = nextOrderCandidates.GroupBy(order => order)
+                            .Where(order => order.Count() > 1)
+                            .Select(group => group.Key).ToList();
+
+            Debug.Log($"合流判定：{string.Join(",", duplicates)}");
+
+            // 合流していた場合、まとめる
+            // (合流するエッジがあれば、必ずその1本だけにする)
+            // NG
+            //     o
+            // o <
+            // o - o
+            //
+
             // 現在チームごとに処理
             foreach (TeamInfo currentInfo in currentTeamInfos){
 
@@ -144,7 +179,7 @@ public class GameManager : MonoBehaviour
             currentTeamInfos = new List<TeamInfo>(nextTeamInfos);
             nextTeamInfos = new List<TeamInfo>();
 
-            if (currentTeamInfos[0].nodeOrder == 8){
+            if (currentTeamInfos[0].nodeOrder == mapGenerator.nodeNum - 1){
                 Debug.Log("ごーーーーーる");
                 break;
             }

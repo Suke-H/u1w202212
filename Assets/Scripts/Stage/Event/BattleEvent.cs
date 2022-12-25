@@ -85,6 +85,9 @@ public class BattleEvent : MonoBehaviour
             Debug.Log("辞退！！！！！");
         }
 
+        Debug.Log("ここいる？");
+        await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
     }
 
     int calcLv(int skill, int number){
