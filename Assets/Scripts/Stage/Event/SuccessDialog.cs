@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Cysharp.Threading.Tasks;
 
 public class SuccessDialog : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class SuccessDialog : MonoBehaviour
     [SerializeField] CustomButton[] selectButtons;
 
     [SerializeField] Reward[] rewards;
+
+    bool endFlag;
 
     public int[] teamComp { get; set; } = new int[] { 0, 0 };
     public bool isButtonExist { get; set; }
@@ -56,7 +59,17 @@ public class SuccessDialog : MonoBehaviour
         for (int j=0; j<selectButtons.Length; j++){
             selectButtons[j].onClickCallback = () => {
                 battleEvent.rewardNo = j;
+                endFlag = true;
             };
         }
+
+        // フラグ
+        endFlag = false;
     }
+
+    async public UniTask buttonWait(){
+        await UniTask.WaitUntil(() => (endFlag));
+    }
+
+    
 }

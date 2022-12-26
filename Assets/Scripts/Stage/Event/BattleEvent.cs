@@ -68,6 +68,9 @@ public class BattleEvent : MonoBehaviour
 
                 SuccessDialog SD = successDialog.GetComponent<SuccessDialog>();
                 SD.initialize();
+
+                await SD.buttonWait();
+                Destroy(successDialog);
             }
 
             // 失敗ダイアログ
@@ -77,16 +80,17 @@ public class BattleEvent : MonoBehaviour
 
                 FailDialog FD = failDialog.GetComponent<FailDialog>();
                 FD.initialize();
+
+                await FD.buttonWait();
+                Destroy(failDialog);
             }
-            
         }
 
         else {
             Debug.Log("辞退！！！！！");
         }
 
-        Debug.Log("ここいる？");
-        await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+        // await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 
     }
 
@@ -134,7 +138,5 @@ public class BattleEvent : MonoBehaviour
 
         return battleDialog;
     }
-
-
 
 }

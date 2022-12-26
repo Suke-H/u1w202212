@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Cysharp.Threading.Tasks;
 
 public class FailDialog : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class FailDialog : MonoBehaviour
     [SerializeField] TextMeshProUGUI flavorText;
 
     [SerializeField] CustomButton nextButton;
+
+    bool endFlag;
 
     public void initialize(){
         // ランダムでフレーバーテキストを選択
@@ -18,7 +21,14 @@ public class FailDialog : MonoBehaviour
 
         // ボタン
         nextButton.onClickCallback = () => {
-            Debug.Log("戻る");
+            endFlag = true;
         };
+
+        // フラグ
+        endFlag = false;
+    }
+
+    async public UniTask buttonWait(){
+        await UniTask.WaitUntil(() => (endFlag));
     }
 }

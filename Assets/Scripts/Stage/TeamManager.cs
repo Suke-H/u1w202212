@@ -90,7 +90,6 @@ public class TeamManager : MonoBehaviour
             nextTeamObjects.Add(nextTeamObject);
             nextTeamStates.Add(nextTeamState);
         }
-
         
     }
 
