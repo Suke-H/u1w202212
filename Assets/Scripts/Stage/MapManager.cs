@@ -5,8 +5,9 @@ using UnityEngine.UI;
 using Cysharp.Threading.Tasks;  
 using System;
 using System.IO;
+using System.Linq;
 
-public class MapGenerator : MonoBehaviour
+public class MapManager : MonoBehaviour
 {
     [SerializeField] private float gridSize;
     [SerializeField] private GameObject nodeBase;
@@ -16,6 +17,10 @@ public class MapGenerator : MonoBehaviour
     public List<List<int>> NodeMap {get; protected set;} = new List<List<int>>(); 
     public List<List<int>> EdgeMap {get; protected set;} = new List<List<int>>();
     public List<List<int>> OrderMap {get; protected set;} = new List<List<int>>();
+
+    [SerializeField] GameObject PIN;
+    [SerializeField] float pinMoveTime;
+    Dictionary<int, GameObject> PinMap = new Dictionary<int, GameObject>();
 
     public Vector2 StandardPos {get; protected set;} // 基準タイル（左上(0,0)）の中心座標
 
@@ -80,6 +85,11 @@ public class MapGenerator : MonoBehaviour
     public Vector2 GetTeamPostion(int x, int y){
         return new Vector2
             (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/3);
+    }
+
+    public Vector2 GetPinPostion(int x, int y){
+        return new Vector2
+            (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/6);
     }
 
     /* マップ系処理 */
@@ -161,7 +171,6 @@ public class MapGenerator : MonoBehaviour
         /* ノードの描画 */
         for(int y=0; y<NodeMap.Count; y++){
             for (int x=0; x<NodeMap[0].Count; x++){
-
                 int type = NodeMap[y][x];
 
                 if (type != -1){
@@ -196,6 +205,72 @@ public class MapGenerator : MonoBehaviour
 
             drawLine(edge[0], edge[1], pos1.y, positions);
         }
+    }
+
+
+
+    /* ピン */
+
+    // ピンの生成
+    // 初期位置、分岐時に増殖
+    // リストに(order, pinオブジェクト)を追加
+
+    public void createPin(int order){
+        // var pin = PinMap[order];
+        var pos = searchNodePos(order);
+        var currentPos = GetActualPostion(pos.x, pos.y);
+
+        GameObject pinObj = Instantiate(PIN) as GameObject;
+        pinObj.transform.parent = this.transform; // Supplyの子にする
+        pinObj.transform.position = currentPos;
+
+        PinMap.Add(order, pinObj);
+    }
+
+    // ピンの削除
+    // 
+
+    // ピンの移動
+    // （次ノードが同じ現ノードがあれば、まとめて処理する）
+    // 
+
+    // async public UniTask movePins(int[] currentOrders, int nextOrder){
+    async public UniTask movePins(int currentOrder, int nextOrder){
+
+        // var currentPositions = new List<Vector2>();
+
+        // // 現在地点
+        // foreach (int order in currentOrders){
+        //     var pos = searchNodePos(order);
+        //     var currentPos = GetActualPostion(pos.x, pos.y);
+        //     currentPositions.Add(currentPos);
+        // }
+
+        var pos = searchNodePos(currentOrder);
+        var currentPos = GetActualPostion(pos.x, pos.y);        
+
+        // 次地点
+        pos = searchNodePos(nextOrder);
+        var nextPos = GetActualPostion(pos.x, pos.y);
+
+        // Pinオブジェクト取り出し
+        GameObject pinObj = PinMap[currentOrder];
+        var pin = pinObj.GetComponent<Pin>();
+
+        // 動かす
+        await pin.move(currentPos, nextPos);
+
+        // await UniTask.WhenAll(  
+        //     pin.move(currentPos, nextPos);
+        //     pin.move(currentPos, nextPos);
+        // );  
+        
+        // マップから削除して、追加
+        PinMap.Remove(currentOrder);
+        // PinMap.Remove(currentOrder[i]);
+
+        PinMap.Add(nextOrder, pinObj);
+
     }
 
 }

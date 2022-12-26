@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 31276404}
   - component: {fileID: 31276403}
   m_Layer: 0
-  m_Name: MapGenerator
+  m_Name: MapManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -262,6 +262,8 @@ MonoBehaviour:
   - {fileID: 7094488281753016524, guid: 7a19ed3e38037ce4fa147d46506f5af4, type: 3}
   - {fileID: 2806926038124074013, guid: a3601030278c1e64fac33d6d9301c2c5, type: 3}
   Team: {fileID: 7406754317000082211, guid: d2c54aecfd55fa24db087ee66cf5bf75, type: 3}
+  PIN: {fileID: 8431152774304743149, guid: 0e85ac1df5d634a468cb950ddb0357fe, type: 3}
+  pinMoveTime: 5
 --- !u!212 &31276405
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -760,7 +762,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initTeamComp: 0400000004000000
   startButtton: {fileID: 457979072}
-  mapGenerator: {fileID: 31276404}
+  mapManager: {fileID: 31276404}
   teamManager: {fileID: 965539795}
   eventManager: {fileID: 338531959}
 --- !u!1 &965539791

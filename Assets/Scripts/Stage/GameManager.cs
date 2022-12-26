@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     // public bool isAssignComplete {get; set;} = false;
 
     // マネージャー陣
-    [SerializeField] MapGenerator mapGenerator;
+    [SerializeField] MapManager mapManager;
     [SerializeField] TeamManager teamManager;
     [SerializeField] EventManager eventManager;
 
@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     // チーム情報の生成
     public TeamInfo createTeamInfo(int order, int[] teamComp){
-        var (pos, nodeType) = mapGenerator.getTeamNodeInfo(order);
+        var (pos, nodeType) = mapManager.getTeamNodeInfo(order);
         
         TeamInfo teamInfo = new TeamInfo(){teamComp=teamComp, 
         nodeOrder=order, nodeType=nodeType, nodePos=pos};
@@ -85,9 +85,12 @@ public class GameManager : MonoBehaviour
 
     async UniTask StageLoop(){
         // マップ生成
-        mapGenerator.generateMap("Stage2");
-        int endNodeOrder = mapGenerator.nodeNum - 1;
+        mapManager.generateMap("Stage2");
+        int endNodeOrder = mapManager.nodeNum - 1;
         Debug.Log($"終了ノード: {endNodeOrder}");
+
+        // マップピン生成
+        mapManager.createPin(0);
 
         // チームの初期化
         // （チーム情報生成まで）
@@ -110,7 +113,7 @@ public class GameManager : MonoBehaviour
             var nextOrderCandidates = new List<int>(){};
             foreach (TeamInfo currentInfo in currentTeamInfos){
                 // 次ノードを探索
-                var nextOrders = mapGenerator.searchNextOrders(currentInfo.nodeOrder);
+                var nextOrders = mapManager.searchNextOrders(currentInfo.nodeOrder);
 
                 // 分岐があった場合、無視(-1を挿入)
                 if (nextOrders.Count > 1){
@@ -138,11 +141,13 @@ public class GameManager : MonoBehaviour
             // o - o
             //
 
+            
+
             // 現在チームごとに処理
             foreach (TeamInfo currentInfo in currentTeamInfos){
 
                 // 次ノードを探索
-                var nextOrders = mapGenerator.searchNextOrders(currentInfo.nodeOrder);
+                var nextOrders = mapManager.searchNextOrders(currentInfo.nodeOrder);
 
                 // 次ノードのリストを一旦作成
                 var tmpTeamInfos = new List<TeamInfo>();
@@ -163,6 +168,10 @@ public class GameManager : MonoBehaviour
                     var teams = deleteNonMemberTeam(tmpTeamInfos);
                     tmpTeamInfos = new List<TeamInfo>(teams);
 
+                    // ピン移動
+                    
+                    await mapManager.movePins(currentInfo.nodeOrder, tmpTeamInfos[0].nodeOrder);
+
                     // 次チームごとにイベント！！！！！
                     foreach (TeamInfo team in tmpTeamInfos){
                         Debug.Log("battle");
@@ -179,12 +188,10 @@ public class GameManager : MonoBehaviour
             currentTeamInfos = new List<TeamInfo>(nextTeamInfos);
             nextTeamInfos = new List<TeamInfo>();
 
-            if (currentTeamInfos[0].nodeOrder == mapGenerator.nodeNum - 1){
+            if (currentTeamInfos[0].nodeOrder == mapManager.nodeNum - 1){
                 Debug.Log("ごーーーーーる");
                 break;
             }
-
-
 
         }
     }
