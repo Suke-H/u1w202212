@@ -18,7 +18,7 @@ public class BattleEvent : MonoBehaviour
     public int rewardNo {get; set; }
 
     // スキル力
-    int[] skills = new int[]{5, 5};
+    int[] skills = new int[]{10, 10};
 
     // 自分のレベル
     int[] playerLevels = new int[]{0, 0};
@@ -59,7 +59,7 @@ public class BattleEvent : MonoBehaviour
             Destroy(battleDialog);
 
             // 判定
-            bool result = battleJudge(negotiateSuccessRate);
+            bool result = battleJudge(negotiateSuccessRate, systemCompleteRate);
 
             // 成功ダイアログ
             if (result){
@@ -104,11 +104,11 @@ public class BattleEvent : MonoBehaviour
     }
 
     int calcSystemRate(int playerLv, int enemyLv){
-        return (playerLv - enemyLv) * 10 + 50;
+        return (playerLv - enemyLv) * 10 + 80;
     }
 
-    public bool battleJudge(int percent){
-        float rate = percent * 0.01f;
+    public bool battleJudge(int percent1, int percent2){
+        float rate = percent1 * percent2 * 0.0001f;
 
         // 0~1のランダム値
         float value = Random.value;

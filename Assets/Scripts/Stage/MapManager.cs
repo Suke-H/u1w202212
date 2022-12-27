@@ -92,6 +92,17 @@ public class MapManager : MonoBehaviour
             (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/6);
     }
 
+    public Vector3[] GetPathPositions(Vector2Int pos0, Vector2Int pos1){
+        int xSpan = Math.Abs(pos1.x - pos0.x);
+        Vector3[] positions = new Vector3[]{
+                        GetActualPostion(pos0.x, pos0.y),
+                        GetActualPostionByFloat(pos0.x+xSpan/3f, pos1.y+0f),
+                        GetActualPostion(pos1.x, pos1.y)
+                    };
+
+        return positions;
+    }
+
     /* マップ系処理 */
 
     public (List<List<int>>, int) orderingNodes()
@@ -195,19 +206,12 @@ public class MapManager : MonoBehaviour
             Vector2Int pos0 = searchNodePos(edge[0]);
             Vector2Int pos1 = searchNodePos(edge[1]);
             int xSpan = Math.Abs(pos1.x - pos0.x);
-            // Debug.Log($"edge: {edge[0]}-{edge[1]}, pos0: ({pos0.x}, {pos0.y}), pos1: ({pos1.x}, {pos1.y})");
 
-            Vector3[] positions = new Vector3[]{
-                        GetActualPostion(pos0.x, pos0.y),
-                        GetActualPostionByFloat(pos0.x+xSpan/3f, pos1.y+0f),
-                        GetActualPostion(pos1.x, pos1.y)
-                    };
+            Vector3[] positions = GetPathPositions(pos0, pos1);
 
             drawLine(edge[0], edge[1], pos1.y, positions);
         }
     }
-
-
 
     /* ピン */
 
@@ -216,7 +220,6 @@ public class MapManager : MonoBehaviour
     // リストに(order, pinオブジェクト)を追加
 
     public void createPin(int order){
-        // var pin = PinMap[order];
         var pos = searchNodePos(order);
         var currentPos = GetActualPostion(pos.x, pos.y);
 
@@ -228,48 +231,30 @@ public class MapManager : MonoBehaviour
     }
 
     // ピンの削除
-    // 
+    public void deletePin(int order){
+        PinMap.Remove(order);
+    }
 
     // ピンの移動
-    // （次ノードが同じ現ノードがあれば、まとめて処理する）
-    // 
-
-    // async public UniTask movePins(int[] currentOrders, int nextOrder){
     async public UniTask movePins(int currentOrder, int nextOrder){
-
-        // var currentPositions = new List<Vector2>();
-
-        // // 現在地点
-        // foreach (int order in currentOrders){
-        //     var pos = searchNodePos(order);
-        //     var currentPos = GetActualPostion(pos.x, pos.y);
-        //     currentPositions.Add(currentPos);
-        // }
-
-        var pos = searchNodePos(currentOrder);
-        var currentPos = GetActualPostion(pos.x, pos.y);        
+        // 現地点
+        var currentPos = searchNodePos(currentOrder);
 
         // 次地点
-        pos = searchNodePos(nextOrder);
-        var nextPos = GetActualPostion(pos.x, pos.y);
+        var nextPos = searchNodePos(nextOrder);
 
         // Pinオブジェクト取り出し
         GameObject pinObj = PinMap[currentOrder];
         var pin = pinObj.GetComponent<Pin>();
 
         // 動かす
-        await pin.move(currentPos, nextPos);
-
-        // await UniTask.WhenAll(  
-        //     pin.move(currentPos, nextPos);
-        //     pin.move(currentPos, nextPos);
-        // );  
+        var path = GetPathPositions(currentPos, nextPos);
+        await pin.move(path);
         
         // マップから削除して、追加
-        PinMap.Remove(currentOrder);
-        // PinMap.Remove(currentOrder[i]);
+        // PinMap.Remove(currentOrder);
 
-        PinMap.Add(nextOrder, pinObj);
+        // PinMap.Add(nextOrder, pinObj);
 
     }
 

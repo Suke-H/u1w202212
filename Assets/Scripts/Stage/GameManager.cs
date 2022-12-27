@@ -42,7 +42,6 @@ public class GameManager : MonoBehaviour
         // 現チームの全ての人員を割り振り出来ていなかったらループ
         while (true){
             startFlag = false;
-            // await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
             await UniTask.WaitUntil(() => startFlag);
 
             if (current.teamComp[0] == 0 & current.teamComp[1] == 0){
@@ -70,6 +69,16 @@ public class GameManager : MonoBehaviour
         }
 
         return teams;
+    }
+
+    public void margeCurrentInfo(){
+        var margeGroup = margeJudge();
+
+        foreach (List<int> group in margeGroup){
+            foreach (int index in group){
+
+            }
+        }
     }
 
     // 現ノードたちがに合流（マージ）するものがあるか判定
@@ -118,14 +127,21 @@ public class GameManager : MonoBehaviour
         foreach (var group in groups)
         {
             Debug.Log($"Value: {group.Key}");
-            // new List
+            // -1なら終了
+            if (group.Key == -1) { break; }
+
+            // 同じ要素のインデックスを格納していく
+            List<int> margeOneGroup = new List<int>();
             foreach (var item in group)
             {
                 Debug.Log($"Index: {item.Index}");
-                // add list
+                margeOneGroup.Add(item.Index);
             }
 
-            // mergegroupにadd
+            // 重複があればマージグループとして追加
+            if (margeOneGroup.Count > 1){
+                margeGroup.Add(margeOneGroup);
+            }
         }
 
         return margeGroup;
@@ -168,15 +184,46 @@ public class GameManager : MonoBehaviour
             }
 
             // 合流チームがいないか判定
+            // var margeGroup = margeJudge();
+            // ListUtils listUtils =new ListUtils();
+            // listUtils.printMap(margeGroup, "marge");
 
-
-            
 
             // 現在チームごとに処理
-            foreach (TeamInfo currentInfo in currentTeamInfos){
+            // foreach (TeamInfo currentInfo in currentTeamInfos){
+            for (int i = 0; i < currentTeamInfos.Count; i++){
 
                 // 次ノードを探索
-                var nextOrders = mapManager.searchNextOrders(currentInfo.nodeOrder);
+                // var nextOrders = mapManager.searchNextOrders(currentInfo.nodeOrder);
+                var nextOrders = mapManager.searchNextOrders(currentTeamInfos[i].nodeOrder);
+
+                // 0. 分岐なし
+                // 1. 分岐なし、合流あり
+                // 2. 分岐あり
+                int pattern;
+
+                // 分岐がなかったら合流判定
+                if (nextOrders.Count == 1){
+                    if (i != currentTeamInfos.Count - 1){
+                        var nearCurrentOrders = mapManager.searchNextOrders(currentTeamInfos[i+1].nodeOrder);
+
+                        // 合流するならiを1つスキップ
+                        if (nextOrders[0] == nearCurrentOrders[0]) { 
+                            pattern = 1;
+                            i++;
+                            }
+                        else { pattern = 0; }
+                    }
+
+                    else { pattern = 0; }
+                }
+
+                // 分岐があったら2
+                else { pattern = 2; }
+
+                // 現在ノードの情報
+                var currentInfo = currentTeamInfos[i];
+                // if (pattern == 1) { var nearCurrentInfo = currentTeamInfos[i-1]; }
 
                 // 次ノードのリストを一旦作成
                 var tmpTeamInfos = new List<TeamInfo>();
@@ -214,7 +261,23 @@ public class GameManager : MonoBehaviour
                     nextTeam.printOrder();
 
                     // ピン移動
-                    await mapManager.movePins(currentInfo.nodeOrder, nextTeam.nodeOrder);
+                    if (pattern == 1){
+                        await UniTask.WhenAll(
+                            mapManager.movePins(currentInfo.nodeOrder, nextTeam.nodeOrder),
+                            mapManager.movePins(currentTeamInfos[i-1].nodeOrder, nextTeam.nodeOrder)
+                        );
+                        mapManager.deletePin(currentInfo.nodeOrder);
+                        mapManager.deletePin(currentTeamInfos[i-1].nodeOrder);
+                        mapManager.createPin(nextTeam.nodeOrder);
+                    }
+
+                    else {
+                        await mapManager.movePins(currentInfo.nodeOrder, nextTeam.nodeOrder);
+
+                        mapManager.deletePin(currentInfo.nodeOrder);
+                        mapManager.createPin(nextTeam.nodeOrder);
+                    }
+
                     // イベント開始
                     await eventManager.eventSwitch(nextTeam);
 
