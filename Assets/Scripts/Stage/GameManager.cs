@@ -282,7 +282,8 @@ public class GameManager : MonoBehaviour
                     await eventManager.eventSwitch(nextTeam);
 
                     // 次ノードが残っていたら現ノードにピンを追加
-                    if (--pinCount >= 0){
+                    if (--pinCount > 0){
+                        Debug.Log($"pinCount: {pinCount}");
                         mapManager.createPin(currentInfo.nodeOrder);
                     }
                 }

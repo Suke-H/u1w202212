@@ -33,6 +33,8 @@ public class MapManager : MonoBehaviour
     ColorPallet pallet = new ColorPallet();
     TeamManager teamManager;
 
+    int pinCount = 1;
+
     void Start(){
         teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
         nodeTypeDict.Add(0, "none");  
@@ -226,13 +228,21 @@ public class MapManager : MonoBehaviour
         GameObject pinObj = Instantiate(PIN) as GameObject;
         pinObj.transform.parent = this.transform; // Supplyの子にする
         pinObj.transform.position = currentPos;
+        pinObj.transform.name = $"pin_{order}_{pinCount++}";
 
         PinMap.Add(order, pinObj);
     }
 
     // ピンの削除
     public void deletePin(int order){
+        // オブジェクト取り出し
+        var pinObj = PinMap[order];
+
+        // リストから削除
         PinMap.Remove(order);
+
+        // オブジェクト自体削除
+        Destroy(pinObj);
     }
 
     // ピンの移動
