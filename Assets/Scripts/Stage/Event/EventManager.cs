@@ -11,6 +11,23 @@ public class EventManager : MonoBehaviour
     int skill = 5;
     int[] enemyLevels = new int[]{3, 4};
 
+    // 報酬
+    public string rewardType {get; set;} = "None";
+
+    public void memberReward(TeamInfo info){
+        if (rewardType == "None") { return; }
+
+        if (rewardType == "Sales") {
+            info.teamComp[0] += 2;
+        }
+
+        else if (rewardType == "Engineer"){
+            info.teamComp[1] += 2;
+        }
+
+        rewardType = "None";
+    }
+
     void Start()
     {
         battleEvent = this.GetComponent<BattleEvent>();

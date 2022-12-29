@@ -20,6 +20,8 @@ public class SuccessDialog : MonoBehaviour
     public int[] teamComp { get; set; } = new int[] { 0, 0 };
     public bool isButtonExist { get; set; }
 
+    EventManager eventManager;
+
     // ランダム選択
     // （0 ~ end-1）からcount個
     public List<int> randomChoice(int end, int count){
@@ -42,6 +44,9 @@ public class SuccessDialog : MonoBehaviour
     }
 
     public void initialize(){
+
+        eventManager = GameObject.Find("EventManager").GetComponent<EventManager>();
+
         // ランダムで3つ選択（重複なし）
         List<int> choices = randomChoice(selectedItems.Length, 3);
 
@@ -60,6 +65,8 @@ public class SuccessDialog : MonoBehaviour
             selectButtons[j].onClickCallback = () => {
                 battleEvent.rewardNo = j;
                 endFlag = true;
+
+                eventManager.rewardType = "Sales";
             };
         }
 

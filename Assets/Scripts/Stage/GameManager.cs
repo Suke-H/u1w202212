@@ -6,14 +6,12 @@ using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
-
     // 初期情報
     [SerializeField] int[] initTeamComp;
 
     // ボタン、フラグ系
     [SerializeField] CustomButton startButtton;
     public bool startFlag { get; set; } = false;
-    // public bool isAssignComplete {get; set;} = false;
 
     // マネージャー陣
     [SerializeField] MapManager mapManager;
@@ -36,7 +34,6 @@ public class GameManager : MonoBehaviour
 
     // チームアサイン待ちシークエンス
     async public UniTask teamAssignSequence(TeamInfo current, List<TeamInfo> nexts){
-        // startFlag = false;
         teamManager.assignTeams(current, nexts);
 
         // 現チームの全ての人員を割り振り出来ていなかったらループ
@@ -47,7 +44,6 @@ public class GameManager : MonoBehaviour
             if (current.teamComp[0] == 0 & current.teamComp[1] == 0){
                 break;
             }
-
         }
 
         teamManager.destroyTeams();
@@ -71,16 +67,6 @@ public class GameManager : MonoBehaviour
         return teams;
     }
 
-    public void margeCurrentInfo(){
-        var margeGroup = margeJudge();
-
-        foreach (List<int> group in margeGroup){
-            foreach (int index in group){
-
-            }
-        }
-    }
-
     // 現ノードたちがに合流（マージ）するものがあるか判定
     // (前提のマップ仕様として、合流するエッジがあれば、必ずその1本だけにする)
     //
@@ -93,59 +79,7 @@ public class GameManager : MonoBehaviour
     //     o
     // o <
     // o - o
-    //
-    public List<List<int>> margeJudge(){
-
-        // 
-        var margeGroup = new List<List<int>>();
-
-        /* 現ノード達からの全ての次ノード候補の番号をリスト化 */
-        var nextOrderCandidates = new List<int>(){};
-        foreach (TeamInfo currentInfo in currentTeamInfos){
-
-            // 次ノードを探索
-            var nextOrders = mapManager.searchNextOrders(currentInfo.nodeOrder);
-
-            // 分岐があった場合、無視(-1を挿入)
-            if (nextOrders.Count > 1){
-                nextOrderCandidates.Add(-1);
-            }
-
-            // 分岐がない1本道の場合、ノード番号を追加
-            else {
-                nextOrderCandidates.Add(nextOrders[0]);
-            }
-        }
-
-        /* /////////////////////////// */
-
-        // GroupByを使用して、要素ごとにグループ化する
-        var groups = nextOrderCandidates.Select((x, i) => new { Value = x, Index = i })
-                                        .GroupBy(x => x.Value);
-
-        // グループを回して、各グループ内の要素とインデックスを出力する
-        foreach (var group in groups)
-        {
-            Debug.Log($"Value: {group.Key}");
-            // -1なら終了
-            if (group.Key == -1) { break; }
-
-            // 同じ要素のインデックスを格納していく
-            List<int> margeOneGroup = new List<int>();
-            foreach (var item in group)
-            {
-                Debug.Log($"Index: {item.Index}");
-                margeOneGroup.Add(item.Index);
-            }
-
-            // 重複があればマージグループとして追加
-            if (margeOneGroup.Count > 1){
-                margeGroup.Add(margeOneGroup);
-            }
-        }
-
-        return margeGroup;
-    }
+    // 
 
     async void Start()
     {
@@ -183,18 +117,10 @@ public class GameManager : MonoBehaviour
                 CI.printOrder();
             }
 
-            // 合流チームがいないか判定
-            // var margeGroup = margeJudge();
-            // ListUtils listUtils =new ListUtils();
-            // listUtils.printMap(margeGroup, "marge");
-
-
             // 現在チームごとに処理
-            // foreach (TeamInfo currentInfo in currentTeamInfos){
             for (int i = 0; i < currentTeamInfos.Count; i++){
 
                 // 次ノードを探索
-                // var nextOrders = mapManager.searchNextOrders(currentInfo.nodeOrder);
                 var nextOrders = mapManager.searchNextOrders(currentTeamInfos[i].nodeOrder);
 
                 // 0. 分岐なし
@@ -223,7 +149,6 @@ public class GameManager : MonoBehaviour
 
                 // 現在ノードの情報
                 var currentInfo = currentTeamInfos[i];
-                // if (pattern == 1) { var nearCurrentInfo = currentTeamInfos[i-1]; }
 
                 // 次ノードのリストを一旦作成
                 var tmpTeamInfos = new List<TeamInfo>();
@@ -236,8 +161,8 @@ public class GameManager : MonoBehaviour
                     tmpTeamInfos.Add(nextInfo);
                 }
 
-                // 次チームの数が2つ以上なら、チームアサイン処理へ
-                if (tmpTeamInfos.Count >= 2){
+                // 分岐ありの場合、チームアサイン処理へ
+                if ( pattern == 2 ){
                     // 現チームの人員を全て次ノードへアサインする
                     await teamAssignSequence(currentInfo, tmpTeamInfos);
 
@@ -246,10 +171,15 @@ public class GameManager : MonoBehaviour
                     tmpTeamInfos = new List<TeamInfo>(teams);
                 }
 
-                // 増えたチーム分、現ノードにマップピン追加
-                // for (int i=0; i<tmpTeamInfos.Count-1; i++){
-                //     mapManager.createPin(currentInfo.nodeOrder);
-                // }
+                else if (pattern == 0) {
+                    tmpTeamInfos[0].teamComp[0] = currentInfo.teamComp[0];
+                    tmpTeamInfos[0].teamComp[1] = currentInfo.teamComp[1];
+                }
+
+                else {
+                    tmpTeamInfos[0].teamComp[0] = currentInfo.teamComp[0] + currentTeamInfos[i-1].teamComp[0];
+                    tmpTeamInfos[0].teamComp[1] = currentInfo.teamComp[1] + currentTeamInfos[i-1].teamComp[1];
+                }
 
                 // 必要なピンの数
                 int pinCount = tmpTeamInfos.Count;
@@ -281,6 +211,9 @@ public class GameManager : MonoBehaviour
                     // イベント開始
                     await eventManager.eventSwitch(nextTeam);
 
+                    // 報酬
+                    eventManager.memberReward(nextTeam);
+
                     // 次ノードが残っていたら現ノードにピンを追加
                     if (--pinCount > 0){
                         Debug.Log($"pinCount: {pinCount}");
@@ -289,7 +222,6 @@ public class GameManager : MonoBehaviour
                 }
 
                 nextTeamInfos.AddRange(tmpTeamInfos);
-
             }
 
             // 次チームを現在チームに
