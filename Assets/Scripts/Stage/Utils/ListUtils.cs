@@ -70,4 +70,10 @@ public class ListUtils
 
         return tmpList;
     }
+
+    // public MapData readMapData(string path){
+    //     MapData mapData = Resources.Load<MapData>(path);
+
+    //     return mapData;
+    // }
 }

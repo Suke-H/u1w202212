@@ -85,9 +85,7 @@ public class GameManager : MonoBehaviour
     {
         // 初期設定
         startButtton.onClickCallback = () => {
-            // if (condition){
-                startFlag = true;
-            // }
+            startFlag = true;
         };
 
         // ステージ処理開始
@@ -209,7 +207,9 @@ public class GameManager : MonoBehaviour
                     }
 
                     // イベント開始
-                    await eventManager.eventSwitch(nextTeam);
+                    var node = mapManager.NodesByOrder[nextTeam.nodeOrder];
+                    var nodeInfo = node.GetComponent<Node>();
+                    await eventManager.eventSwitch(nextTeam, nodeInfo);
 
                     // 報酬
                     eventManager.memberReward(nextTeam);

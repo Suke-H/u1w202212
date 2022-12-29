@@ -33,9 +33,14 @@ public class EventManager : MonoBehaviour
         battleEvent = this.GetComponent<BattleEvent>();
     }
 
-    async public UniTask eventSwitch(TeamInfo teamInfo){
+    async public UniTask eventSwitch(TeamInfo teamInfo, Node nodeInfo){
 
-        await battleEvent.BattleEventSequence(teamInfo);
+        Debug.Log($"event: {nodeInfo.eventType}");
+
+        if (nodeInfo.eventType == "battle"){
+            await battleEvent.BattleEventSequence(teamInfo, nodeInfo);
+
+        }
 
     }
 

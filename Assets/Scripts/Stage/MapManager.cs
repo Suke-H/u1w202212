@@ -18,6 +18,10 @@ public class MapManager : MonoBehaviour
     public List<List<int>> EdgeMap {get; protected set;} = new List<List<int>>();
     public List<List<int>> OrderMap {get; protected set;} = new List<List<int>>();
 
+    public List<GameObject> NodesByOrder {get; set;} = new List<GameObject>();
+
+    MapData mapData;
+
     [SerializeField] GameObject PIN;
     [SerializeField] float pinMoveTime;
     Dictionary<int, GameObject> PinMap = new Dictionary<int, GameObject>();
@@ -57,6 +61,10 @@ public class MapManager : MonoBehaviour
         // マップ生成
         NodeMap = listUtils.read2DListFromCSV($"{stageName}/NodeMap"); // ノード行列
         EdgeMap = listUtils.read2DListFromCSV($"{stageName}/EdgeMap"); // エッジリスト
+
+        // マップ詳細情報
+        mapData = Resources.Load<MapData>($"{stageName}/Map");
+
         (OrderMap, nodeNum) = orderingNodes(); // ノード番号リスト
 
         // マップ描画
@@ -181,26 +189,56 @@ public class MapManager : MonoBehaviour
 
     public void drawMap()
     {
-        /* ノードの描画 */
-        for(int y=0; y<NodeMap.Count; y++){
-            for (int x=0; x<NodeMap[0].Count; x++){
-                int type = NodeMap[y][x];
+        // /* ノードの描画 */
+        // for(int y=0; y<NodeMap.Count; y++){
+        //     for (int x=0; x<NodeMap[0].Count; x++){
+        //         int type = NodeMap[y][x];
 
-                if (type != -1){
-                    GameObject node = Instantiate(nodeBase) as GameObject;
-                    node.transform.parent = this.transform; // Supplyの子にする
-                    node.transform.position = GetActualPostion(x, y);
-                    node.name = $"{y}_{x}";
-                    node.GetComponent<SpriteRenderer>().color = colors[y];
+        //         if (type != -1){
+        //             GameObject node = Instantiate(nodeBase) as GameObject;
+        //             node.transform.parent = this.transform; // Supplyの子にする
+        //             node.transform.position = GetActualPostion(x, y);
+        //             node.name = $"{y}_{x}";
+        //             node.GetComponent<SpriteRenderer>().color = colors[y];
 
-                    if (type != 0){
-                        GameObject nodeType = Instantiate(nodeTypes[type-1]) as GameObject;
-                        nodeType.transform.parent = node.transform; // nodeの子にする
-                        nodeType.transform.position = GetActualPostion(x, y);
-                    }
+        //             if (type != 0){
+        //                 GameObject nodeType = Instantiate(nodeTypes[type-1]) as GameObject;
+        //                 nodeType.transform.parent = node.transform; // nodeの子にする
+        //                 nodeType.transform.position = GetActualPostion(x, y);
+        //             }
 
-                }
+        //         }
+        //     }
+        // }
+
+        for (int order=0; order<nodeNum; order++){
+            var pos = searchNodePos(order);
+            int type = NodeMap[pos.y][pos.x];
+
+            // ノード
+            GameObject node = Instantiate(nodeBase) as GameObject;
+            node.transform.parent = this.transform; // Supplyの子にする
+            node.transform.position = GetActualPostion(pos.x, pos.y);
+            node.name = $"{pos.y}_{pos.x}";
+            node.GetComponent<SpriteRenderer>().color = colors[pos.y];
+
+            // ノードの種類の絵
+            if (type != 0){
+                GameObject nodeType = Instantiate(nodeTypes[type-1]) as GameObject;
+                nodeType.transform.parent = node.transform; // nodeの子にする
+                nodeType.transform.position = GetActualPostion(pos.x, pos.y);
             }
+
+            // ノード情報
+            Node nodeInfo = node.GetComponent<Node>();
+            nodeInfo.initialize(nodeTypeDict[type]);
+            if (nodeTypeDict[type] == "battle"){
+                int ID = Array.IndexOf(mapData.nodeOrders, order);
+                var customer = mapData.customerDatas[ID];
+                nodeInfo.initializeBattle(customer);
+            }
+
+            NodesByOrder.Add(node);
         }
 
         /* エッジの描画 */

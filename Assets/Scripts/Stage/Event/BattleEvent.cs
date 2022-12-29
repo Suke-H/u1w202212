@@ -23,6 +23,10 @@ public class BattleEvent : MonoBehaviour
     // 自分のレベル
     int[] playerLevels = new int[]{0, 0};
 
+    // 敵情報
+    // 敵の名前
+    string enemyName;
+
     // 相手のレベル
     int[] enemyLevels = new int[]{3, 4};
 
@@ -31,7 +35,7 @@ public class BattleEvent : MonoBehaviour
     // システム完成度
     int systemCompleteRate;
 
-    async public UniTask BattleEventSequence(TeamInfo teamInfo)
+    async public UniTask BattleEventSequence(TeamInfo teamInfo, Node nodeInfo)
     {
         // 初期化
         battleTry = -1;
@@ -48,7 +52,7 @@ public class BattleEvent : MonoBehaviour
         systemCompleteRate = calcSystemRate(playerLevels[1], enemyLevels[1]);
 
         // ダイアログを初期化
-        var battleDialog = initializeDialog(teamInfo.teamComp);
+        var battleDialog = initializeDialog(teamInfo.teamComp, nodeInfo.customerData);
 
         // バトル選択待ち
         await UniTask.WaitUntil(() => (battleTry != -1));
@@ -119,15 +123,17 @@ public class BattleEvent : MonoBehaviour
         else { return false; }
     }
 
-    public GameObject initializeDialog(int[] teamComp){
+    public GameObject initializeDialog(int[] teamComp, CustomerData customer){
         // 文字
         List<string> teamArgs = new List<string>();
         teamArgs.Add(playerLevels[0].ToString());
         teamArgs.Add(playerLevels[1].ToString());
-        teamArgs.Add(enemyLevels[0].ToString());
-        teamArgs.Add(enemyLevels[1].ToString());
         teamArgs.Add(negotiateSuccessRate.ToString() + "%");
         teamArgs.Add(systemCompleteRate.ToString() + "%");
+
+        teamArgs.Add(customer.customerName);
+        teamArgs.Add(customer.demandLv[0].ToString());
+        teamArgs.Add(customer.demandLv[1].ToString());
 
         // ダイアログ生成
         GameObject battleDialog = Instantiate(BattleDialog) as GameObject;

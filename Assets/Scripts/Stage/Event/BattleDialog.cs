@@ -6,9 +6,13 @@ using System;
 
 public class BattleDialog : MonoBehaviour
 {
+    // チーム情報
     [SerializeField] TextMeshProUGUI[] teamLevelTexts;
-    [SerializeField] TextMeshProUGUI[] enemyLevelTexts;
     [SerializeField] TextMeshProUGUI[] successRateTexts;
+
+    // 敵情報
+    [SerializeField] TextMeshProUGUI enemyName;
+    [SerializeField] TextMeshProUGUI[] enemyLevelTexts;
 
     [SerializeField] CustomButton yesButton;
     [SerializeField] CustomButton noButton;
@@ -28,11 +32,14 @@ public class BattleDialog : MonoBehaviour
         // 文字描画
         teamLevelTexts[0].text = args[0];
         teamLevelTexts[1].text = args[1];
-        enemyLevelTexts[0].text = args[2];
-        enemyLevelTexts[1].text = args[3];
 
-        successRateTexts[0].text = args[4];
-        successRateTexts[1].text = args[5];
+        successRateTexts[0].text = args[2];
+        successRateTexts[1].text = args[3];
+
+        enemyName.text = args[4];
+
+        enemyLevelTexts[0].text = args[5];
+        enemyLevelTexts[1].text = args[6];
 
         var battleEvent = GameObject.Find("EventManager").GetComponent<BattleEvent>();
 
