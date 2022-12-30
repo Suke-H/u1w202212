@@ -91,18 +91,19 @@ public class SuccessDialog : MonoBehaviour
         Debug.Log($"{rewards.Length}, {rewardTypes.Length}");
 
         // 選択ボタン
+        Debug.Log($"butttons :{selectButtons.Length}");
         for (int j=0; j<selectButtons.Length; j++){
-            selectButtons[j].onClickCallback = () => {
-                // battleEvent.rewardNo = j;
+
+            var index = j;
+
+            selectButtons[index].onClickCallback = () => {
+
+                Debug.Log($"naibu: {index}");
+
                 endFlag = true;
 
-                // eventManager.rewardType = rewardTypes[j];
-                // eventManager.rewardParam = rewardParams[j];
-                Debug.Log($"{choices[0]}, {choices[1]}, {choices[2]}");
-                Debug.Log($"{rewardTypes[0]}, {rewardTypes[1]}, {rewardTypes[2]}");
-                Debug.Log($"{rewardTypes[choices[j]]}, {rewardTypes[1]}, {rewardTypes[2]}");
-                eventManager.rewardType = rewardTypes[choices[j]];
-                eventManager.rewardParam = rewardParams[choices[j]];
+                eventManager.rewardType = rewardTypes[choices[index]];
+                eventManager.rewardParam = rewardParams[choices[index]];
             };
         }
 
