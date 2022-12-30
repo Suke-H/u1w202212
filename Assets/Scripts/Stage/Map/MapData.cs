@@ -7,4 +7,6 @@ using UnityEngine;
 public class MapData : ScriptableObject {
     public int[] nodeOrders;
     public CustomerData[] customerDatas;
+
+    public int[] rewardParams;
 }

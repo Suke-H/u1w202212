@@ -98,6 +98,9 @@ public class GameManager : MonoBehaviour
         int endNodeOrder = mapManager.nodeNum - 1;
         Debug.Log($"終了ノード: {endNodeOrder}");
 
+        // マップ情報
+        MapData mapData = mapManager.mapData;
+
         // マップピン生成
         mapManager.createPin(0);
 
@@ -105,6 +108,9 @@ public class GameManager : MonoBehaviour
         // （チーム情報生成まで）
         var initInfo = createTeamInfo(0, initTeamComp);
         currentTeamInfos.Add(initInfo);
+
+        // 弊社の情報
+        var ourInfo = new OurInfo(){};
 
         // ステージ開始
         while (true){ 
@@ -114,7 +120,7 @@ public class GameManager : MonoBehaviour
             foreach(var CI in currentTeamInfos){
                 CI.printOrder();
             }
-
+            
             // 現在チームごとに処理
             for (int i = 0; i < currentTeamInfos.Count; i++){
 
@@ -209,10 +215,11 @@ public class GameManager : MonoBehaviour
                     // イベント開始
                     var node = mapManager.NodesByOrder[nextTeam.nodeOrder];
                     var nodeInfo = node.GetComponent<Node>();
-                    await eventManager.eventSwitch(nextTeam, nodeInfo);
+                    await eventManager.eventSwitch(nextTeam, nodeInfo, ourInfo, mapData);
 
                     // 報酬
-                    eventManager.memberReward(nextTeam);
+                    eventManager.memberReward(nextTeam, mapData);
+                    eventManager.skillReward(ourInfo, mapData);
 
                     // 次ノードが残っていたら現ノードにピンを追加
                     if (--pinCount > 0){

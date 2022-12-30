@@ -15,44 +15,36 @@ public class BattleEvent : MonoBehaviour
     // -1: 選択待ち, 0: バトル辞退, 1: バトル決定
     public int battleTry {get; set;} = -1;
     // どの報酬を選択したか;
-    public int rewardNo {get; set; }
-
-    // スキル力
-    int[] skills = new int[]{10, 10};
+    // public int rewardNo {get; set; }
 
     // 自分のレベル
     int[] playerLevels = new int[]{0, 0};
-
-    // 敵情報
-    // 敵の名前
-    string enemyName;
-
-    // 相手のレベル
-    int[] enemyLevels = new int[]{3, 4};
 
     // 交渉成功率
     int negotiateSuccessRate;
     // システム完成度
     int systemCompleteRate;
 
-    async public UniTask BattleEventSequence(TeamInfo teamInfo, Node nodeInfo)
+    [SerializeField] MapManager mapManager;
+
+    async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, OurInfo ourInfo, MapData mapData)
     {
         // 初期化
         battleTry = -1;
 
         // Lv計算
-        int salesLv = calcLv(skills[0], teamInfo.teamComp[0]);
-        int engineerLv = calcLv(skills[1], teamInfo.teamComp[1]);
+        int salesLv = calcLv(ourInfo.skills[0], teamInfo.teamComp[0]);
+        int engineerLv = calcLv(ourInfo.skills[1], teamInfo.teamComp[1]);
 
         playerLevels[0] = salesLv;
         playerLevels[1] = engineerLv;
 
         // 成功率を計算(%)
-        negotiateSuccessRate = calcNegotiateRate(playerLevels[0], enemyLevels[0]);
-        systemCompleteRate = calcSystemRate(playerLevels[1], enemyLevels[1]);
+        negotiateSuccessRate = calcNegotiateRate(playerLevels[0], customerData.demandLv[0]);
+        systemCompleteRate = calcSystemRate(playerLevels[1], customerData.demandLv[1]);
 
         // ダイアログを初期化
-        var battleDialog = initializeDialog(teamInfo.teamComp, nodeInfo.customerData);
+        var battleDialog = initializeDialog(teamInfo.teamComp, customerData);
 
         // バトル選択待ち
         await UniTask.WaitUntil(() => (battleTry != -1));
@@ -71,7 +63,8 @@ public class BattleEvent : MonoBehaviour
                 successDialog.transform.SetParent (canvas.transform, false);
 
                 SuccessDialog SD = successDialog.GetComponent<SuccessDialog>();
-                SD.initialize();
+                // MapData mapData = mapManager.mapData;
+                SD.initialize(mapData.rewardParams);
 
                 await SD.buttonWait();
                 Destroy(successDialog);
@@ -94,12 +87,11 @@ public class BattleEvent : MonoBehaviour
             Debug.Log("辞退！！！！！");
         }
 
-        // await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-
     }
 
     int calcLv(int skill, int number){
         int totalPower = skill * number;
+        Debug.Log($"skill: {skill}, power: {totalPower}");
         return totalPower / PowerPerLevel;
     }
 

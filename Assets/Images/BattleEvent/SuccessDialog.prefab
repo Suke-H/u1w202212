@@ -1085,33 +1085,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a9b31e577a2b144d81308dc5d8f9115, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedItems:
+  rewardTypes:
+  - salesMember
+  - engineerMember
+  - salesSkill
+  - engineerSkill
+  rewardItems:
   - {fileID: 21300000, guid: 74d2c433d5c58464a9fb599d8c61c0ba, type: 3}
   - {fileID: 21300000, guid: 74d2c433d5c58464a9fb599d8c61c0ba, type: 3}
-  - {fileID: 21300000, guid: a1d5a31ab36528c4893886931a2d2993, type: 3}
   - {fileID: 21300000, guid: ae01047f40f73bf44968747a9f6d52af, type: 3}
-  - {fileID: 21300000, guid: bee9569d404b64748859a90c5471979e, type: 3}
-  - {fileID: 21300000, guid: c015978fe2d4c504c8df79200ed1d9ec, type: 3}
-  - {fileID: 21300000, guid: 790d2087ce31f624fbbafcfcbdc680a6, type: 3}
-  - {fileID: 21300000, guid: 37d78e3466bd69c4a90e53a3b273d0e6, type: 3}
-  selectedNames:
+  - {fileID: 21300000, guid: 885f366e95692d142b4edfb92ae5c462, type: 3}
+  rewardNames:
   - "\u30B9\u30AB\u30A6\u30C8"
   - "\u30B9\u30AB\u30A6\u30C8"
-  - "\u8CC7\u91D1\u8ABF\u9054"
   - "\u55B6\u696D\u5F37\u5316"
   - "\u30A8\u30F3\u30B8\u30CB\u30A2\n\u5F37\u5316"
-  - "\u30A2\u30A4\u30C6\u30E0\n\u300C\u30CD\u30AF\u30BF\u30A4\u300D"
-  - "\u30A2\u30A4\u30C6\u30E0\n\u300C\u304A\u5B88\u308A\u300D"
-  - "\u30A2\u30A4\u30C6\u30E0\n\u300C\u98A8\u901A\u3057\u300D"
-  selectedDescripts:
-  - "\u55B6\u696D\u304C\n2\u4EBA\u5897\u3048\u308B"
-  - "\u30A8\u30F3\u30B8\u30CB\u30A2\u304C\n2\u4EBA\u5897\u3048\u308B"
-  - "\u8CC7\u91D1\u304C\n100,000\u5186\u5897\u3048\u308B"
-  - "\u55B6\u696D\u306E\u30A2\u30D4\u30FC\u30EB\u529B\u304C\n1\u4EBA\u3042\u305F\u308A5\u5897\u3048\u308B"
-  - "\u30A8\u30F3\u30B8\u30CB\u30A2\u306E\u6280\u8853\u529B\u304C\n1\u4EBA\u3042\u305F\u308A5\u5897\u3048\u308B"
-  - "\u5546\u8AC7\u6210\u529F\u7387\u304C\n20%\u5897\u3048\u308B"
-  - "\u30B7\u30B9\u30C6\u30E0\u5B8C\u6210\u5EA6\u304C\n20%\u5897\u3048\u308B"
-  - "\u30B9\u30AB\u30A6\u30C8\u306E\u4EBA\u6570\u304C\n2\u500D\u306B\u306A\u308B"
   selectButtons:
   - {fileID: 53922672}
   - {fileID: 1660479590}

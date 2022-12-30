@@ -20,7 +20,7 @@ public class MapManager : MonoBehaviour
 
     public List<GameObject> NodesByOrder {get; set;} = new List<GameObject>();
 
-    MapData mapData;
+    public MapData mapData {get; set;}
 
     [SerializeField] GameObject PIN;
     [SerializeField] float pinMoveTime;
@@ -189,28 +189,8 @@ public class MapManager : MonoBehaviour
 
     public void drawMap()
     {
-        // /* ノードの描画 */
-        // for(int y=0; y<NodeMap.Count; y++){
-        //     for (int x=0; x<NodeMap[0].Count; x++){
-        //         int type = NodeMap[y][x];
 
-        //         if (type != -1){
-        //             GameObject node = Instantiate(nodeBase) as GameObject;
-        //             node.transform.parent = this.transform; // Supplyの子にする
-        //             node.transform.position = GetActualPostion(x, y);
-        //             node.name = $"{y}_{x}";
-        //             node.GetComponent<SpriteRenderer>().color = colors[y];
-
-        //             if (type != 0){
-        //                 GameObject nodeType = Instantiate(nodeTypes[type-1]) as GameObject;
-        //                 nodeType.transform.parent = node.transform; // nodeの子にする
-        //                 nodeType.transform.position = GetActualPostion(x, y);
-        //             }
-
-        //         }
-        //     }
-        // }
-
+        /* ノードの描画 */
         for (int order=0; order<nodeNum; order++){
             var pos = searchNodePos(order);
             int type = NodeMap[pos.y][pos.x];
