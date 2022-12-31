@@ -24,7 +24,7 @@ public class BattleDialog : MonoBehaviour
     public int[] teamComp { get; set; } = new int[] { 0, 0 };
     public bool isButtonExist { get; set; }
 
-    public void initialize(int[] teamComp, bool isButtonExist, List<string> args){
+    public void initialize(int[] teamComp, bool isButtonExist, bool lastFlag, List<string> args){
 
         // チームの初期化
         teamUI.initialize(teamComp, isButtonExist); 
@@ -51,9 +51,13 @@ public class BattleDialog : MonoBehaviour
             battleEvent.battleTry = 1;
         };
 
-        noButton.onClickCallback = () => {
-            battleEvent.battleTry = 0;
-        };
+        if (!lastFlag){
+            noButton.onClickCallback = () => {
+                battleEvent.battleTry = 0;
+            };
+        }
+
+        
     }
 
 }

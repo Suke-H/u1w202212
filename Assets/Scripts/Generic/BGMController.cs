@@ -23,76 +23,55 @@ public class BGMController : MonoBehaviour
     }
 
     private static AudioSource BGM;
-    private static string beforeState = "TitleOrStageSelect";
+
+    // 共通
     static public float volume = 0.7f;
+    static public string beforeBGMName = "Init";
 
     // BGM
-    [SerializeField] AudioClip BGMOnTitle;
-    [SerializeField] AudioClip BGMOnStage;
-    // [SerializeField] AudioClip BGMOnPuzzle123;
-    // [SerializeField] AudioClip BGMOnPuzzle4;
+    [SerializeField] AudioClip normalBGM;
+    [SerializeField] AudioClip lastBGM;
 
     void Start()
     {
-        Debug.Log("どう？");
         BGM = this.GetComponent<AudioSource>();
-        BGMChange(BGMOnTitle);
+        BGMChange("Normal");
         BGM.volume = volume;
-
-        //シーンが切り替わった時に呼ばれるメソッドを登録
-        SceneManager.activeSceneChanged += OnActiveSceneChanged;
     }
 
     public float getVolume(){
         return volume;
     }
 
-    // public void playBGM(){
-    //     BGM.Play(); // 再生
-    // }
-    //
-    // public void stopBGM(){
-    //     BGM.Stop(); // 停止
-    // }
-
-    void BGMChange(AudioClip BGMClip){
-        BGM.Stop(); // 停止
-        BGM.clip = BGMClip;
-        BGM.Play(); // 再生
+    public void setVolume(){
+        BGM.volume = volume;
     }
 
-    void OnActiveSceneChanged(Scene beforeScene, Scene afterScene){
-        // シーン状態はTitleOrStage, Puzzle123, Puzzle4の3つ
-        string afterState;
+    public void BGMChange(string bgmName){
+        if (bgmName == "Normal" && beforeBGMName != bgmName){
+            BGM.Stop(); // 停止
+            BGM.clip = normalBGM;
 
-        //  
-        if (afterScene.name == "Stage")
-        {
-            afterState = "Stage";
+            setVolume();
+
+            BGM.Play(); // 再生
+
+            
         }
 
-        else {
-            afterState = "TitleOrStageSelect";
+        else if (bgmName == "Last" && beforeBGMName != bgmName){
+            BGM.Stop(); // 停止
+            BGM.clip = lastBGM;
+
+            setVolume();
+
+            // 音量半減
+            BGM.volume = volume * 0.5f;
+
+            BGM.Play(); // 再生
         }
-
-        Debug.Log($"{beforeState} -> {afterState}");
-
-        ////// BGM遷移開始 //////
-
-        // 前がステージ1,2,3の場合
-        if (beforeState == "Stage"){
-            if (afterState == "TitleOrStage"){ BGMChange(BGMOnTitle); } // タイトルorステージ選択 
-            //else{} // 同じ状態ならBGMはそのまま
-        }
-
-        // 前がタイトルorステージ選択の場合
-        else{
-            if (afterState == "Stage"){ BGMChange(BGMOnStage); } // ステージ
-            //else{} // 同じ状態ならBGMはそのまま
-        }
-
-        // 保存
-        beforeState = afterState;
+        
+        beforeBGMName = bgmName;
     }
 
     public void SoundSliderOnValueChange(float newSliderValue)

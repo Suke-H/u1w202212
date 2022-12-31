@@ -15,24 +15,24 @@ public class EventManager : MonoBehaviour
     public string rewardType {get; set;} = "None";
     public int rewardParam {get; set;} = 0;
 
-    public void memberReward(TeamInfo info, MapData mapData){
-        Debug.Log($"rewardType: {rewardType}");
-
+    public void memberReward(TeamInfo teamInfo, OurInfo ourInfo, MapData mapData){
         if (rewardType == "salesMember") {
-            info.teamComp[0] += mapData.rewardParams[0];
+            teamInfo.teamComp[0] += mapData.rewardParams[0];
+            ourInfo.totalComp[0] += mapData.rewardParams[0];
+
             rewardType = "None";
         }
 
         else if (rewardType == "engineerMember"){
-            info.teamComp[1] += mapData.rewardParams[1];
+            teamInfo.teamComp[1] += mapData.rewardParams[1];
+            ourInfo.totalComp[1] += mapData.rewardParams[1];
+
             rewardType = "None";
         }
 
     }
 
     public void skillReward(OurInfo info, MapData mapData){
-        Debug.Log($"rewardType: {rewardType}");
-
         if (rewardType == "salesSkill") {
             info.skills[0] += mapData.rewardParams[2];
             rewardType = "None";
@@ -50,12 +50,12 @@ public class EventManager : MonoBehaviour
         battleEvent = this.GetComponent<BattleEvent>();
     }
 
-    async public UniTask eventSwitch(TeamInfo teamInfo, Node nodeInfo, OurInfo ourInfo, MapData mapData){
+    async public UniTask eventSwitch(TeamInfo teamInfo, Node nodeInfo, OurInfo ourInfo, MapData mapData, bool lastFlag){
 
         Debug.Log($"event: {nodeInfo.eventType}");
 
         if (nodeInfo.eventType == "battle"){
-            await battleEvent.BattleEventSequence(teamInfo, nodeInfo.customerData, ourInfo, mapData);
+            await battleEvent.BattleEventSequence(teamInfo, nodeInfo.customerData, ourInfo, mapData, lastFlag);
 
         }
 

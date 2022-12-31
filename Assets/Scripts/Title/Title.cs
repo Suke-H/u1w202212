@@ -3,21 +3,20 @@ using UnityEngine.SceneManagement;
 
 public class Title : MonoBehaviour
 {
-    const string FirstLevel = "StageSelect";
+    [SerializeField] private CustomButton tutorialButton;
     [SerializeField] private CustomButton startButton;
-    // [SerializeField] private CustomButton soundButton;
 
     private void Start()
     {
+        tutorialButton.onClickCallback = () => { 
+            StageStore.stageName = "Tutorial";
+            SceneManager.LoadScene("Stage");
+        };
 
         startButton.onClickCallback = () => { 
-            SceneManager.LoadScene(FirstLevel);
+            StageStore.stageName = "Stage-1";
+            SceneManager.LoadScene("Stage");
         };
-        
-        // soundButton.onClickCallback = () =>
-        // {
-        //     SEController.instance.playSE("quote");
-        // };
     }
 
 }

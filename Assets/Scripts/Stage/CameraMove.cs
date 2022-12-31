@@ -12,6 +12,8 @@ public class CameraMove : MonoBehaviour
     [SerializeField] Ease moveEase;
     [SerializeField] CustomButton leftButton;
     [SerializeField] CustomButton rightButton;
+    [SerializeField] CustomButton upButton;
+    [SerializeField] CustomButton downButton;
 
     string moveType = "None";
     
@@ -29,6 +31,14 @@ public class CameraMove : MonoBehaviour
             moveType = "Right";
         };
 
+        upButton.onClickCallback = () => {
+            moveType = "Up";
+        };
+
+        downButton.onClickCallback = () => {
+            moveType = "Down";
+        };
+
         await CameraLoop();
     }
 
@@ -36,8 +46,9 @@ public class CameraMove : MonoBehaviour
         Vector3 direction;
 
         if (type == "Left"){ direction = new Vector3(-2.0f,0.0f,0.0f); }
-        // else if (type == "Right"){ direction = new Vector3(1.0f,0.0f,0.0f); }
-        else { direction = new Vector3(2.0f,0.0f,0.0f); }
+        else if (type == "Right"){ direction = new Vector3(2.0f,0.0f,0.0f); }
+        else if (type == "Up"){ direction = new Vector3(0.0f,2.0f,0.0f); }
+        else { direction = new Vector3(0.0f,-2.0f,0.0f); }
 
         await this.transform.DOBlendableMoveBy(direction, 0.5f)
         .SetEase(moveEase) // アニメーションの種類

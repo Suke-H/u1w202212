@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f5663d2080b53f428fe51d4924c40a7, type: 3}
-  m_Name: Map
+  m_Script: {fileID: 11500000, guid: 15952ab634715be4d9584543d2c1d899, type: 3}
+  m_Name: "\u30DE\u30C3\u30B9\u30EB\u5546\u4E8B"
   m_EditorClassIdentifier: 
-  nodeOrders: 0100000002000000
-  customerDatas:
-  - {fileID: 11400000, guid: 48e34b1e5559a874b91c5817caa35d96, type: 2}
-  - {fileID: 11400000, guid: cd78c45fd9a682746a859de7d4d65d76, type: 2}
+  customerName: "\u30DE\u30C3\u30B9\u30EB\u5546\u4E8B"
+  demandLv: 0300000004000000

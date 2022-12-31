@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,15 +13,22 @@ public class GameManager : MonoBehaviour
     // ボタン、フラグ系
     [SerializeField] CustomButton startButtton;
     public bool startFlag { get; set; } = false;
+    public bool clearFlag {get; set;} = false;
 
     // マネージャー陣
     [SerializeField] MapManager mapManager;
     [SerializeField] TeamManager teamManager;
     [SerializeField] EventManager eventManager;
 
+    // BGM, SE
+    [SerializeField] BGMController BGM;
+
     // チーム情報
     private List<TeamInfo> currentTeamInfos = new List<TeamInfo>();
     private List<TeamInfo> nextTeamInfos = new List<TeamInfo>();
+
+    // ステージ情報
+    private string stageName;
 
     // チーム情報の生成
     public TeamInfo createTeamInfo(int order, int[] teamComp){
@@ -67,8 +75,36 @@ public class GameManager : MonoBehaviour
         return teams;
     }
 
+    //
+    public void stageClear(){
+        // チュートリアルであれば終了
+        if (stageName == "Tutorial"){
+            SceneManager.LoadScene("Title");
+        }
+
+        else {
+            string[] arr = stageName.Split('-');
+            int stageNo = int.Parse(arr[1]);
+
+            if (stageNo == 3){
+                SceneManager.LoadScene("Clear");
+            }
+
+            else {
+                stageNo++;
+                stageName = $"Stage-{stageNo}";
+                StageStore.stageName = stageName;
+
+                SceneManager.LoadScene("Stage");
+            }
+        }
+    }
+
     // 現ノードたちがに合流（マージ）するものがあるか判定
-    // (前提のマップ仕様として、合流するエッジがあれば、必ずその1本だけにする)
+    // 
+    // *前提のマップ仕様
+    // 1.ノードAからノードBへ合流するエッジがあれば、Aからのエッジは必ずその1本だけにする
+    // 2.合流エッジは2本のみ。3本以上にはしない
     //
     // OK
     // o
@@ -83,18 +119,36 @@ public class GameManager : MonoBehaviour
 
     async void Start()
     {
-        // 初期設定
+        // ボタン
         startButtton.onClickCallback = () => {
             startFlag = true;
         };
 
+        // ステージ名取得
+        stageName = StageStore.stageName;
+        Debug.Log($"stagename: {stageName}");
+
+        // マップ生成
+        mapManager.generateMap(stageName);
+
+        // BGM
+        BGM.BGMChange("Normal");
+
         // ステージ処理開始
         await StageLoop();
+
+        // ゲームエンド処理
+        if (clearFlag){
+            
+        }
+
+        else{
+
+        }
     }
 
     async UniTask StageLoop(){
-        // マップ生成
-        mapManager.generateMap("Stage2");
+        // 終了ノードの番号
         int endNodeOrder = mapManager.nodeNum - 1;
         Debug.Log($"終了ノード: {endNodeOrder}");
 
@@ -120,6 +174,7 @@ public class GameManager : MonoBehaviour
             foreach(var CI in currentTeamInfos){
                 CI.printOrder();
             }
+
             
             // 現在チームごとに処理
             for (int i = 0; i < currentTeamInfos.Count; i++){
@@ -212,13 +267,21 @@ public class GameManager : MonoBehaviour
                         mapManager.createPin(nextTeam.nodeOrder);
                     }
 
+                    // 最終ノードの処理
+                    var lastFlag = (nextTeam.nodeOrder == endNodeOrder);
+
+                    // BGM
+                    if (lastFlag){
+                        BGM.BGMChange("Last");
+                    }
+
                     // イベント開始
                     var node = mapManager.NodesByOrder[nextTeam.nodeOrder];
                     var nodeInfo = node.GetComponent<Node>();
-                    await eventManager.eventSwitch(nextTeam, nodeInfo, ourInfo, mapData);
+                    await eventManager.eventSwitch(nextTeam, nodeInfo, ourInfo, mapData, lastFlag);
 
                     // 報酬
-                    eventManager.memberReward(nextTeam, mapData);
+                    eventManager.memberReward(nextTeam, ourInfo, mapData);
                     eventManager.skillReward(ourInfo, mapData);
 
                     // 次ノードが残っていたら現ノードにピンを追加
@@ -235,7 +298,8 @@ public class GameManager : MonoBehaviour
             currentTeamInfos = new List<TeamInfo>(nextTeamInfos);
             nextTeamInfos = new List<TeamInfo>();
 
-            if (currentTeamInfos[0].nodeOrder == mapManager.nodeNum - 1){
+            // 終了ノードにたどり着いたらクリア
+            if (currentTeamInfos[0].nodeOrder == endNodeOrder){
                 Debug.Log("ごーーーーーる");
                 break;
             }

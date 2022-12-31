@@ -27,7 +27,7 @@ public class BattleEvent : MonoBehaviour
 
     [SerializeField] MapManager mapManager;
 
-    async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, OurInfo ourInfo, MapData mapData)
+    async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, OurInfo ourInfo, MapData mapData, bool lastFlag)
     {
         // 初期化
         battleTry = -1;
@@ -44,7 +44,12 @@ public class BattleEvent : MonoBehaviour
         systemCompleteRate = calcSystemRate(playerLevels[1], customerData.demandLv[1]);
 
         // ダイアログを初期化
-        var battleDialog = initializeDialog(teamInfo.teamComp, customerData);
+        var battleDialog = initializeDialog(teamInfo.teamComp, lastFlag, customerData);
+
+        // // 最終ノードだった場合
+        // if (lastFlag){
+
+        // }
 
         // バトル選択待ち
         await UniTask.WaitUntil(() => (battleTry != -1));
@@ -115,7 +120,7 @@ public class BattleEvent : MonoBehaviour
         else { return false; }
     }
 
-    public GameObject initializeDialog(int[] teamComp, CustomerData customer){
+    public GameObject initializeDialog(int[] teamComp, bool lastFlag, CustomerData customer){
         // 文字
         List<string> teamArgs = new List<string>();
         teamArgs.Add(playerLevels[0].ToString());
@@ -132,7 +137,7 @@ public class BattleEvent : MonoBehaviour
         battleDialog.transform.SetParent (canvas.transform, false);
         
         BattleDialog BD = battleDialog.GetComponent<BattleDialog>();
-        BD.initialize(teamComp, false, teamArgs);
+        BD.initialize(teamComp, false, lastFlag, teamArgs);
 
         return battleDialog;
     }
