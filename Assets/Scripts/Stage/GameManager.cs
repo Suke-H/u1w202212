@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
     private List<TeamInfo> currentTeamInfos = new List<TeamInfo>();
     private List<TeamInfo> nextTeamInfos = new List<TeamInfo>();
 
+    // 弊社情報
+    // private OurInfo ourInfo;
+
     // ステージ情報
     private string stageName;
 
@@ -88,6 +91,10 @@ public class GameManager : MonoBehaviour
 
         OverDialog OD = overDialog.GetComponent<OverDialog>();
         OD.initialize();
+
+        // ランキング
+        int totalMemberNum = OurInfo.totalComp[0] + OurInfo.totalComp[1];
+        naichilab.RankingLoader.Instance.SendScoreAndShowRanking (totalMemberNum);
 
         await OD.buttonWait();
         Destroy(overDialog);
@@ -165,6 +172,11 @@ public class GameManager : MonoBehaviour
         // BGM
         BGM.BGMChange("Normal");
 
+        // 最初のみ弊社情報を初期化
+        if (stageName == "Stage-1"){
+            OurInfo.initialize();
+        }
+
         // ステージ処理開始
         await StageLoop();
 
@@ -190,7 +202,7 @@ public class GameManager : MonoBehaviour
         currentTeamInfos.Add(initInfo);
 
         // 弊社の情報
-        var ourInfo = new OurInfo(){};
+        // ourInfo = new OurInfo(){};
 
         // ステージ開始
         while (true){ 
@@ -238,7 +250,7 @@ public class GameManager : MonoBehaviour
                 var tmpTeamInfos = new List<TeamInfo>();
 
                 // チーム情報を生成
-                Debug.Log("次チーム");
+                Debug.Log($"次チーム: {nextOrders.Count}");
                 foreach (int order in nextOrders){
                     var nextInfo = createTeamInfo(order, new int[]{0, 0});
                     nextInfo.printOrder();
@@ -268,11 +280,16 @@ public class GameManager : MonoBehaviour
                 // 必要なピンの数
                 int pinCount = tmpTeamInfos.Count;
 
+                // 行動開始のボタン押し待ち
+                await UniTask.WaitUntil(() => (startFlag));
+
                 // 次チームごとにイベント!
                 foreach (TeamInfo nextTeam in tmpTeamInfos){
                     // ログ
                     Debug.Log("battle");
                     nextTeam.printOrder();
+
+                    Debug.Log("e");
 
                     // ピン移動
                     if (pattern == 1){
@@ -301,11 +318,11 @@ public class GameManager : MonoBehaviour
                     // イベント開始
                     var node = mapManager.NodesByOrder[nextTeam.nodeOrder];
                     var nodeInfo = node.GetComponent<Node>();
-                    await eventManager.eventSwitch(nextTeam, nodeInfo, ourInfo, mapData, lastFlag);
+                    await eventManager.eventSwitch(nextTeam, nodeInfo, mapData, lastFlag);
 
                     // 報酬を反映
-                    eventManager.memberReward(nextTeam, ourInfo, mapData);
-                    eventManager.skillReward(ourInfo, mapData);
+                    eventManager.memberReward(nextTeam, mapData);
+                    eventManager.skillReward(mapData);
 
                     // 最終ノードだったらステージ終了
                     if (lastFlag){ break; }

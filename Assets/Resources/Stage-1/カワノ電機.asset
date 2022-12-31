@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: "\u30AB\u30EF\u30CE\u96FB\u6A5F"
   m_EditorClassIdentifier: 
   customerName: "\u30AB\u30EF\u30CE\u96FB\u6A5F"
-  demandLv: 0f0000000f000000
+  demandLv: 0300000003000000

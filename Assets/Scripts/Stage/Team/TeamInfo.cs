@@ -21,7 +21,6 @@ public class TeamInfo
     }
 
 
-
     public void printInfo(){
         Debug.Log($"teamComp: {teamComp[0]}, {teamComp[1]}");
         // Debug.Log($"teamNo: {teamNo}");

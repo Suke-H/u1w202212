@@ -227,6 +227,8 @@ public class MapManager : MonoBehaviour
             Vector2Int pos1 = searchNodePos(edge[1]);
             int xSpan = Math.Abs(pos1.x - pos0.x);
 
+            Debug.Log($"{edge[0]}: ({pos0.x},{pos0.y}), {edge[1]}: ({pos1.x},{pos1.y})");
+
             Vector3[] positions = GetPathPositions(pos0, pos1);
 
             drawLine(edge[0], edge[1], pos1.y, positions);

@@ -27,16 +27,18 @@ public class BattleEvent : MonoBehaviour
 
     [SerializeField] MapManager mapManager;
 
-    async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, OurInfo ourInfo, MapData mapData, bool lastFlag)
+    // async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, OurInfo ourInfo, MapData mapData, bool lastFlag)
+    async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, MapData mapData, bool lastFlag)
     {
+
 
         // 初期化
         battleTry = -1;
         successFlag = false;
 
         // Lv計算
-        int salesLv = calcLv(ourInfo.skills[0], teamInfo.teamComp[0]);
-        int engineerLv = calcLv(ourInfo.skills[1], teamInfo.teamComp[1]);
+        int salesLv = calcLv(OurInfo.skills[0], teamInfo.teamComp[0]);
+        int engineerLv = calcLv(OurInfo.skills[1], teamInfo.teamComp[1]);
 
         playerLevels[0] = salesLv;
         playerLevels[1] = engineerLv;
@@ -86,12 +88,9 @@ public class BattleEvent : MonoBehaviour
 
                     await FD.buttonWait();
                     Destroy(failDialog);
-
-                    
                 }
 
                 successFlag = false;
-                
             }
         }
 

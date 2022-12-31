@@ -464,7 +464,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BattleDialog: {fileID: 7257621732621372874, guid: 2a2641c8f861bac4895441c15b0b6eb9, type: 3}
   SuccessDialog: {fileID: 4309500741511226076, guid: ac793cfbff18bba4ebdd675e1fa9c7b4, type: 3}
-  FailDialog: {fileID: 3064086204705501288, guid: 3c0801537bab83c41a024a9756df986c, type: 3}
+  FailDialog: {fileID: 3064086204705501288, guid: 22d4fd96833ca2e479caabf6a204c6cf, type: 3}
   canvas: {fileID: 1722787640}
   PowerPerLevel: 10
   mapManager: {fileID: 31276404}

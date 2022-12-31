@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15952ab634715be4d9584543d2c1d899, type: 3}
-  m_Name: "\u30DE\u30C3\u30B9\u30EB\u5546\u4E8B"
+  m_Name: "\u30CB\u30E5\u30FC\u30C8\u30EA\u30CE\u904B\u8F38"
   m_EditorClassIdentifier: 
-  customerName: "\u30DE\u30C3\u30B9\u30EB\u5546\u4E8B"
+  customerName: "\u30CB\u30E5\u30FC\u30C8\u30EA\u30CE\u904B\u8F38"
   demandLv: 0300000004000000

@@ -15,31 +15,31 @@ public class EventManager : MonoBehaviour
     public string rewardType {get; set;} = "None";
     public int rewardParam {get; set;} = 0;
 
-    public void memberReward(TeamInfo teamInfo, OurInfo ourInfo, MapData mapData){
+    public void memberReward(TeamInfo teamInfo, MapData mapData){
         if (rewardType == "salesMember") {
             teamInfo.teamComp[0] += mapData.rewardParams[0];
-            ourInfo.totalComp[0] += mapData.rewardParams[0];
+            OurInfo.totalComp[0] += mapData.rewardParams[0];
 
             rewardType = "None";
         }
 
         else if (rewardType == "engineerMember"){
             teamInfo.teamComp[1] += mapData.rewardParams[1];
-            ourInfo.totalComp[1] += mapData.rewardParams[1];
+            OurInfo.totalComp[1] += mapData.rewardParams[1];
 
             rewardType = "None";
         }
 
     }
 
-    public void skillReward(OurInfo info, MapData mapData){
+    public void skillReward(MapData mapData){
         if (rewardType == "salesSkill") {
-            info.skills[0] += mapData.rewardParams[2];
+            OurInfo.skills[0] += mapData.rewardParams[2];
             rewardType = "None";
         }
 
         else if (rewardType == "engineerSkill"){
-            info.skills[1] += mapData.rewardParams[3];
+            OurInfo.skills[1] += mapData.rewardParams[3];
             rewardType = "None";
         }
 
@@ -50,12 +50,12 @@ public class EventManager : MonoBehaviour
         battleEvent = this.GetComponent<BattleEvent>();
     }
 
-    async public UniTask eventSwitch(TeamInfo teamInfo, Node nodeInfo, OurInfo ourInfo, MapData mapData, bool lastFlag){
+    async public UniTask eventSwitch(TeamInfo teamInfo, Node nodeInfo, MapData mapData, bool lastFlag){
 
         Debug.Log($"event: {nodeInfo.eventType}");
 
         if (nodeInfo.eventType == "battle"){
-            await battleEvent.BattleEventSequence(teamInfo, nodeInfo.customerData, ourInfo, mapData, lastFlag);
+            await battleEvent.BattleEventSequence(teamInfo, nodeInfo.customerData, mapData, lastFlag);
 
         }
 
