@@ -44,7 +44,6 @@ public class BattleDialog : MonoBehaviour
         enemyLevelTexts[1].text = args[6];
 
         var battleEvent = GameObject.Find("EventManager").GetComponent<BattleEvent>();
-        // var battleEvent = this.gameObject.GetComponent<BattleEvent>();
 
         // ボタン
         yesButton.onClickCallback = () => {

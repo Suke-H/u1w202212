@@ -1171,6 +1171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutorialButton: {fileID: 715043927}
   startButton: {fileID: 1015567891}
+  BGM: {fileID: 206585251}
 --- !u!4 &484600218
 Transform:
   m_ObjectHideFlags: 0

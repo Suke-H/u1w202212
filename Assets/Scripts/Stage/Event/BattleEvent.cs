@@ -14,8 +14,8 @@ public class BattleEvent : MonoBehaviour
 
     // -1: 選択待ち, 0: バトル辞退, 1: バトル決定
     public int battleTry {get; set;} = -1;
-    // どの報酬を選択したか;
-    // public int rewardNo {get; set; }
+    // 成功したか
+    public bool successFlag {get; set;} = false;
 
     // 自分のレベル
     int[] playerLevels = new int[]{0, 0};
@@ -29,8 +29,10 @@ public class BattleEvent : MonoBehaviour
 
     async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, OurInfo ourInfo, MapData mapData, bool lastFlag)
     {
+
         // 初期化
         battleTry = -1;
+        successFlag = false;
 
         // Lv計算
         int salesLv = calcLv(ourInfo.skills[0], teamInfo.teamComp[0]);
@@ -46,50 +48,56 @@ public class BattleEvent : MonoBehaviour
         // ダイアログを初期化
         var battleDialog = initializeDialog(teamInfo.teamComp, lastFlag, customerData);
 
-        // // 最終ノードだった場合
-        // if (lastFlag){
-
-        // }
-
         // バトル選択待ち
         await UniTask.WaitUntil(() => (battleTry != -1));
 
+        /* 商談開始 */
         if (battleTry == 1){
 
             // 一旦ダイアログ削除
             Destroy(battleDialog);
 
-            // 判定
+            // 成功判定
             bool result = battleJudge(negotiateSuccessRate, systemCompleteRate);
 
-            // 成功ダイアログ
+            /* 成功 */
             if (result){
                 GameObject successDialog = Instantiate(SuccessDialog) as GameObject;
                 successDialog.transform.SetParent (canvas.transform, false);
 
                 SuccessDialog SD = successDialog.GetComponent<SuccessDialog>();
-                // MapData mapData = mapManager.mapData;
                 SD.initialize(mapData.rewardParams);
 
                 await SD.buttonWait();
                 Destroy(successDialog);
+
+                successFlag = true;
             }
 
-            // 失敗ダイアログ
+            /* 失敗 */
             else {
-                GameObject failDialog = Instantiate(FailDialog) as GameObject;
-                failDialog.transform.SetParent (canvas.transform, false);
+                // 最終ノードならこの処理を飛ばす
+                if (!lastFlag){
+                    GameObject failDialog = Instantiate(FailDialog) as GameObject;
+                    failDialog.transform.SetParent (canvas.transform, false);
 
-                FailDialog FD = failDialog.GetComponent<FailDialog>();
-                FD.initialize();
+                    FailDialog FD = failDialog.GetComponent<FailDialog>();
+                    FD.initialize();
 
-                await FD.buttonWait();
-                Destroy(failDialog);
+                    await FD.buttonWait();
+                    Destroy(failDialog);
+
+                    
+                }
+
+                successFlag = false;
+                
             }
         }
 
+        /* 商談辞退 */
         else {
-            Debug.Log("辞退！！！！！");
+            successFlag = false;
         }
 
     }

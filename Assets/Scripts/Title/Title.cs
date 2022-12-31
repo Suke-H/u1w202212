@@ -6,8 +6,12 @@ public class Title : MonoBehaviour
     [SerializeField] private CustomButton tutorialButton;
     [SerializeField] private CustomButton startButton;
 
+    [SerializeField] BGMController BGM;
+
     private void Start()
     {
+        BGM.BGMChange("Normal");
+
         tutorialButton.onClickCallback = () => { 
             StageStore.stageName = "Tutorial";
             SceneManager.LoadScene("Stage");

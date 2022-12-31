@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class StageStore
 {
-    public static string stageName {get; set;} = "Tutorial";
+    public static string stageName {get; set;} = "Stage-1";
     
 }

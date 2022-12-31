@@ -55,8 +55,6 @@ public class BGMController : MonoBehaviour
             setVolume();
 
             BGM.Play(); // 再生
-
-            
         }
 
         else if (bgmName == "Last" && beforeBGMName != bgmName){
@@ -65,8 +63,8 @@ public class BGMController : MonoBehaviour
 
             setVolume();
 
-            // 音量半減
-            BGM.volume = volume * 0.5f;
+            // 音量下げる
+            BGM.volume = volume * 0.35f;
 
             BGM.Play(); // 再生
         }

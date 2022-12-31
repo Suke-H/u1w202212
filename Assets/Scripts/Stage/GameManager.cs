@@ -19,9 +19,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] MapManager mapManager;
     [SerializeField] TeamManager teamManager;
     [SerializeField] EventManager eventManager;
+    [SerializeField] BattleEvent battleEvent;
 
     // BGM, SE
     [SerializeField] BGMController BGM;
+
+    // ダイアログ
+    [SerializeField] GameObject ClearDialog;
+    [SerializeField] GameObject OverDialog;
+    [SerializeField] GameObject canvas;//キャンバス
 
     // チーム情報
     private List<TeamInfo> currentTeamInfos = new List<TeamInfo>();
@@ -75,21 +81,46 @@ public class GameManager : MonoBehaviour
         return teams;
     }
 
+    async public UniTask stageOver(){
+        // ダイアログ表示
+        GameObject overDialog = Instantiate(OverDialog) as GameObject;
+        overDialog.transform.SetParent (canvas.transform, false);
+
+        OverDialog OD = overDialog.GetComponent<OverDialog>();
+        OD.initialize();
+
+        await OD.buttonWait();
+        Destroy(overDialog);
+    }
+
     //
-    public void stageClear(){
+    async public UniTask stageClear(){
+        // ダイアログ表示
+        // GameObject clearDialog = Instantiate(ClearDialog) as GameObject;
+        // clearDialog.transform.SetParent (canvas.transform, false);
+
+        // ClearDialog CD = clearDialog.GetComponent<ClearDialog>();
+        // CD.initialize();
+
+        // await CD.buttonWait();
+        // Destroy(clearDialog);
+
         // チュートリアルであれば終了
         if (stageName == "Tutorial"){
             SceneManager.LoadScene("Title");
         }
 
+        // 通常のゲーム
         else {
             string[] arr = stageName.Split('-');
             int stageNo = int.Parse(arr[1]);
 
+            // ラストステージなら終了
             if (stageNo == 3){
                 SceneManager.LoadScene("Clear");
             }
 
+            // 次のステージへ
             else {
                 stageNo++;
                 stageName = $"Stage-{stageNo}";
@@ -138,13 +169,8 @@ public class GameManager : MonoBehaviour
         await StageLoop();
 
         // ゲームエンド処理
-        if (clearFlag){
-            
-        }
-
-        else{
-
-        }
+        if (battleEvent.successFlag){ await stageClear(); }
+        else { await stageOver(); }
     }
 
     async UniTask StageLoop(){
@@ -175,7 +201,6 @@ public class GameManager : MonoBehaviour
                 CI.printOrder();
             }
 
-            
             // 現在チームごとに処理
             for (int i = 0; i < currentTeamInfos.Count; i++){
 
@@ -269,10 +294,8 @@ public class GameManager : MonoBehaviour
 
                     // 最終ノードの処理
                     var lastFlag = (nextTeam.nodeOrder == endNodeOrder);
-
-                    // BGM
                     if (lastFlag){
-                        BGM.BGMChange("Last");
+                        BGM.BGMChange("Last"); // 最終ノードのBGM
                     }
 
                     // イベント開始
@@ -280,9 +303,12 @@ public class GameManager : MonoBehaviour
                     var nodeInfo = node.GetComponent<Node>();
                     await eventManager.eventSwitch(nextTeam, nodeInfo, ourInfo, mapData, lastFlag);
 
-                    // 報酬
+                    // 報酬を反映
                     eventManager.memberReward(nextTeam, ourInfo, mapData);
                     eventManager.skillReward(ourInfo, mapData);
+
+                    // 最終ノードだったらステージ終了
+                    if (lastFlag){ break; }
 
                     // 次ノードが残っていたら現ノードにピンを追加
                     if (--pinCount > 0){

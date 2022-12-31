@@ -10,10 +10,6 @@ public class SuccessDialog : MonoBehaviour
     [SerializeField] string[] rewardTypes;
     [SerializeField] Sprite[] rewardItems;
     [SerializeField, TextArea(1,2)] string[] rewardNames;
-    // [SerializeField, TextArea(1,2)] string[] rewardDescripts;
-
-    // public List<int> rewardParams {get; set;} = new List<int>();
-    // public List<string> rewardDescripts {get; set;} = new List<string>();
 
     [SerializeField] CustomButton[] selectButtons;
     [SerializeField] Reward[] rewards;
@@ -22,9 +18,6 @@ public class SuccessDialog : MonoBehaviour
 
     public int[] teamComp { get; set; } = new int[] { 0, 0 };
     public bool isButtonExist { get; set; }
-
-    // [SerializeField] EventManager eventManager;
-    // [SerializeField] BattleEvent battleEvent;
 
     EventManager eventManager;
     BattleEvent battleEvent;
