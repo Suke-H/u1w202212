@@ -12,12 +12,16 @@ public class TeamInfo
     public string nodeType; // 種類
     public Vector2 nodePos; // 座標
 
-    public void plusMember(int i){
-        teamComp[i] += 1;
+    public void plusMember(int i, int value=1){
+        teamComp[i] += value;
     }
 
-    public void minusMember(int i){
-        teamComp[i] -= 1;
+    public void minusMember(int i, int value=1){
+        teamComp[i] -= value;
+    }
+
+    public void setMember(int i, int value){
+        teamComp[i] = value;
     }
 
 

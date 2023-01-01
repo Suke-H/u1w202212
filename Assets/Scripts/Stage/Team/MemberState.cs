@@ -25,21 +25,25 @@ public class MemberState : MonoBehaviour
     TeamManager teamManager;
 
     void Start(){
-        teamManager =  GameObject.Find("TeamManager").GetComponent<TeamManager>();
+        teamManager = GameObject.Find("TeamManager").GetComponent<TeamManager>();
     }
 
-    public void plusMembers(){
-        this.number++;
+    public void plusMembers(int value=1){
+        this.number += value;
         numberText.text = this.number.ToString();
     }
 
-    public void minusMembers(){
-        this.number--;
+    public void minusMembers(int value=1){
+        this.number -= value;
+        numberText.text = this.number.ToString();
+    }
+
+    public void setMembers(int value){
+        this.number = value;
         numberText.text = this.number.ToString();
     }
 
     public void setLv(int level){
-        // LvText.text = $"Lv {level}";
         LvText.text = $"{level}";
     }
 

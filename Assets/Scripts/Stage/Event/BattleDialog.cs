@@ -19,7 +19,7 @@ public class BattleDialog : MonoBehaviour
 
     [SerializeField] TeamUI teamUI;
 
-    public bool isActive {get; set;} = false;
+    public bool isActive {get; set;} = true;
 
     public int[] teamComp { get; set; } = new int[] { 0, 0 };
     public bool isButtonExist { get; set; }

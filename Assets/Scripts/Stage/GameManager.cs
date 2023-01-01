@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
     // ボタン、フラグ系
     [SerializeField] CustomButton startButtton;
     public bool startFlag { get; set; } = false;
-    public bool clearFlag {get; set;} = false;
+    public bool clearFlag { get; set;} = false;
+    public bool whistleFlag { get; set;} = false;
 
     // アクティブ切替したいボタン
     [SerializeField] CustomButton[] Buttons;
@@ -57,11 +58,18 @@ public class GameManager : MonoBehaviour
     async public UniTask teamAssignSequence(TeamInfo current, List<TeamInfo> nexts){
         teamManager.assignTeams(current, nexts);
 
-        // 現チームの全ての人員を割り振り出来ていなかったらループ
+        // 入力待ち
         while (true){
             startFlag = false;
-            await UniTask.WaitUntil(() => startFlag);
+            await UniTask.WaitUntil(() => startFlag || Input.GetKeyDown(KeyCode.A));
 
+            if (!startFlag){
+                // teamManager.whistle(0);
+                teamManager.balance();
+                continue;
+            }
+
+            // 現チームの全ての人員を割り振り出来ていなかったらループ
             if (current.teamComp[0] == 0 & current.teamComp[1] == 0){
                 break;
             }
@@ -383,12 +391,12 @@ public class GameManager : MonoBehaviour
                     eventManager.memberReward(nextTeam, mapData);
                     eventManager.skillReward(mapData);
 
+                    // チュートリアル（ルールその2-2）
+                    await tutorial.TutoRule2_2();
+
                     // スキル表示
                     levelTexts[0].text = $"{OurInfo.skills[0]}";
                     levelTexts[1].text = $"{OurInfo.skills[1]}";
-
-                    // チュートリアル（ルールその2-2）
-                    await tutorial.TutoRule2_2();
 
                     // 最終ノードだったらステージ終了
                     if (lastFlag){ break; }

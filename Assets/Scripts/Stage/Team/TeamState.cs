@@ -26,14 +26,22 @@ public class TeamState : MonoBehaviour
         engineerMember.initialize("blue", "engineer", teamComp[1], teamNo);
     }
 
-    public void plusTeam(int No){
+    public void plusTeam(int No, int value=1){
         MemberState ms = Members[No].GetComponent<MemberState>();
-        ms.plusMembers();
+        ms.plusMembers(value);
+        teamComp[No] += value;
     }
 
-    public void minusTeam(int No){
+    public void minusTeam(int No, int value=1){
         MemberState ms = Members[No].GetComponent<MemberState>();
-        ms.minusMembers();
+        ms.minusMembers(value);
+        teamComp[No] -= value;
+    }
+
+    public void setTeamMember(int No, int value){
+        MemberState ms = Members[No].GetComponent<MemberState>();
+        ms.setMembers(value);
+        teamComp[No] = value;
     }
 
     public void setLv(int No, int level){
