@@ -8,6 +8,7 @@ public class TeamManager : MonoBehaviour
 {
     [SerializeField] GameObject Team;
     [SerializeField] GameObject NodePopup;
+    // [SerializeField] GameObject whistle;
     [SerializeField] GameObject canvas;//キャンバス
     
     // 保存用
@@ -24,8 +25,25 @@ public class TeamManager : MonoBehaviour
     
     ColorPallet pallet = new ColorPallet();
     Camera mainCamera;
-    
 
+    public void OutOfFocus(){
+        if (currentTeamObject != null){
+            currentTeamObject.SetActive(false);
+        }   
+        foreach (GameObject team in nextTeamObjects){
+            team.SetActive(false);
+        }
+    }
+
+    public void InFocus(){
+        if (currentTeamObject != null){
+            currentTeamObject.SetActive(true);
+        }   
+        foreach (GameObject team in nextTeamObjects){
+            team.SetActive(true);
+        }
+    }
+    
     public bool buttonFunc(int teamNo, string type, string sign){
         // 役職
         int i;
@@ -65,7 +83,26 @@ public class TeamManager : MonoBehaviour
 
     }
 
+    public void assignCurrentTeams(TeamInfo currentInfo){
+        if (currentTeamObject != null){
+            Destroy(currentTeamObject);
+        }
+
+        // 保存
+        currentTeamInfo = currentInfo;
+
+        // チーム生成
+        (currentTeamObject, currentTeamState) = createTeam(-1, currentTeamInfo.teamComp);
+
+        // チーム描画
+        displayTeam(currentTeamObject, currentTeamInfo.nodePos);
+    }
+
     public void assignTeams(TeamInfo currentInfo, List<TeamInfo> nextInfos){
+        if (currentTeamObject != null){
+            Destroy(currentTeamObject);
+        }
+
         // 保存
         currentTeamInfo = currentInfo;
         nextTeamInfos = new List<TeamInfo>(nextInfos);
@@ -78,13 +115,12 @@ public class TeamManager : MonoBehaviour
         // チーム描画
         displayTeam(currentTeamObject, currentTeamInfo.nodePos);
 
-
         // 次チームの処理開始
 
         nextTeamObjects = new List<GameObject>(); // リセット
         nextTeamStates = new List<TeamState>(); // リセット
-        for (int i=0; i<nextTeamInfos.Count; i++){
 
+        for (int i=0; i<nextTeamInfos.Count; i++){
             // チーム生成
             var (nextTeamObject, nextTeamState) = createTeam(i, new int[]{0, 0});
             // チーム描画
@@ -94,7 +130,7 @@ public class TeamManager : MonoBehaviour
             nextTeamObjects.Add(nextTeamObject);
             nextTeamStates.Add(nextTeamState);
         }
-        
+
     }
 
     public (GameObject, TeamState) createTeam(int teamNo, int[] comp){

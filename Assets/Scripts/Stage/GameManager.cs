@@ -224,10 +224,10 @@ public class GameManager : MonoBehaviour
 
                 // カメラ移動
                 var currentPos = mapManager.searchNodePos(currentTeamInfos[i].nodeOrder);
-                Debug.Log($"past: ({pastPos.x},{pastPos.y}), current: ({currentPos.x},{currentPos.y})");
                 await cameraMove.cameraMovePos(currentPos, pastPos);
                 pastPos.x = currentPos.x;
                 pastPos.y = currentPos.y;
+                // Debug.Log($"past: ({pastPos.x},{pastPos.y}), current: ({currentPos.x},{currentPos.y})");
 
                 // 次ノードを探索
                 var nextOrders = mapManager.searchNextOrders(currentTeamInfos[i].nodeOrder);
@@ -283,11 +283,15 @@ public class GameManager : MonoBehaviour
                 else if (pattern == 0) {
                     tmpTeamInfos[0].teamComp[0] = currentInfo.teamComp[0];
                     tmpTeamInfos[0].teamComp[1] = currentInfo.teamComp[1];
+
+                    teamManager.assignCurrentTeams(currentInfo);
                 }
 
                 else {
                     tmpTeamInfos[0].teamComp[0] = currentInfo.teamComp[0] + currentTeamInfos[i-1].teamComp[0];
                     tmpTeamInfos[0].teamComp[1] = currentInfo.teamComp[1] + currentTeamInfos[i-1].teamComp[1];
+
+                    teamManager.assignCurrentTeams(currentInfo);
                 }
 
                 // 必要なピンの数
@@ -302,8 +306,6 @@ public class GameManager : MonoBehaviour
                     // ログ
                     Debug.Log("battle");
                     nextTeam.printOrder();
-
-                    Debug.Log("e");
 
                     // ピン移動
                     if (pattern == 1){
@@ -354,8 +356,6 @@ public class GameManager : MonoBehaviour
             // 次チームを現在チームに
             currentTeamInfos = new List<TeamInfo>(nextTeamInfos);
             nextTeamInfos = new List<TeamInfo>();
-
-            
 
             // 終了ノードにたどり着いたらクリア
             if (currentTeamInfos[0].nodeOrder == endNodeOrder){

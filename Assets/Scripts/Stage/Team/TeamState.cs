@@ -36,8 +36,9 @@ public class TeamState : MonoBehaviour
         ms.minusMembers();
     }
 
-    // public GameObject getMember(int i){
-    //     return Members[i];
-    // }
+    public void setLv(int No, int level){
+        MemberState ms = Members[No].GetComponent<MemberState>();
+        ms.setLv(level);
+    }
 
 }

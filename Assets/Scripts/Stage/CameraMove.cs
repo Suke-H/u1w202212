@@ -17,6 +17,7 @@ public class CameraMove : MonoBehaviour
     [SerializeField] CustomButton positionButton;
 
     [SerializeField] GameManager gameManager;
+    [SerializeField] TeamManager teamManager;
 
     Vector2Int standardPos = new Vector2Int(0, 0);
     Vector2Int cameraPos = new Vector2Int(0, 0);
@@ -120,6 +121,7 @@ public class CameraMove : MonoBehaviour
             // カメラの位置と現在位置がずれていたら位置修正ボタン表示
             if (isInFocus()){
                 gameManager.InFocus();
+                teamManager.InFocus();
                 positionButton.setActive(false); 
             }
             else{ 
@@ -134,6 +136,7 @@ public class CameraMove : MonoBehaviour
             }
             else{
                 gameManager.OutOfFocus();
+                teamManager.OutOfFocus();
                 await cameraMove(moveType); 
             }
 

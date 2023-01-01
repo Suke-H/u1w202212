@@ -95,6 +95,7 @@ public class MapManager : MonoBehaviour
     public Vector2 GetTeamPostion(int x, int y){
         return new Vector2
             (StandardPos.x + x*gridSize, StandardPos.y - y*gridSize + gridSize/3);
+            // (StandardPos.x + x*gridSize - gridSize/2, StandardPos.y - y*gridSize);
     }
 
     public Vector2 GetPinPostion(int x, int y){

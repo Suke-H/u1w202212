@@ -6,6 +6,7 @@ public class MemberState : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI typeText;
     [SerializeField] TextMeshProUGUI numberText;
+    [SerializeField] TextMeshProUGUI LvText;
     [SerializeField] GameObject plusButton;
     [SerializeField] GameObject minusButton;
 
@@ -37,24 +38,28 @@ public class MemberState : MonoBehaviour
         numberText.text = this.number.ToString();
     }
 
+    public void setLv(int level){
+        LvText.text = $"Lv {level}";
+    }
+
     public void initialize(string color, string type, int number, int teamNo){
         // 色
         if (color == "blue"){
             frame.color = pallet.blue;
-            typeText.color = pallet.blue;
+            // typeText.color = pallet.blue;
             numberText.color = pallet.blue;
         }
 
         else if (color == "red"){
             frame.color = pallet.red;
-            typeText.color = pallet.red;
+            // typeText.color = pallet.red;
             numberText.color = pallet.red;
         }
 
         // 職種
         this.type = type;
-        if (this.type == "engineer"){ typeText.text = "エンジニア"; }
-        else if (this.type == "sales"){ typeText.text = "営業"; }
+        // if (this.type == "engineer"){ typeText.text = "エンジニア"; }
+        // else if (this.type == "sales"){ typeText.text = "営業"; }
 
         // 数
         this.number = number;
@@ -69,29 +74,15 @@ public class MemberState : MonoBehaviour
 
         if (teamNo != -1){
             plusSpec.onClickCallback = () => {
-                // number++;
-                // numberText.text = number.ToString();
-                // teamManager.buttonFunc(this.teamNo, this.type, "plus");
                 
                 bool result = teamManager.buttonFunc(this.teamNo, this.type, "plus");
                 numberText.text = this.number.ToString();
-                // if (result){
-                //     plusMembers();
-                // }
             };
 
             minusSpec.onClickCallback = () => {
-                // if (number > 0){ 
-                //     number--; 
-                //     numberText.text = number.ToString();
-                //     teamManager.buttonFunc(this.teamNo, this.type, "minus");
-                // }
 
                 bool result = teamManager.buttonFunc(this.teamNo, this.type, "minus");
                 numberText.text = this.number.ToString();
-                // if (result){
-                //     minusMembers();
-                // }
             };
         }
 
