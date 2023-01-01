@@ -7,11 +7,8 @@ public class EventManager : MonoBehaviour
 {
     BattleEvent battleEvent;
 
-    [SerializeField] CustomButton[] Buttons;
 
-    // イベントにかかわるチーム情報管理
-    // int skill = 5;
-    // int[] enemyLevels = new int[]{3, 4};
+    int[] enemyLevels = new int[]{3, 4};
 
     // 報酬
     public string rewardType {get; set;} = "None";
@@ -54,21 +51,15 @@ public class EventManager : MonoBehaviour
 
     async public UniTask eventSwitch(TeamInfo teamInfo, Node nodeInfo, MapData mapData, bool lastFlag){
 
-        // ボタンを一旦無効化
-        foreach (CustomButton button in Buttons){
-            button.setActive(false);
-        }
+        
 
         Debug.Log($"event: {nodeInfo.eventType}");
 
-        if (nodeInfo.eventType == "battle"){
+        if (nodeInfo.eventType == "battle" || nodeInfo.eventType == "boss"){
             await battleEvent.BattleEventSequence(teamInfo, nodeInfo.customerData, mapData, lastFlag);
         }
 
-        // 有効に戻す
-        foreach (CustomButton button in Buttons){
-            button.setActive(true);
-        }
+        
 
     }
 

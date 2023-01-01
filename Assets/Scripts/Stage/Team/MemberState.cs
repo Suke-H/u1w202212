@@ -39,7 +39,8 @@ public class MemberState : MonoBehaviour
     }
 
     public void setLv(int level){
-        LvText.text = $"Lv {level}";
+        // LvText.text = $"Lv {level}";
+        LvText.text = $"{level}";
     }
 
     public void initialize(string color, string type, int number, int teamNo){

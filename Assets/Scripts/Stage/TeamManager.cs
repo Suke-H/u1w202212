@@ -43,6 +43,14 @@ public class TeamManager : MonoBehaviour
             team.SetActive(true);
         }
     }
+
+    int calcLv(int skill, int number){
+        int totalPower = skill * number;
+        Debug.Log($"skill: {skill}, power: {totalPower}");
+        return totalPower / 10;
+    }
+
+
     
     public bool buttonFunc(int teamNo, string type, string sign){
         // 役職
@@ -62,6 +70,15 @@ public class TeamManager : MonoBehaviour
                 currentTeamInfo.minusMember(i);
                 nextTeamInfos[teamNo].plusMember(i);
 
+                // Lv計算
+                int salesLv = calcLv(OurInfo.skills[0], currentTeamState.teamComp[0]);
+                int engineerLv = calcLv(OurInfo.skills[1], currentTeamState.teamComp[1]);
+                currentTeamState.setLv(0, salesLv);
+
+                salesLv = calcLv(OurInfo.skills[0], nextTeamStates[teamNo].teamComp[0]);
+                engineerLv = calcLv(OurInfo.skills[1], nextTeamStates[teamNo].teamComp[1]);
+                nextTeamStates[teamNo].setLv(0, salesLv);
+
                 return true;
             }
 
@@ -74,6 +91,17 @@ public class TeamManager : MonoBehaviour
 
                 currentTeamInfo.plusMember(i);
                 nextTeamInfos[teamNo].minusMember(i);
+
+                // Lv計算
+                int salesLv = calcLv(OurInfo.skills[0], currentTeamState.teamComp[0]);
+                int engineerLv = calcLv(OurInfo.skills[1], currentTeamState.teamComp[1]);
+                currentTeamState.setLv(0, salesLv);
+                currentTeamState.setLv(1, engineerLv);
+
+                salesLv = calcLv(OurInfo.skills[0], nextTeamStates[teamNo].teamComp[0]);
+                engineerLv = calcLv(OurInfo.skills[1], nextTeamStates[teamNo].teamComp[1]);
+                nextTeamStates[teamNo].setLv(0, salesLv);
+                nextTeamStates[teamNo].setLv(1, engineerLv);
 
                 return true;
             }
@@ -93,6 +121,12 @@ public class TeamManager : MonoBehaviour
 
         // チーム生成
         (currentTeamObject, currentTeamState) = createTeam(-1, currentTeamInfo.teamComp);
+
+        // Lv計算
+        int salesLv = calcLv(OurInfo.skills[0], currentTeamState.teamComp[0]);
+        int engineerLv = calcLv(OurInfo.skills[1], currentTeamState.teamComp[1]);
+        currentTeamState.setLv(0, salesLv);
+        currentTeamState.setLv(1, engineerLv);
 
         // チーム描画
         displayTeam(currentTeamObject, currentTeamInfo.nodePos);
@@ -115,6 +149,12 @@ public class TeamManager : MonoBehaviour
         // チーム描画
         displayTeam(currentTeamObject, currentTeamInfo.nodePos);
 
+        // Lv計算
+        int salesLv = calcLv(OurInfo.skills[0], currentTeamState.teamComp[0]);
+        int engineerLv = calcLv(OurInfo.skills[1], currentTeamState.teamComp[1]);
+        currentTeamState.setLv(0, salesLv);
+        currentTeamState.setLv(1, engineerLv);
+
         // 次チームの処理開始
 
         nextTeamObjects = new List<GameObject>(); // リセット
@@ -129,6 +169,12 @@ public class TeamManager : MonoBehaviour
             // 追加
             nextTeamObjects.Add(nextTeamObject);
             nextTeamStates.Add(nextTeamState);
+
+            // Lv
+            salesLv = calcLv(OurInfo.skills[0], nextTeamStates[i].teamComp[0]);
+            engineerLv = calcLv(OurInfo.skills[1], nextTeamStates[i].teamComp[1]);
+            nextTeamStates[i].setLv(0, salesLv);
+            nextTeamStates[i].setLv(1, engineerLv);
         }
 
     }

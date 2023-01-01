@@ -206,14 +206,18 @@ public class MapManager : MonoBehaviour
                 GameObject nodeType = Instantiate(nodeTypes[type-1]) as GameObject;
                 nodeType.transform.parent = node.transform; // nodeの子にする
                 nodeType.transform.position = GetActualPostion(pos.x, pos.y);
+                nodeType.transform.position += new Vector3(0f, 0.3f, 0f);
             }
 
             // ノード情報
             Node nodeInfo = node.GetComponent<Node>();
             nodeInfo.initialize(nodeTypeDict[type]);
-            if (nodeTypeDict[type] == "battle"){
+            if (nodeTypeDict[type] == "battle" || nodeTypeDict[type] == "boss"){
                 int ID = Array.IndexOf(mapData.nodeOrders, order);
                 var customer = mapData.customerDatas[ID];
+                if (nodeTypeDict[type] == "boss"){
+                    customer.customerName = "??????";
+                }
                 nodeInfo.initializeBattle(customer);
             }
 

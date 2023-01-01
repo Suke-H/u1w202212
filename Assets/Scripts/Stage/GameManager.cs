@@ -4,6 +4,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] CustomButton startButtton;
     public bool startFlag { get; set; } = false;
     public bool clearFlag {get; set;} = false;
+
+    // アクティブ切替したいボタン
+    [SerializeField] CustomButton[] Buttons;
 
     // マネージャー陣
     [SerializeField] MapManager mapManager;
@@ -33,6 +37,8 @@ public class GameManager : MonoBehaviour
     // チーム情報
     private List<TeamInfo> currentTeamInfos = new List<TeamInfo>();
     private List<TeamInfo> nextTeamInfos = new List<TeamInfo>();
+
+    [SerializeField] TextMeshProUGUI[] levelTexts;
 
     // ステージ情報
     private string stageName;
@@ -181,6 +187,10 @@ public class GameManager : MonoBehaviour
         if (stageName == "Stage-1"){
             OurInfo.initialize();
         }
+
+        // スキル表示
+        levelTexts[0].text = $"{OurInfo.skills[0]}";
+        levelTexts[1].text = $"{OurInfo.skills[1]}";
 
         // ステージ処理開始
         await StageLoop();
@@ -331,7 +341,13 @@ public class GameManager : MonoBehaviour
                         BGM.BGMChange("Last"); // 最終ノードのBGM
                     }
 
-                    // イベント開始
+                    /* イベント開始 */
+
+                    // ボタンを一旦無効化
+                    foreach (CustomButton button in Buttons){
+                        button.setActive(false);
+                    }
+
                     var node = mapManager.NodesByOrder[nextTeam.nodeOrder];
                     var nodeInfo = node.GetComponent<Node>();
                     await eventManager.eventSwitch(nextTeam, nodeInfo, mapData, lastFlag);
@@ -340,8 +356,17 @@ public class GameManager : MonoBehaviour
                     eventManager.memberReward(nextTeam, mapData);
                     eventManager.skillReward(mapData);
 
+                    // スキル表示
+                    levelTexts[0].text = $"{OurInfo.skills[0]}";
+                    levelTexts[1].text = $"{OurInfo.skills[1]}";
+
                     // 最終ノードだったらステージ終了
                     if (lastFlag){ break; }
+
+                    // ボタンを有効に戻す
+                    foreach (CustomButton button in Buttons){
+                        button.setActive(true);
+                    }
 
                     // 次ノードが残っていたら現ノードにピンを追加
                     if (--pinCount > 0){

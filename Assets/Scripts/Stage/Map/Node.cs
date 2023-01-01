@@ -26,7 +26,7 @@ public class Node : MonoBehaviour
     }
 
     void OnMouseEnter(){
-        if (eventType == "battle"){
+        if (eventType == "battle" || eventType == "boss"){
             // customerData.printData();
             teamManager.displayCustomer(pos, customerData);
         }
@@ -34,7 +34,7 @@ public class Node : MonoBehaviour
     }
 
     void OnMouseExit(){
-        if (eventType == "battle"){
+        if (eventType == "battle" || eventType == "boss"){
             teamManager.destroyCustomer();
         }
     }
