@@ -106,7 +106,7 @@ public class MapManager : MonoBehaviour
         int xSpan = Math.Abs(pos1.x - pos0.x);
         Vector3[] positions = new Vector3[]{
                         GetActualPostion(pos0.x, pos0.y),
-                        GetActualPostionByFloat(pos0.x+xSpan/3f, pos1.y+0f),
+                        // GetActualPostionByFloat(pos0.x+xSpan/3f, pos1.y+0f),
                         GetActualPostion(pos1.x, pos1.y)
                     };
 
@@ -125,7 +125,6 @@ public class MapManager : MonoBehaviour
         // 「左から→上から」の順で番号を振っていく
         for (int x = 0; x < NodeMap[0].Count; x++) {
             for (int y = 0; y < NodeMap.Count; y++) {
-
                 if (NodeMap[y][x] != -1)
                 {
                     tmpList[y][x] = count;
@@ -189,7 +188,6 @@ public class MapManager : MonoBehaviour
 
     public void drawMap()
     {
-
         /* ノードの描画 */
         for (int order=0; order<nodeNum; order++){
             var pos = searchNodePos(order);

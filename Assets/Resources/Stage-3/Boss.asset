@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15952ab634715be4d9584543d2c1d899, type: 3}
-  m_Name: "\u3086\u305A\u308A\u306F\u9280\u884C"
+  m_Name: Boss
   m_EditorClassIdentifier: 
   customerName: "\u3086\u305A\u308A\u306F\u9280\u884C"
   demandLv: 0500000002000000

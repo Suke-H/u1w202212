@@ -7,12 +7,16 @@ using System;
 public class TeamManager : MonoBehaviour
 {
     [SerializeField] GameObject Team;
+    [SerializeField] GameObject NodePopup;
     [SerializeField] GameObject canvas;//キャンバス
     
     // 保存用
     TeamInfo currentTeamInfo;
     TeamState currentTeamState;
     GameObject currentTeamObject;
+
+    GameObject nodePopup;
+    // List<GameObject> popups;
     
     public List<TeamInfo> nextTeamInfos {get; set;} = new List<TeamInfo>();
     public List<GameObject> nextTeamObjects {get; set;} = new List<GameObject>();
@@ -107,7 +111,6 @@ public class TeamManager : MonoBehaviour
 
     // チーム表示（UI座標変換）
     public void displayTeam(GameObject team, Vector2 pos){
-
         mainCamera = Camera.main;
 
         // ワールド座標 -> スクリーン座標変換
@@ -136,6 +139,41 @@ public class TeamManager : MonoBehaviour
 
         nextTeamObjects = new List<GameObject>();
         nextTeamStates = new List<TeamState>();
+    }
+
+    // チーム表示（UI座標変換）
+    public void displayCustomer(Vector2 pos, CustomerData customerData){
+        mainCamera = Camera.main;
+
+        // ワールド座標 -> スクリーン座標変換
+        var targetWorldPos = new Vector3(pos.x, pos.y-1.2f, 0);
+        var targetScreenPos = mainCamera.WorldToScreenPoint(targetWorldPos);
+
+        // スクリーン座標 -> UIローカル座標変換
+        RectTransform parentUI = this.gameObject.GetComponent<RectTransform>();
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            parentUI,
+            targetScreenPos,
+            mainCamera, // オーバーレイモードの場合はnull
+            out var uiLocalPos // この変数に出力される
+        );
+
+        // ダイアログ表示
+        nodePopup = Instantiate(NodePopup) as GameObject;
+        nodePopup.transform.SetParent (canvas.transform, false);
+
+        NodePopup NP = nodePopup.GetComponent<NodePopup>();
+        customerData.printData();
+        NP.initialize(customerData);
+
+        // 座標指定
+        NP.transform.localPosition = uiLocalPos;
+    }
+
+    // チーム表示（UI座標変換）
+    public void destroyCustomer(){
+        Destroy(nodePopup);
     }
 
 }
