@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     // 初期情報
-    [SerializeField] int[] initTeamComp;
+    // [SerializeField] int[] initTeamComp;
 
     // ボタン、フラグ系
     [SerializeField] CustomButton startButtton;
@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] TeamManager teamManager;
     [SerializeField] EventManager eventManager;
     [SerializeField] BattleEvent battleEvent;
+    [SerializeField] CameraMove cameraMove;
 
     // BGM, SE
     [SerializeField] BGMController BGM;
@@ -32,9 +33,6 @@ public class GameManager : MonoBehaviour
     // チーム情報
     private List<TeamInfo> currentTeamInfos = new List<TeamInfo>();
     private List<TeamInfo> nextTeamInfos = new List<TeamInfo>();
-
-    // 弊社情報
-    // private OurInfo ourInfo;
 
     // ステージ情報
     private string stageName;
@@ -84,6 +82,14 @@ public class GameManager : MonoBehaviour
         return teams;
     }
 
+    public void OutOfFocus(){
+        startButtton.setActive(false);
+    }
+
+    public void InFocus(){
+        startButtton.setActive(true);
+    }
+
     async public UniTask stageOver(){
         // ダイアログ表示
         GameObject overDialog = Instantiate(OverDialog) as GameObject;
@@ -100,7 +106,6 @@ public class GameManager : MonoBehaviour
         Destroy(overDialog);
     }
 
-    //
     async public UniTask stageClear(){
         // ダイアログ表示
         // GameObject clearDialog = Instantiate(ClearDialog) as GameObject;
@@ -186,6 +191,10 @@ public class GameManager : MonoBehaviour
     }
 
     async UniTask StageLoop(){
+
+        // カメラ移動用の過去位置
+        var pastPos = mapManager.searchNodePos(0);
+
         // 終了ノードの番号
         int endNodeOrder = mapManager.nodeNum - 1;
         Debug.Log($"終了ノード: {endNodeOrder}");
@@ -198,11 +207,8 @@ public class GameManager : MonoBehaviour
 
         // チームの初期化
         // （チーム情報生成まで）
-        var initInfo = createTeamInfo(0, initTeamComp);
+        var initInfo = createTeamInfo(0, OurInfo.totalComp);
         currentTeamInfos.Add(initInfo);
-
-        // 弊社の情報
-        // ourInfo = new OurInfo(){};
 
         // ステージ開始
         while (true){ 
@@ -215,6 +221,13 @@ public class GameManager : MonoBehaviour
 
             // 現在チームごとに処理
             for (int i = 0; i < currentTeamInfos.Count; i++){
+
+                // カメラ移動
+                var currentPos = mapManager.searchNodePos(currentTeamInfos[i].nodeOrder);
+                Debug.Log($"past: ({pastPos.x},{pastPos.y}), current: ({currentPos.x},{currentPos.y})");
+                await cameraMove.cameraMovePos(currentPos, pastPos);
+                pastPos.x = currentPos.x;
+                pastPos.y = currentPos.y;
 
                 // 次ノードを探索
                 var nextOrders = mapManager.searchNextOrders(currentTeamInfos[i].nodeOrder);
@@ -282,6 +295,7 @@ public class GameManager : MonoBehaviour
 
                 // 行動開始のボタン押し待ち
                 await UniTask.WaitUntil(() => (startFlag));
+                startFlag = false;
 
                 // 次チームごとにイベント!
                 foreach (TeamInfo nextTeam in tmpTeamInfos){
@@ -340,6 +354,8 @@ public class GameManager : MonoBehaviour
             // 次チームを現在チームに
             currentTeamInfos = new List<TeamInfo>(nextTeamInfos);
             nextTeamInfos = new List<TeamInfo>();
+
+            
 
             // 終了ノードにたどり着いたらクリア
             if (currentTeamInfos[0].nodeOrder == endNodeOrder){

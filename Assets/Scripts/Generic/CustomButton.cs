@@ -10,10 +10,17 @@ public class CustomButton : MonoBehaviour,
     public System.Action onClickCallback;  
 
     [SerializeField] private CanvasGroup _canvasGroup;
+    
+    bool isActive = true;
+
+    public void setActive(bool activeType){
+        this.gameObject.SetActive(activeType);
+        isActive = activeType;
+    }
 
     public void OnPointerClick(PointerEventData eventData)  
     {
-        onClickCallback?.Invoke();
+        if (isActive) { onClickCallback?.Invoke(); }
     }
 
     public void OnPointerDown(PointerEventData eventData)  

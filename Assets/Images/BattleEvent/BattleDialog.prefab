@@ -889,8 +889,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -959,8 +959,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -166.6, y: -35.68}
-  m_SizeDelta: {x: 33.08, y: 47.78}
+  m_AnchoredPosition: {x: -136, y: -34}
+  m_SizeDelta: {x: 60, y: 47.78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7257621731300343428
 CanvasRenderer:
@@ -1024,8 +1024,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -1364,8 +1364,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -166.6, y: -115.14}
-  m_SizeDelta: {x: 33.08, y: 47.78}
+  m_AnchoredPosition: {x: -136, y: -114}
+  m_SizeDelta: {x: 60, y: 47.78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7257621731748457653
 CanvasRenderer:
@@ -1395,7 +1395,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: 33
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}
   m_sharedMaterial: {fileID: -6448188821289821790, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}
@@ -1429,8 +1429,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2423,7 +2423,6 @@ MonoBehaviour:
   yesButton: {fileID: 591829170}
   noButton: {fileID: 1035408322}
   teamUI: {fileID: 5870795430436643636}
-  battleEvent: {fileID: 0}
 --- !u!1 &7257621732806595414
 GameObject:
   m_ObjectHideFlags: 0
@@ -2594,7 +2593,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 335.2, y: -117.1}
+  m_AnchoredPosition: {x: 335.2, y: -114}
   m_SizeDelta: {x: 63.08, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7257621732981305614
@@ -2659,8 +2658,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

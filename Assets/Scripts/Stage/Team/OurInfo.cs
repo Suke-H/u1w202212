@@ -13,7 +13,6 @@ public class OurInfo
     public static void initialize(){
         skills = new int[]{10, 10};
         totalComp = new int[]{5, 5};
-
     }
 
     public static void skillUp(int no, int value){

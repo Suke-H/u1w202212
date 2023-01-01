@@ -12,15 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f5663d2080b53f428fe51d4924c40a7, type: 3}
   m_Name: Map
   m_EditorClassIdentifier: 
-  nodeOrders: 010000000200000003000000040000000500000006000000070000000800000009000000
+  nodeOrders: 01000000020000000300000004000000050000000600000007000000
   customerDatas:
   - {fileID: 11400000, guid: 291d902ea0b5564468a16c8722c76da5, type: 2}
   - {fileID: 11400000, guid: 59d960fd91acf184f9ccf3900c3948f5, type: 2}
-  - {fileID: 11400000, guid: 6218fdf35c2f62641961acfd3415e6e1, type: 2}
-  - {fileID: 11400000, guid: 3611c4046192abc4aa02ef82461ad299, type: 2}
-  - {fileID: 11400000, guid: aca0cc2984834a5489a7d3037739fcfe, type: 2}
-  - {fileID: 11400000, guid: 545be1c44c9304c4da858a64cc0575dc, type: 2}
-  - {fileID: 11400000, guid: cc2884dbe5766bc4086d1118d9199306, type: 2}
   - {fileID: 11400000, guid: 53729ecf710bca04da9e433d6fafa8dc, type: 2}
+  - {fileID: 11400000, guid: 6f6ae84c6966133418cabc78b57a155f, type: 2}
+  - {fileID: 11400000, guid: cc2884dbe5766bc4086d1118d9199306, type: 2}
+  - {fileID: 11400000, guid: 545be1c44c9304c4da858a64cc0575dc, type: 2}
   - {fileID: 11400000, guid: 8dcbdb7cefefae644ba6ccc42e9c2989, type: 2}
   rewardParams: 05000000050000000500000005000000

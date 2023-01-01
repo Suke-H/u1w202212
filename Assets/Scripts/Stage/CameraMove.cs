@@ -14,6 +14,12 @@ public class CameraMove : MonoBehaviour
     [SerializeField] CustomButton rightButton;
     [SerializeField] CustomButton upButton;
     [SerializeField] CustomButton downButton;
+    [SerializeField] CustomButton positionButton;
+
+    [SerializeField] GameManager gameManager;
+
+    Vector2Int standardPos = new Vector2Int(0, 0);
+    Vector2Int cameraPos = new Vector2Int(0, 0);
 
     string moveType = "None";
     
@@ -39,16 +45,48 @@ public class CameraMove : MonoBehaviour
             moveType = "Down";
         };
 
+        positionButton.onClickCallback = () => {
+            moveType = "Reposit";
+        };
+
         await CameraLoop();
+    }
+
+    async public UniTask cameraMovePos(Vector2Int currentPos, Vector2Int pastPos){
+        var delta = currentPos - pastPos;
+
+        Vector3 direction = new Vector3(delta.x*3f, -delta.y*3f, 0f);
+
+        await this.transform.DOBlendableMoveBy(direction, 0.5f)
+        .SetEase(moveEase) // アニメーションの種類
+        .SetRelative() // 相対的
+        .AsyncWaitForCompletion(); // UniTask用
+
+        // 保存
+        standardPos.x = currentPos.x;
+        standardPos.y = currentPos.y;
+        cameraPos.x = currentPos.x;
+        cameraPos.y = currentPos.y;
     }
 
     async public UniTask cameraMove(string type){
         Vector3 direction;
 
-        if (type == "Left"){ direction = new Vector3(-2.0f,0.0f,0.0f); }
-        else if (type == "Right"){ direction = new Vector3(2.0f,0.0f,0.0f); }
-        else if (type == "Up"){ direction = new Vector3(0.0f,2.0f,0.0f); }
-        else { direction = new Vector3(0.0f,-2.0f,0.0f); }
+        if (type == "Left"){ 
+            cameraPos.x -= 1;
+            direction = new Vector3(-3.0f,0.0f,0.0f);
+        }
+        else if (type == "Right"){ 
+            cameraPos.x += 1;
+            direction = new Vector3(3.0f,0.0f,0.0f); 
+        }
+        else if (type == "Up"){ 
+            cameraPos.y -= 1;
+            direction = new Vector3(0.0f,3.0f,0.0f); 
+        }
+        else { 
+            cameraPos.y += 1;
+            direction = new Vector3(0.0f,-3.0f,0.0f); }
 
         await this.transform.DOBlendableMoveBy(direction, 0.5f)
         .SetEase(moveEase) // アニメーションの種類
@@ -56,10 +94,48 @@ public class CameraMove : MonoBehaviour
         .AsyncWaitForCompletion(); // UniTask用
     }
 
+    // 元の位置に戻す
+    async public UniTask repositCamera(){
+        var delta = standardPos - cameraPos;
+
+        Vector3 direction = new Vector3(delta.x*3f, -delta.y*3f, 0f);
+
+        await this.transform.DOBlendableMoveBy(direction, 0.5f)
+        .SetEase(moveEase) // アニメーションの種類
+        .SetRelative() // 相対的
+        .AsyncWaitForCompletion(); // UniTask用
+
+        // 保存
+        cameraPos.x = standardPos.x;
+        cameraPos.y = standardPos.y;
+    }
+
+    public bool isInFocus(){
+        return (cameraPos.x == standardPos.x & cameraPos.y == standardPos.y);
+    }
+
+
     async UniTask CameraLoop(){
         while (true){
+            // カメラの位置と現在位置がずれていたら位置修正ボタン表示
+            if (isInFocus()){
+                gameManager.InFocus();
+                positionButton.setActive(false); 
+            }
+            else{ 
+                positionButton.setActive(true); 
+            }
+
+            // ボタン押し待ち
             await UniTask.WaitUntil(() => (moveType != "None"));
-            await cameraMove(moveType);
+
+            if (moveType == "Reposit"){
+                await repositCamera(); 
+            }
+            else{
+                gameManager.OutOfFocus();
+                await cameraMove(moveType); 
+            }
 
             moveType = "None";
         }
