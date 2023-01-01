@@ -18,6 +18,8 @@ public class SuccessDialog : MonoBehaviour
 
     public int[] teamComp { get; set; } = new int[] { 0, 0 };
     public bool isButtonExist { get; set; }
+    
+    public bool isActive {get; set;} = false;
 
     EventManager eventManager;
     BattleEvent battleEvent;
@@ -80,14 +82,15 @@ public class SuccessDialog : MonoBehaviour
 
         // 選択ボタン
         for (int j=0; j<selectButtons.Length; j++){
-
             var index = j;
 
             selectButtons[index].onClickCallback = () => {
-                endFlag = true;
+                if (isActive){
+                    endFlag = true;
 
-                eventManager.rewardType = rewardTypes[choices[index]];
-                eventManager.rewardParam = rewardParams[choices[index]];
+                    eventManager.rewardType = rewardTypes[choices[index]];
+                    eventManager.rewardParam = rewardParams[choices[index]];
+                }
             };
         }
 
@@ -99,5 +102,8 @@ public class SuccessDialog : MonoBehaviour
         await UniTask.WaitUntil(() => (endFlag));
     }
 
+    public void setActive(bool flag){
+        isActive = flag;
+    }
     
 }

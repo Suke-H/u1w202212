@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15952ab634715be4d9584543d2c1d899, type: 3}
   m_Name: 1
   m_EditorClassIdentifier: 
-  customerName: "\u30DE\u30C3\u30B9\u30EB\u5546\u4E8B"
+  customerName: "\u30D4\u30BF\u30B4\u30E9\u30D4\u30B6"
   demandLv: 0300000003000000

@@ -58,7 +58,8 @@ public class CameraMove : MonoBehaviour
 
         var delta = currentPos - pastPos;
 
-        Vector3 direction = new Vector3(delta.x*3f, -delta.y*3f, 0f);
+        // Vector3 direction = new Vector3(delta.x*3f, -delta.y*3f, 0f);
+        Vector3 direction = new Vector3(delta.x*3f, 0, 0f);
 
         await this.transform.DOBlendableMoveBy(direction, 0.5f)
         .SetEase(moveEase) // アニメーションの種類

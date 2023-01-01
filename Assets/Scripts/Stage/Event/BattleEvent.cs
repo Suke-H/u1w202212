@@ -26,8 +26,8 @@ public class BattleEvent : MonoBehaviour
     int systemCompleteRate;
 
     [SerializeField] MapManager mapManager;
+    [SerializeField] Tutorial tutorial;
 
-    // async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, OurInfo ourInfo, MapData mapData, bool lastFlag)
     async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, MapData mapData, bool lastFlag)
     {
         // 初期化
@@ -48,6 +48,22 @@ public class BattleEvent : MonoBehaviour
         // ダイアログを初期化
         var battleDialog = initializeDialog(teamInfo.teamComp, lastFlag, customerData);
 
+        // チュートリアル（ルール1）
+        if (StageStore.stageName == "Tutorial"){
+            BattleDialog BD = battleDialog.GetComponent<BattleDialog>();
+            BD.setActive(false);
+            await tutorial.TutoRule1();
+            BD.setActive(true);
+        }
+
+        // チュートリアル（最後）
+        if (lastFlag & StageStore.stageName == "Tutorial"){
+            BattleDialog BD = battleDialog.GetComponent<BattleDialog>();
+            BD.setActive(false);
+            await tutorial.TutoEnd();
+            BD.setActive(true);
+        }
+
         // バトル選択待ち
         await UniTask.WaitUntil(() => (battleTry != -1));
 
@@ -67,6 +83,13 @@ public class BattleEvent : MonoBehaviour
 
                 SuccessDialog SD = successDialog.GetComponent<SuccessDialog>();
                 SD.initialize(mapData.rewardParams);
+
+                // チュートリアル（その2-1）
+                if (StageStore.stageName == "Tutorial"){
+                    SD.setActive(false);
+                    await tutorial.TutoRule2_1();
+                    SD.setActive(true);
+                }
 
                 await SD.buttonWait();
                 Destroy(successDialog);

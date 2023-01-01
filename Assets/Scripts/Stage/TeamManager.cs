@@ -17,7 +17,6 @@ public class TeamManager : MonoBehaviour
     GameObject currentTeamObject;
 
     GameObject nodePopup;
-    // List<GameObject> popups;
     
     public List<TeamInfo> nextTeamInfos {get; set;} = new List<TeamInfo>();
     public List<GameObject> nextTeamObjects {get; set;} = new List<GameObject>();
@@ -46,18 +45,15 @@ public class TeamManager : MonoBehaviour
 
     int calcLv(int skill, int number){
         int totalPower = skill * number;
-        Debug.Log($"skill: {skill}, power: {totalPower}");
         return totalPower / 10;
     }
-
-
     
     public bool buttonFunc(int teamNo, string type, string sign){
         // 役職
         int i;
         if (type == "sales"){ i = 0; }
         else if (type == "engineer"){ i = 1; }
-        else { Debug.Log("バグ！");  i = -1; }
+        else { i = -1; }
 
         // プラス
         if (sign == "plus"){

@@ -19,17 +19,14 @@ public class BattleDialog : MonoBehaviour
 
     [SerializeField] TeamUI teamUI;
 
-    // [SerializeField] BattleEvent battleEvent;
+    public bool isActive {get; set;} = false;
 
     public int[] teamComp { get; set; } = new int[] { 0, 0 };
     public bool isButtonExist { get; set; }
 
     public void initialize(int[] teamComp, bool isButtonExist, bool lastFlag, List<string> args){
-
         // チームの初期化
         teamUI.initialize(teamComp, isButtonExist); 
-
-        Debug.Log(string.Join(",", args));
 
         // 文字描画
         teamLevelTexts[0].text = args[0];
@@ -47,7 +44,9 @@ public class BattleDialog : MonoBehaviour
 
         // ボタン
         yesButton.onClickCallback = () => {
-            battleEvent.battleTry = 1;
+            if (isActive){
+                battleEvent.battleTry = 1;
+            }
         };
 
         // if (!lastFlag){
@@ -55,8 +54,11 @@ public class BattleDialog : MonoBehaviour
         //         battleEvent.battleTry = 0;
         //     };
         // }
-
         
+    }
+
+    public void setActive(bool flag){
+        isActive = flag;
     }
 
 }

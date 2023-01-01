@@ -50,9 +50,6 @@ public class EventManager : MonoBehaviour
     }
 
     async public UniTask eventSwitch(TeamInfo teamInfo, Node nodeInfo, MapData mapData, bool lastFlag){
-
-        
-
         Debug.Log($"event: {nodeInfo.eventType}");
 
         if (nodeInfo.eventType == "battle" || nodeInfo.eventType == "boss"){

@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] EventManager eventManager;
     [SerializeField] BattleEvent battleEvent;
     [SerializeField] CameraMove cameraMove;
+    [SerializeField] Tutorial tutorial;
 
     // BGM, SE
     [SerializeField] BGMController BGM;
@@ -78,7 +79,6 @@ public class GameManager : MonoBehaviour
             var comp = teams[i].teamComp;
             if (comp[0] == 0 & comp[1] == 0){
                 teams.RemoveAt(i);
-                Debug.Log($"{i}削除");
                 continue;
             }
             i++;
@@ -104,7 +104,9 @@ public class GameManager : MonoBehaviour
         FD.initialize();
 
         // ランキング
-        naichilab.RankingLoader.Instance.SendScoreAndShowRanking (OurInfo.totalScore());
+        if (stageName != "Tutorial"){
+            naichilab.RankingLoader.Instance.SendScoreAndShowRanking (OurInfo.totalScore());
+        }
 
         // ボタン押し待ち
         await FD.buttonWait();
@@ -140,8 +142,8 @@ public class GameManager : MonoBehaviour
         // 通常のゲーム
         else {
             // ラストステージなら終了
-            // if (StageStore.getStageNo() == 3){
-            if (StageStore.getStageNo() == 1){
+            if (StageStore.getStageNo() == 3){
+            // if (StageStore.getStageNo() == 1){
                 await gameEnd();
             }
 
@@ -205,7 +207,7 @@ public class GameManager : MonoBehaviour
         BGM.BGMChange("Normal");
 
         // 最初のみ弊社情報を初期化
-        if (stageName == "Stage-1"){
+        if (stageName == "Stage-1" || stageName == "Tutorial"){
             OurInfo.initialize();
         }
 
@@ -239,6 +241,9 @@ public class GameManager : MonoBehaviour
         // （チーム情報生成まで）
         var initInfo = createTeamInfo(0, OurInfo.totalComp);
         currentTeamInfos.Add(initInfo);
+
+        // チュートリアル（最初）
+        await tutorial.TutoStart();
 
         // ステージ開始
         while (true){ 
@@ -283,7 +288,12 @@ public class GameManager : MonoBehaviour
                 }
 
                 // 分岐があったら2
-                else { pattern = 2; }
+                else { 
+                    pattern = 2; 
+
+                    // チュートリアル（ルールその3）
+                    await tutorial.TutoRule3();
+                }
 
                 // 現在ノードの情報
                 var currentInfo = currentTeamInfos[i];
@@ -292,7 +302,6 @@ public class GameManager : MonoBehaviour
                 var tmpTeamInfos = new List<TeamInfo>();
 
                 // チーム情報を生成
-                Debug.Log($"次チーム: {nextOrders.Count}");
                 foreach (int order in nextOrders){
                     var nextInfo = createTeamInfo(order, new int[]{0, 0});
                     nextInfo.printOrder();
@@ -333,7 +342,6 @@ public class GameManager : MonoBehaviour
                 // 次チームごとにイベント!
                 foreach (TeamInfo nextTeam in tmpTeamInfos){
                     // ログ
-                    Debug.Log("battle");
                     nextTeam.printOrder();
 
                     // ピン移動
@@ -379,6 +387,9 @@ public class GameManager : MonoBehaviour
                     levelTexts[0].text = $"{OurInfo.skills[0]}";
                     levelTexts[1].text = $"{OurInfo.skills[1]}";
 
+                    // チュートリアル（ルールその2-2）
+                    await tutorial.TutoRule2_2();
+
                     // 最終ノードだったらステージ終了
                     if (lastFlag){ break; }
 
@@ -389,10 +400,12 @@ public class GameManager : MonoBehaviour
 
                     // 次ノードが残っていたら現ノードにピンを追加
                     if (--pinCount > 0){
-                        Debug.Log($"pinCount: {pinCount}");
                         mapManager.createPin(currentInfo.nodeOrder);
                     }
                 }
+
+                // チュートリアル（終わりフェイク）
+                if (pattern == 2) { await tutorial.TutoFakeEnd(); }
 
                 nextTeamInfos.AddRange(tmpTeamInfos);
             }
@@ -403,7 +416,6 @@ public class GameManager : MonoBehaviour
 
             // 終了ノードにたどり着いたらクリア
             if (currentTeamInfos[0].nodeOrder == endNodeOrder){
-                Debug.Log("ごーーーーーる");
                 break;
             }
 

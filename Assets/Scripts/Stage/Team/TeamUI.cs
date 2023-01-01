@@ -20,7 +20,7 @@ public class TeamUI : MonoBehaviour
         Array.Copy(teamComp, this.teamComp, teamComp.Length);
         // 文字
         salesNumberText.text = teamComp[0].ToString();
-        engineerNumberText.text =  teamComp[1].ToString();
+        engineerNumberText.text = teamComp[1].ToString();
 
         // ボタン
         this.isButtonExist = isButtonExist;

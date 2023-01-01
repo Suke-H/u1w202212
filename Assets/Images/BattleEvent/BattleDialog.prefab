@@ -720,7 +720,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u63A8\u5968\u6280\u8853\u529B\u3000    Lv "
+  m_text: "\u8981\u6C42\u6280\u8853\u529B\u3000    Lv "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}
   m_sharedMaterial: {fileID: -6448188821289821790, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}
@@ -1741,7 +1741,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u63A8\u5968\u30A2\u30D4\u30FC\u30EB\u529B Lv "
+  m_text: "\u8981\u6C42\u30A2\u30D4\u30FC\u30EB\u529B Lv "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}
   m_sharedMaterial: {fileID: -6448188821289821790, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}

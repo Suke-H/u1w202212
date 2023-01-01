@@ -16,7 +16,6 @@ public class FailDialog : MonoBehaviour
     public void initialize(){
         // ランダムでフレーバーテキストを選択
         int choice = Random.Range(0, flavors.Length);
-        Debug.Log($"choice: {choice}");
         flavorText.text = flavors[choice];
 
         // ボタン
