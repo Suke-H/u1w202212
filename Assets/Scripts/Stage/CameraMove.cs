@@ -53,7 +53,9 @@ public class CameraMove : MonoBehaviour
         await CameraLoop();
     }
 
-    async public UniTask cameraMovePos(Vector2Int currentPos, Vector2Int pastPos){
+    async public UniTask cameraAutoMove(Vector2Int currentPos, Vector2Int pastPos){
+        moveType = "Auto";
+
         var delta = currentPos - pastPos;
 
         Vector3 direction = new Vector3(delta.x*3f, -delta.y*3f, 0f);
@@ -128,13 +130,14 @@ public class CameraMove : MonoBehaviour
                 positionButton.setActive(true); 
             }
 
-            // ボタン押し待ち
+            // ボタン押し or カメラ自動移動待ち
             await UniTask.WaitUntil(() => (moveType != "None"));
 
             if (moveType == "Reposit"){
                 await repositCamera(); 
             }
-            else{
+            
+            else if(moveType != "Auto"){
                 gameManager.OutOfFocus();
                 teamManager.OutOfFocus();
                 await cameraMove(moveType); 

@@ -22,4 +22,11 @@ public class OurInfo
     public static void memberIncrease(int no, int value){
         totalComp[no] += value;
     }
+
+    public static int totalScore(){
+        int salesScore = skills[0] * totalComp[0];
+        int engineerScore = skills[1] * totalComp[1];
+
+        return salesScore + engineerScore;
+    }
 }

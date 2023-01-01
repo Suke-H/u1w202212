@@ -30,8 +30,6 @@ public class BattleEvent : MonoBehaviour
     // async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, OurInfo ourInfo, MapData mapData, bool lastFlag)
     async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, MapData mapData, bool lastFlag)
     {
-
-
         // 初期化
         battleTry = -1;
         successFlag = false;
@@ -116,14 +114,14 @@ public class BattleEvent : MonoBehaviour
     }
 
     public bool battleJudge(int percent1, int percent2){
-        float rate = percent1 * percent2 * 0.0001f;
+        float rate1 = percent1 * 0.01f;
+        float rate2 = percent2 * 0.01f;
 
         // 0~1のランダム値
-        float value = Random.value;
+        float value1 = Random.value;
+        float value2 = Random.value;
 
-        Debug.Log($"value: {value}, rate: {rate}");
-
-        if (value <= rate) { return true; }
+        if (value1 <= rate1 & value2 <= rate2) { return true; }
         else { return false; }
     }
 

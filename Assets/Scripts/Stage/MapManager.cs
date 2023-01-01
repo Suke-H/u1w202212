@@ -215,9 +215,9 @@ public class MapManager : MonoBehaviour
             if (nodeTypeDict[type] == "battle" || nodeTypeDict[type] == "boss"){
                 int ID = Array.IndexOf(mapData.nodeOrders, order);
                 var customer = mapData.customerDatas[ID];
-                if (nodeTypeDict[type] == "boss"){
-                    customer.customerName = "??????";
-                }
+                // if (nodeTypeDict[type] == "boss"){
+                //     customer.customerName = "??????";
+                // }
                 nodeInfo.initializeBattle(customer);
             }
 

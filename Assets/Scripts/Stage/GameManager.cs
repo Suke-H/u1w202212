@@ -5,12 +5,10 @@ using Cysharp.Threading.Tasks;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using TMPro;
+using NCMB;
 
 public class GameManager : MonoBehaviour
 {
-    // 初期情報
-    // [SerializeField] int[] initTeamComp;
-
     // ボタン、フラグ系
     [SerializeField] CustomButton startButtton;
     public bool startFlag { get; set; } = false;
@@ -32,6 +30,7 @@ public class GameManager : MonoBehaviour
     // ダイアログ
     [SerializeField] GameObject ClearDialog;
     [SerializeField] GameObject OverDialog;
+    [SerializeField] GameObject FinishDialog;
     [SerializeField] GameObject canvas;//キャンバス
 
     // チーム情報
@@ -96,8 +95,26 @@ public class GameManager : MonoBehaviour
         startButtton.setActive(true);
     }
 
+    async public UniTask gameEnd(){
+        // 終了ダイアログ表示
+        GameObject finishDialog = Instantiate(FinishDialog) as GameObject;
+        finishDialog.transform.SetParent (canvas.transform, false);
+
+        FinishDialog FD = finishDialog.GetComponent<FinishDialog>();
+        FD.initialize();
+
+        // ランキング
+        naichilab.RankingLoader.Instance.SendScoreAndShowRanking (OurInfo.totalScore());
+
+        // ボタン押し待ち
+        await FD.buttonWait();
+        
+        // タイトルへ 
+        SceneManager.LoadScene("Title");
+    }
+
     async public UniTask stageOver(){
-        // ダイアログ表示
+        // ゲームオーバーダイアログ表示
         GameObject overDialog = Instantiate(OverDialog) as GameObject;
         overDialog.transform.SetParent (canvas.transform, false);
 
@@ -105,45 +122,49 @@ public class GameManager : MonoBehaviour
         OD.initialize();
 
         // ランキング
-        int totalMemberNum = OurInfo.totalComp[0] + OurInfo.totalComp[1];
-        naichilab.RankingLoader.Instance.SendScoreAndShowRanking (totalMemberNum);
+        naichilab.RankingLoader.Instance.SendScoreAndShowRanking (OurInfo.totalScore());
 
+        // ボタン押し待ち
         await OD.buttonWait();
-        Destroy(overDialog);
+
+        // タイトルへ
+        SceneManager.LoadScene("Title");
     }
 
     async public UniTask stageClear(){
-        // ダイアログ表示
-        // GameObject clearDialog = Instantiate(ClearDialog) as GameObject;
-        // clearDialog.transform.SetParent (canvas.transform, false);
-
-        // ClearDialog CD = clearDialog.GetComponent<ClearDialog>();
-        // CD.initialize();
-
-        // await CD.buttonWait();
-        // Destroy(clearDialog);
-
         // チュートリアルであれば終了
         if (stageName == "Tutorial"){
-            SceneManager.LoadScene("Title");
+            await gameEnd();
         }
 
         // 通常のゲーム
         else {
-            string[] arr = stageName.Split('-');
-            int stageNo = int.Parse(arr[1]);
-
             // ラストステージなら終了
-            if (stageNo == 3){
-                SceneManager.LoadScene("Clear");
+            // if (StageStore.getStageNo() == 3){
+            if (StageStore.getStageNo() == 1){
+                await gameEnd();
             }
 
             // 次のステージへ
             else {
-                stageNo++;
-                stageName = $"Stage-{stageNo}";
-                StageStore.stageName = stageName;
+                // クリアダイアログ表示
+                GameObject clearDialog = Instantiate(ClearDialog) as GameObject;
+                clearDialog.transform.SetParent (canvas.transform, false);
 
+                ClearDialog CD = clearDialog.GetComponent<ClearDialog>();
+                CD.initialize();
+
+                // ボタン押し待ち
+                await CD.buttonWait();
+                Destroy(clearDialog);
+
+                // 辞退なら終了
+                if (!CD.nextFlag){
+                    await gameEnd();
+                }
+
+                // 次のステージへ
+                StageStore.advanceStage();
                 SceneManager.LoadScene("Stage");
             }
         }
@@ -201,7 +222,6 @@ public class GameManager : MonoBehaviour
     }
 
     async UniTask StageLoop(){
-
         // カメラ移動用の過去位置
         var pastPos = mapManager.searchNodePos(0);
 
@@ -234,10 +254,9 @@ public class GameManager : MonoBehaviour
 
                 // カメラ移動
                 var currentPos = mapManager.searchNodePos(currentTeamInfos[i].nodeOrder);
-                await cameraMove.cameraMovePos(currentPos, pastPos);
+                await cameraMove.cameraAutoMove(currentPos, pastPos);
                 pastPos.x = currentPos.x;
                 pastPos.y = currentPos.y;
-                // Debug.Log($"past: ({pastPos.x},{pastPos.y}), current: ({currentPos.x},{currentPos.y})");
 
                 // 次ノードを探索
                 var nextOrders = mapManager.searchNextOrders(currentTeamInfos[i].nodeOrder);

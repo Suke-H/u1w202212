@@ -50,11 +50,11 @@ public class BattleDialog : MonoBehaviour
             battleEvent.battleTry = 1;
         };
 
-        if (!lastFlag){
-            noButton.onClickCallback = () => {
-                battleEvent.battleTry = 0;
-            };
-        }
+        // if (!lastFlag){
+        //     noButton.onClickCallback = () => {
+        //         battleEvent.battleTry = 0;
+        //     };
+        // }
 
         
     }

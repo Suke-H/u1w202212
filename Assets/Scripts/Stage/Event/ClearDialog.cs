@@ -9,21 +9,28 @@ public class ClearDialog : MonoBehaviour
     [SerializeField] CustomButton yesButton;
     [SerializeField] CustomButton noButton;
 
-    bool endFlag;
+    bool selectFlag;
+    public bool nextFlag {get; set;}
 
     public void initialize(){
         // ボタン
         yesButton.onClickCallback = () => {
+            nextFlag = true;
+            selectFlag = true;
         };
 
-        noButton.onClickCallback = () => {
-        };
+        if (noButton != null){
+            noButton.onClickCallback = () => {
+                nextFlag = false;
+                selectFlag = true;
+                };
+        }
 
-        endFlag = false;
+        selectFlag = false;
     }
 
     async public UniTask buttonWait(){
-        await UniTask.WaitUntil(() => (endFlag));
+        await UniTask.WaitUntil(() => (selectFlag));
     }
 
 }
