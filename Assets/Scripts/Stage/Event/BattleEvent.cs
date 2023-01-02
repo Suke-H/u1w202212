@@ -30,6 +30,10 @@ public class BattleEvent : MonoBehaviour
     [SerializeField] MapManager mapManager;
     [SerializeField] Tutorial tutorial;
 
+    void Start(){
+        SE = GameObject.Find("SE").GetComponent<SEController>();
+    }
+
     async public UniTask BattleEventSequence(TeamInfo teamInfo, CustomerData customerData, MapData mapData, bool lastFlag)
     {
         // 初期化
@@ -130,19 +134,18 @@ public class BattleEvent : MonoBehaviour
 
     int calcLv(int skill, int number){
         int totalPower = skill * number;
-        Debug.Log($"skill: {skill}, power: {totalPower}");
         return totalPower / PowerPerLevel;
     }
 
     int calcNegotiateRate(int playerLv, int enemyLv){
         // return (playerLv - enemyLv) * 10 + 80;
-        float d = (playerLv - enemyLv) / (playerLv + enemyLv) * 20;
+        float d = (float)(playerLv - enemyLv) / (float)(playerLv + enemyLv) * 20f;
         return (int)(d*10) + 80;
     }
 
     int calcSystemRate(int playerLv, int enemyLv){
         // return (playerLv - enemyLv) * 10 + 80;
-        float d = (playerLv - enemyLv) / (playerLv + enemyLv) * 20;
+        float d = (float)(playerLv - enemyLv) / (float)(playerLv + enemyLv) * 20f;
         return (int)(d*10) + 80;
     }
 

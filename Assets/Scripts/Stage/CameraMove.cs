@@ -18,7 +18,7 @@ public class CameraMove : MonoBehaviour
 
     [SerializeField] GameManager gameManager;
     [SerializeField] TeamManager teamManager;
-    [SerializeField] SEController SE;
+    SEController SE;
 
     [SerializeField] float gridSize;
 
@@ -33,6 +33,8 @@ public class CameraMove : MonoBehaviour
     {
         tf = this.gameObject.GetComponent<Transform>(); //Main CameraのTransformを取得する。
         cam = this.gameObject.GetComponent<Camera>(); //Main CameraのCameraを取得する。
+
+        SE = GameObject.Find("SE").GetComponent<SEController>();
 
         // 初期設定
         leftButton.onClickCallback = () => {
@@ -52,14 +54,13 @@ public class CameraMove : MonoBehaviour
         };
 
         positionButton.onClickCallback = () => {
-            SE.playSE("click");
+            // SE.playSE("click");
             moveType = "Reposit";
         };
 
         await CameraLoop();
     }
 
-    // async public UniTask cameraAutoMove(Vector2Int currentPos, Vector2Int pastPos){
     async public UniTask cameraAutoMove(Vector2Int currentPos){
 
         // 初回のみ初期化
@@ -73,7 +74,6 @@ public class CameraMove : MonoBehaviour
 
         moveType = "Auto";
 
-        // var delta = currentPos - pastPos;
         var delta = currentPos - cameraPos;
         Vector3 direction = new Vector3(delta.x*gridSize, -delta.y*gridSize, 0f);
 
@@ -89,7 +89,7 @@ public class CameraMove : MonoBehaviour
         cameraPos.y = currentPos.y;
     }
 
-    async public UniTask cameraMove(string type){
+    async public UniTask cameraMove(string type, bool isAuto=false){
         Vector3 direction;
 
         if (type == "Left"){ 
@@ -112,6 +112,12 @@ public class CameraMove : MonoBehaviour
         .SetEase(moveEase) // アニメーションの種類
         .SetRelative() // 相対的
         .AsyncWaitForCompletion(); // UniTask用
+
+        if (isAuto){ 
+            moveType = "Auto"; 
+            standardPos.x = cameraPos.x;
+            standardPos.y = cameraPos.y;
+        }
     }
 
     // 元の位置に戻す

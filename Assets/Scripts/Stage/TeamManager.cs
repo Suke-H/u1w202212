@@ -13,7 +13,7 @@ public class TeamManager : MonoBehaviour
     [SerializeField] GameObject Whistle;
     [SerializeField] GameObject Balance;
 
-    [SerializeField] SEController SE;
+    SEController SE;
     
     // 保存用
     TeamInfo currentTeamInfo;
@@ -40,6 +40,8 @@ public class TeamManager : MonoBehaviour
 
     void Start(){
         mainCamera = Camera.main;
+
+        SE = GameObject.Find("SE").GetComponent<SEController>();
     }
 
     public void OutOfFocus(){
@@ -99,8 +101,14 @@ public class TeamManager : MonoBehaviour
         for (int type=0; type<2; type++){
             // 現在の値
             int nextReal = nextTeamInfos[teamNo].teamComp[type];
-            // 全人数との差分
-            int delta = OurInfo.totalComp[type] - nextReal;
+            // 全人数
+            int total = currentTeamInfo.teamComp[type];
+            total += nextTeamInfos[0].teamComp[type];
+            total += nextTeamInfos[1].teamComp[type];
+
+            // 差分
+            // int delta = OurInfo.totalComp[type] - nextReal;
+            int delta = total - nextReal;
 
             // ホイッスルを鳴らしたチームに総動員
             nextTeamStates[teamNo].plusTeam(type, delta);
@@ -113,13 +121,22 @@ public class TeamManager : MonoBehaviour
             nextTeamStates[1-teamNo].minusTeam(type, nextTeamInfos[1-teamNo].teamComp[type]);
             nextTeamInfos[1-teamNo].minusMember(type, nextTeamInfos[1-teamNo].teamComp[type]);
         }
+
+        // Lv再計算
+        updateLevel(currentTeamState);
+        updateLevel(nextTeamStates[teamNo]);
+        updateLevel(nextTeamStates[1-teamNo]);
     }
 
     // 次チームを均等にする（奇数だったら[0]を1つ多めに）
     public void balanceFunc(){
         for(int type=0; type<2; type++){
             // 合計値
-            int total = OurInfo.totalComp[type];
+            // int total = OurInfo.totalComp[type];
+            int total = currentTeamInfo.teamComp[type];
+            total += nextTeamInfos[0].teamComp[type];
+            total += nextTeamInfos[1].teamComp[type];
+
             // 目標の値
             int[] goals = new int[] {total/2 + total%2, total/2};
 
@@ -127,7 +144,9 @@ public class TeamManager : MonoBehaviour
                 // 現在の値
                 int nextReal = nextTeamInfos[teamNo].teamComp[type];
                 // 差分
-                int delta = goals[teamNo]-nextReal;
+                int delta = goals[teamNo] - nextReal;
+
+                Debug.Log($"total: {total}, nextReal: {nextReal}, delta: {delta}");
 
                 currentTeamState.minusTeam(type, delta);
                 nextTeamStates[teamNo].plusTeam(type, delta);
@@ -135,7 +154,12 @@ public class TeamManager : MonoBehaviour
                 currentTeamInfo.minusMember(type, delta);
                 nextTeamInfos[teamNo].plusMember(type, delta);
             }
-        }            
+        }
+
+        // Lv再計算
+        updateLevel(currentTeamState);
+        updateLevel(nextTeamStates[0]);
+        updateLevel(nextTeamStates[1]);            
 
     }
 

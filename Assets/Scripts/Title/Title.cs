@@ -6,11 +6,17 @@ public class Title : MonoBehaviour
     [SerializeField] private CustomButton tutorialButton;
     [SerializeField] private CustomButton startButton;
 
-    [SerializeField] BGMController BGM;
-    [SerializeField] SEController SE;
+    BGMController BGM;
+    SEController SE;
 
     private void Start()
     {
+        Debug.Log(GameObject.Find("BGM"));
+        Debug.Log(GameObject.Find("BGM").GetComponent<BGMController>());
+
+        BGM = GameObject.Find("BGM").GetComponent<BGMController>();
+        SE = GameObject.Find("SE").GetComponent<SEController>();
+
         BGM.BGMChange("Normal");
 
         tutorialButton.onClickCallback = () => {

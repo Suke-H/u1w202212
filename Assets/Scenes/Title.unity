@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 42317641}
   - component: {fileID: 42317640}
   m_Layer: 5
-  m_Name: BGM
+  m_Name: BGMtext
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1171,8 +1171,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutorialButton: {fileID: 715043927}
   startButton: {fileID: 1015567891}
-  BGM: {fileID: 206585251}
-  SE: {fileID: 1718674745}
 --- !u!4 &484600218
 Transform:
   m_ObjectHideFlags: 0
@@ -2136,7 +2134,7 @@ GameObject:
   - component: {fileID: 1206648698}
   - component: {fileID: 1206648697}
   m_Layer: 5
-  m_Name: SE
+  m_Name: SEtext
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

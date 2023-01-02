@@ -27,8 +27,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] Tutorial tutorial;
 
     // BGM, SE
-    [SerializeField] BGMController BGM;
-    [SerializeField] SEController SE;
+    // [SerializeField] BGMController BGM;
+    // [SerializeField] SEController SE;
+    BGMController BGM;
+    SEController SE;
 
     // ダイアログ
     [SerializeField] GameObject ClearDialog;
@@ -153,7 +155,6 @@ public class GameManager : MonoBehaviour
         else {
             // ラストステージなら終了
             if (StageStore.getStageNo() == 3){
-            // if (StageStore.getStageNo() == 1){
                 await gameEnd("AllClear");
             }
 
@@ -215,11 +216,13 @@ public class GameManager : MonoBehaviour
         mapManager.generateMap(stageName);
 
         // BGM
+        BGM = GameObject.Find("BGM").GetComponent<BGMController>();
+        SE = GameObject.Find("SE").GetComponent<SEController>();
+
         BGM.BGMChange("Normal");
 
         // 最初のみ弊社情報を初期化
-        // if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "test"){
-        if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "Stage-2" || stageName == "Stage-3"){
+        if (stageName == "Stage-2" || stageName == "Tutorial" || stageName == "test"){
             OurInfo.initialize();
         }
 
@@ -329,7 +332,7 @@ public class GameManager : MonoBehaviour
 
                     // ⤵→の場合、カメラを1つ下げる
                     if (currentY+1 == nextY){
-                        await cameraMove.cameraMove("Down");
+                        await cameraMove.cameraMove("Down", isAuto: true);
                     }
 
                     // 現チームの人員を全て次ノードへアサインする
