@@ -191,6 +191,9 @@ public class MapManager : MonoBehaviour
     {
         /* ノードの描画 */
         for (int order=0; order<nodeNum; order++){
+
+            Debug.Log($"order: {order}");
+
             var pos = searchNodePos(order);
             int type = NodeMap[pos.y][pos.x];
 
@@ -215,6 +218,7 @@ public class MapManager : MonoBehaviour
             if (nodeTypeDict[type] == "battle" || nodeTypeDict[type] == "boss"){
                 int ID = Array.IndexOf(mapData.nodeOrders, order);
                 var customer = mapData.customerDatas[ID];
+
                 // if (nodeTypeDict[type] == "boss"){
                 //     customer.customerName = "??????";
                 // }

@@ -12,6 +12,8 @@ public class TeamManager : MonoBehaviour
 
     [SerializeField] GameObject Whistle;
     [SerializeField] GameObject Balance;
+
+    [SerializeField] SEController SE;
     
     // 保存用
     TeamInfo currentTeamInfo;
@@ -83,18 +85,6 @@ public class TeamManager : MonoBehaviour
         int totalPower = skill * number;
         return totalPower / 10;
     }
-
-    // public void CtoN(TeamState currentState, TeamState nextState,  int type, int value=1){
-    //     currentState.minusTeam(type, value);
-    //     nextState.plusTeam(type, value);
-
-    //     currentInfo.minusMember(type, value);
-    //     nextInfo.plusMember(type, value);
-    // }
-
-    // public void NtoC(){
-
-    // }
 
     // レベルを更新
     public void updateLevel(TeamState teamState){
@@ -371,6 +361,7 @@ public class TeamManager : MonoBehaviour
         // ボタンの関数
         CustomButton balanceButton = balance.GetComponent<CustomButton>();
         balanceButton.onClickCallback = () => {
+            SE.playSE("balance");
             balanceFunc();
         };
 
@@ -387,6 +378,7 @@ public class TeamManager : MonoBehaviour
             CustomButton whistleButton = whistle.GetComponent<CustomButton>();
             int index = i;
             whistleButton.onClickCallback = () => {
+                SE.playSE("whistle");
                 whistleFunc(index);
             };
 

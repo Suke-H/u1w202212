@@ -18,6 +18,7 @@ public class CameraMove : MonoBehaviour
 
     [SerializeField] GameManager gameManager;
     [SerializeField] TeamManager teamManager;
+    [SerializeField] SEController SE;
 
     [SerializeField] float gridSize;
 
@@ -51,6 +52,7 @@ public class CameraMove : MonoBehaviour
         };
 
         positionButton.onClickCallback = () => {
+            SE.playSE("click");
             moveType = "Reposit";
         };
 

@@ -9,11 +9,14 @@ public class PauseManager : MonoBehaviour
     [SerializeField] CustomButton homeButton;
     [SerializeField] Canvas canvas;
 
+    [SerializeField] SEController SE;
+
     bool pauseFlag = false;
 
     async void Start()
     {
         homeButton.onClickCallback = () => {
+            SE.playSE("click"); // SE
             pauseFlag = true;
         };
 
@@ -36,6 +39,8 @@ public class PauseManager : MonoBehaviour
 
             // ダイアログ内のボタンが押されるまで待機
             await PD.buttonWait();
+
+            SE.playSE("click"); // SE
 
             // ダイアログ削除
             Destroy(pauseDialog);

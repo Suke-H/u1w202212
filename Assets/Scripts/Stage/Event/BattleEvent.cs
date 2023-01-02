@@ -12,6 +12,8 @@ public class BattleEvent : MonoBehaviour
     [SerializeField] GameObject canvas;//キャンバス
     [SerializeField] int PowerPerLevel;
 
+    [SerializeField] SEController SE;
+
     // -1: 選択待ち, 0: バトル辞退, 1: バトル決定
     public int battleTry {get; set;} = -1;
     // 成功したか
@@ -78,6 +80,8 @@ public class BattleEvent : MonoBehaviour
 
             /* 成功 */
             if (result){
+                SE.playSE("success"); // SE
+
                 GameObject successDialog = Instantiate(SuccessDialog) as GameObject;
                 successDialog.transform.SetParent (canvas.transform, false);
 
@@ -99,6 +103,8 @@ public class BattleEvent : MonoBehaviour
 
             /* 失敗 */
             else {
+                SE.playSE("shock"); // SE
+
                 // 最終ノードならこの処理を飛ばす
                 if (!lastFlag){
                     GameObject failDialog = Instantiate(FailDialog) as GameObject;
@@ -129,11 +135,15 @@ public class BattleEvent : MonoBehaviour
     }
 
     int calcNegotiateRate(int playerLv, int enemyLv){
-        return (playerLv - enemyLv) * 10 + 80;
+        // return (playerLv - enemyLv) * 10 + 80;
+        float d = (playerLv - enemyLv) / (playerLv + enemyLv) * 20;
+        return (int)(d*10) + 80;
     }
 
     int calcSystemRate(int playerLv, int enemyLv){
-        return (playerLv - enemyLv) * 10 + 80;
+        // return (playerLv - enemyLv) * 10 + 80;
+        float d = (playerLv - enemyLv) / (playerLv + enemyLv) * 20;
+        return (int)(d*10) + 80;
     }
 
     public bool battleJudge(int percent1, int percent2){

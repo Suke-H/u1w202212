@@ -1172,6 +1172,7 @@ MonoBehaviour:
   tutorialButton: {fileID: 715043927}
   startButton: {fileID: 1015567891}
   BGM: {fileID: 206585251}
+  SE: {fileID: 1718674745}
 --- !u!4 &484600218
 Transform:
   m_ObjectHideFlags: 0
@@ -2559,14 +2560,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SEClips:
-  - {fileID: 8300000, guid: 43963bec5c127a7449f65f129d6c884f, type: 3}
-  - {fileID: 8300000, guid: addd52dcf2ad0ca4b91038864b586123, type: 3}
+  - {fileID: 8300000, guid: 7b8b6a36989e74d4aa36921e40b1a9d0, type: 3}
+  - {fileID: 8300000, guid: c93ae404a2747e64fb8b7f1e45780c29, type: 3}
+  - {fileID: 8300000, guid: a6d51edaff46add4ab25af4cc36504a5, type: 3}
+  - {fileID: 8300000, guid: 58fd35461a055a14fb3ad75fd3f635b3, type: 3}
+  - {fileID: 8300000, guid: ac0f113183c7ac0468ecdf42bc3679d5, type: 3}
+  - {fileID: 8300000, guid: a3b686059ea40b249ab48eb10f682de0, type: 3}
   SENames:
-  - button
-  - quote
+  - click
+  - whistle
+  - balance
+  - success
+  - congrat
+  - shock
   SEVolumeRates:
-  - 0.5
+  - 1
   - 0.6
+  - 1
+  - 0.6
+  - 0.7
+  - 0.9
 --- !u!4 &1718674746
 Transform:
   m_ObjectHideFlags: 0

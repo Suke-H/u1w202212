@@ -20,6 +20,6 @@ public class SliderHelper : MonoBehaviour, IPointerUpHandler
     }
 
     public void OnPointerUp(PointerEventData eventData) {
-        SEController.instance.playSE("button");
+        SEController.instance.playSE("whistle");
     }
 }

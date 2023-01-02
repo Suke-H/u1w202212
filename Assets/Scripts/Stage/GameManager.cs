@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
 
     // BGM, SE
     [SerializeField] BGMController BGM;
+    [SerializeField] SEController SE;
 
     // ダイアログ
     [SerializeField] GameObject ClearDialog;
@@ -101,16 +102,16 @@ public class GameManager : MonoBehaviour
         startButtton.setActive(true);
     }
 
-    async public UniTask gameEnd(){
+    async public UniTask gameEnd(string endType){
         // 終了ダイアログ表示
         GameObject finishDialog = Instantiate(FinishDialog) as GameObject;
         finishDialog.transform.SetParent (canvas.transform, false);
 
         FinishDialog FD = finishDialog.GetComponent<FinishDialog>();
-        FD.initialize();
+        FD.initialize(endType);
 
         // ランキング
-        if (stageName != "Tutorial"){
+        if (endType != "Tutorial"){
             naichilab.RankingLoader.Instance.SendScoreAndShowRanking (OurInfo.totalScore());
         }
 
@@ -140,9 +141,12 @@ public class GameManager : MonoBehaviour
     }
 
     async public UniTask stageClear(){
+        // SE
+        SE.playSE("congrat");
+
         // チュートリアルであれば終了
         if (stageName == "Tutorial"){
-            await gameEnd();
+            await gameEnd("Tutorial");
         }
 
         // 通常のゲーム
@@ -150,7 +154,7 @@ public class GameManager : MonoBehaviour
             // ラストステージなら終了
             if (StageStore.getStageNo() == 3){
             // if (StageStore.getStageNo() == 1){
-                await gameEnd();
+                await gameEnd("AllClear");
             }
 
             // 次のステージへ
@@ -168,7 +172,7 @@ public class GameManager : MonoBehaviour
 
                 // 辞退なら終了
                 if (!CD.nextFlag){
-                    await gameEnd();
+                    await gameEnd("GiveUp");
                 }
 
                 // 次のステージへ
@@ -199,6 +203,7 @@ public class GameManager : MonoBehaviour
     {
         // ボタン
         startButtton.onClickCallback = () => {
+            SE.playSE("click");
             startFlag = true;
         };
 
@@ -214,7 +219,7 @@ public class GameManager : MonoBehaviour
 
         // 最初のみ弊社情報を初期化
         // if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "test"){
-        if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "Stage-2"){
+        if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "Stage-2" || stageName == "Stage-3"){
             OurInfo.initialize();
         }
 
