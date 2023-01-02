@@ -58,17 +58,13 @@ public class GameManager : MonoBehaviour
     async public UniTask teamAssignSequence(TeamInfo current, List<TeamInfo> nexts){
         teamManager.assignTeams(current, nexts);
 
+        // チュートリアル（ルールその3）
+        await tutorial.TutoRule3();
+
         // 入力待ち
         while (true){
             startFlag = false;
             await UniTask.WaitUntil(() => startFlag);
-            // await UniTask.WaitUntil(() => startFlag || Input.GetKeyDown(KeyCode.A));
-
-            // if (!startFlag){
-            //     // teamManager.whistle(0);
-            //     teamManager.balance();
-            //     continue;
-            // }
 
             // 現チームの全ての人員を割り振り出来ていなかったらループ
             if (current.teamComp[0] == 0 & current.teamComp[1] == 0){
@@ -300,9 +296,6 @@ public class GameManager : MonoBehaviour
                 // 分岐があったら2
                 else { 
                     pattern = 2; 
-
-                    // チュートリアル（ルールその3）
-                    await tutorial.TutoRule3();
                 }
 
                 // 現在ノードの情報
@@ -339,7 +332,7 @@ public class GameManager : MonoBehaviour
                     tmpTeamInfos[0].teamComp[0] = currentInfo.teamComp[0] + currentTeamInfos[i-1].teamComp[0];
                     tmpTeamInfos[0].teamComp[1] = currentInfo.teamComp[1] + currentTeamInfos[i-1].teamComp[1];
 
-                    teamManager.assignCurrentTeams(currentInfo);
+                    teamManager.assignCurrentUnionTeams(currentTeamInfos[i-1], currentInfo);
                 }
 
                 // 必要なピンの数
@@ -352,7 +345,7 @@ public class GameManager : MonoBehaviour
                 // 次チームごとにイベント!
                 foreach (TeamInfo nextTeam in tmpTeamInfos){
                     // ログ
-                    nextTeam.printOrder();
+                    // nextTeam.printOrder();
 
                     // ピン移動
                     if (pattern == 1){

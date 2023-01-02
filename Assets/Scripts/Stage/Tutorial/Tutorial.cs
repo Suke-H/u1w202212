@@ -49,7 +49,6 @@ public class Tutorial : MonoBehaviour
 
         // y移動
         TP.moveY(moveValue);
-
         textNo++;
 
         // クリック待ち
@@ -99,6 +98,8 @@ public class Tutorial : MonoBehaviour
         if (endFlags[2]) { return; }
         // setButtonsActive(false);
 
+        await UniTask.Delay(TimeSpan.FromSeconds(1f));
+
         await Popup();
         await Popup(270f);
 
@@ -111,9 +112,11 @@ public class Tutorial : MonoBehaviour
         if (endFlags[3]) { return; }
         setButtonsActive(false);
 
-        await Popup();
-        await Popup();
-        await Popup();
+        await UniTask.Delay(TimeSpan.FromSeconds(1f));
+
+        await Popup(200f);
+        await Popup(200f);
+        await Popup(200f);
 
         setButtonsActive(true);
         endFlags[3] = true;
@@ -124,6 +127,8 @@ public class Tutorial : MonoBehaviour
         if (endFlags[4]) { return; }
         setButtonsActive(false);
 
+        await Popup();
+        await Popup();
         await Popup();
         await Popup();
         await Popup();
