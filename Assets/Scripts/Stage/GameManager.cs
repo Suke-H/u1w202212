@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
     public TeamInfo createTeamInfo(int order, int[] teamComp){
         var (pos, nodeType) = mapManager.getTeamNodeInfo(order);
         
-        TeamInfo teamInfo = new TeamInfo(){teamComp=teamComp, 
+        TeamInfo teamInfo = new TeamInfo(){teamComp=new int[]{teamComp[0], teamComp[1]}, 
         nodeOrder=order, nodeType=nodeType, nodePos=pos};
 
         return teamInfo;
@@ -61,13 +61,14 @@ public class GameManager : MonoBehaviour
         // 入力待ち
         while (true){
             startFlag = false;
-            await UniTask.WaitUntil(() => startFlag || Input.GetKeyDown(KeyCode.A));
+            await UniTask.WaitUntil(() => startFlag);
+            // await UniTask.WaitUntil(() => startFlag || Input.GetKeyDown(KeyCode.A));
 
-            if (!startFlag){
-                // teamManager.whistle(0);
-                teamManager.balance();
-                continue;
-            }
+            // if (!startFlag){
+            //     // teamManager.whistle(0);
+            //     teamManager.balance();
+            //     continue;
+            // }
 
             // 現チームの全ての人員を割り振り出来ていなかったらループ
             if (current.teamComp[0] == 0 & current.teamComp[1] == 0){
@@ -76,6 +77,7 @@ public class GameManager : MonoBehaviour
         }
 
         teamManager.destroyTeams();
+        teamManager.destroyButtons();
     }
 
     // 無人チームを削除
@@ -215,7 +217,7 @@ public class GameManager : MonoBehaviour
         BGM.BGMChange("Normal");
 
         // 最初のみ弊社情報を初期化
-        if (stageName == "Stage-1" || stageName == "Tutorial"){
+        if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "test"){
             OurInfo.initialize();
         }
 
@@ -258,9 +260,9 @@ public class GameManager : MonoBehaviour
             // デバッグ
             Debug.Log("==================");
             Debug.Log("現在チーム");
-            foreach(var CI in currentTeamInfos){
-                CI.printOrder();
-            }
+            // foreach(var CI in currentTeamInfos){
+            //     CI.printOrder();
+            // }
 
             // 現在チームごとに処理
             for (int i = 0; i < currentTeamInfos.Count; i++){
@@ -312,7 +314,7 @@ public class GameManager : MonoBehaviour
                 // チーム情報を生成
                 foreach (int order in nextOrders){
                     var nextInfo = createTeamInfo(order, new int[]{0, 0});
-                    nextInfo.printOrder();
+                    // nextInfo.printOrder();
                     tmpTeamInfos.Add(nextInfo);
                 }
 

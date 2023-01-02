@@ -75,7 +75,8 @@ public class MapManager : MonoBehaviour
 
     public (Vector2, string) getTeamNodeInfo(int order){
         Vector2Int posXY = searchNodePos(order);
-        Vector2 pos = GetTeamPostion(posXY.x, posXY.y);
+        // Vector2 pos = GetTeamPostion(posXY.x, posXY.y);
+        Vector2 pos = GetActualPostion(posXY.x, posXY.y);
 
         string nodeType = nodeTypeDict[NodeMap[posXY.y][posXY.x]];
 
@@ -228,8 +229,6 @@ public class MapManager : MonoBehaviour
             Vector2Int pos0 = searchNodePos(edge[0]);
             Vector2Int pos1 = searchNodePos(edge[1]);
             int xSpan = Math.Abs(pos1.x - pos0.x);
-
-            Debug.Log($"{edge[0]}: ({pos0.x},{pos0.y}), {edge[1]}: ({pos1.x},{pos1.y})");
 
             Vector3[] positions = GetPathPositions(pos0, pos1);
 

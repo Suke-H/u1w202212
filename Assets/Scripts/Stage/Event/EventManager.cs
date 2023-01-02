@@ -7,7 +7,6 @@ public class EventManager : MonoBehaviour
 {
     BattleEvent battleEvent;
 
-
     int[] enemyLevels = new int[]{3, 4};
 
     // 報酬

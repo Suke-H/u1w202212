@@ -8,8 +8,10 @@ public class TeamManager : MonoBehaviour
 {
     [SerializeField] GameObject Team;
     [SerializeField] GameObject NodePopup;
-    // [SerializeField] GameObject whistle;
     [SerializeField] GameObject canvas;//キャンバス
+
+    [SerializeField] GameObject Whistle;
+    [SerializeField] GameObject Balance;
     
     // 保存用
     TeamInfo currentTeamInfo;
@@ -21,9 +23,17 @@ public class TeamManager : MonoBehaviour
     public List<TeamInfo> nextTeamInfos {get; set;} = new List<TeamInfo>();
     public List<GameObject> nextTeamObjects {get; set;} = new List<GameObject>();
     public List<TeamState> nextTeamStates {get; set;} = new List<TeamState>();
+
+    // ボタン
+    public List<GameObject> WhistleInstances {get; set;} = new List<GameObject>();
+    public GameObject BalanceInstance {get; set;}
     
     ColorPallet pallet = new ColorPallet();
     Camera mainCamera;
+
+    void Start(){
+        mainCamera = Camera.main;
+    }
 
     public void OutOfFocus(){
         if (currentTeamObject != null){
@@ -31,6 +41,16 @@ public class TeamManager : MonoBehaviour
         }   
         foreach (GameObject team in nextTeamObjects){
             team.SetActive(false);
+        }
+
+        foreach (var whistle in WhistleInstances){
+            if (whistle != null){
+                whistle.SetActive(false);
+            }
+        }
+
+        if (BalanceInstance != null){
+            BalanceInstance.SetActive(false);
         }
     }
 
@@ -41,6 +61,17 @@ public class TeamManager : MonoBehaviour
         foreach (GameObject team in nextTeamObjects){
             team.SetActive(true);
         }
+
+        foreach (var whistle in WhistleInstances){
+            if (whistle != null){
+                whistle.SetActive(true);
+            }
+        }
+
+        if (BalanceInstance != null){
+            BalanceInstance.SetActive(true);
+        }
+
     }
 
     int calcLv(int skill, int number){
@@ -68,41 +99,48 @@ public class TeamManager : MonoBehaviour
         teamState.setLv(1, engineerLv);
     }
 
-    // 現在チームから全ての人員を持ってくる
-    public void whistle(int teamNo){
-        int[] nums = new int[]{currentTeamState.teamComp[0], currentTeamState.teamComp[1]};
+    // 全てのチームから全人員を持ってくる
+    public void whistleFunc(int teamNo){
 
-        for (int i=0; i<2; i++){
-            currentTeamState.minusTeam(i, nums[i]);
-            nextTeamStates[teamNo].plusTeam(i, nums[i]);
+        for (int type=0; type<2; type++){
+            // 現在の値
+            int nextReal = nextTeamInfos[teamNo].teamComp[type];
+            // 全人数との差分
+            int delta = OurInfo.totalComp[type] - nextReal;
 
-            currentTeamInfo.minusMember(i, nums[i]);
-            nextTeamInfos[teamNo].plusMember(i, nums[i]);
+            // ホイッスルを鳴らしたチームに総動員
+            nextTeamStates[teamNo].plusTeam(type, delta);
+            nextTeamInfos[teamNo].plusMember(type, delta);
+
+            // それ以外は0人に
+            currentTeamState.minusTeam(type, currentTeamInfo.teamComp[type]);
+            currentTeamInfo.minusMember(type, currentTeamInfo.teamComp[type]);
+
+            nextTeamStates[1-teamNo].minusTeam(type, nextTeamInfos[1-teamNo].teamComp[type]);
+            nextTeamInfos[1-teamNo].minusMember(type, nextTeamInfos[1-teamNo].teamComp[type]);
+
         }
     }
 
     // 次チームを均等にする（奇数だったら[0]を1つ多めに）
-    public void balance(){
-
+    public void balanceFunc(){
         for(int type=0; type<2; type++){
-            int total = currentTeamState.teamComp[type]
-                        + nextTeamStates[0].teamComp[type]
-                        + nextTeamStates[1].teamComp[type];
-
+            // 合計値
+            int total = OurInfo.totalComp[type];
             // 目標の値
             int[] goals = new int[] {total/2 + total%2, total/2};
-            Debug.Log($"type: {type}, goals: ({goals[0]},{goals[1]})");
 
             for (int teamNo=0; teamNo<2; teamNo++){
                 // 現在の値
                 int nextReal = nextTeamInfos[teamNo].teamComp[type];
-                // Debug.Log($"type: {type}, goals: ({goals[0]},{goals[1]})");
+                // 差分
+                int delta = goals[teamNo]-nextReal;
 
-                currentTeamState.minusTeam(type, goals[teamNo]-nextReal);
-                nextTeamStates[teamNo].plusTeam(type, goals[teamNo]-nextReal);
+                currentTeamState.minusTeam(type, delta);
+                nextTeamStates[teamNo].plusTeam(type, delta);
 
-                currentTeamInfo.minusMember(type, goals[teamNo]-nextReal);
-                nextTeamInfos[teamNo].plusMember(type, goals[teamNo]-nextReal);
+                currentTeamInfo.minusMember(type, delta);
+                nextTeamInfos[teamNo].plusMember(type, delta);
             }
         }            
 
@@ -126,18 +164,19 @@ public class TeamManager : MonoBehaviour
                 nextTeamInfos[teamNo].plusMember(i);
             }
 
-            // // いなければ他チームから持ってくる
-            // else {
-            //     nextTeamStates[teamNo].minusTeam(i);
-            //     nextTeamStates[teamNo].plusTeam(i);
+            // いなければ他チームから持ってくる
+            else if (nextTeamInfos[1-teamNo].teamComp[i] > 0){
+                nextTeamStates[1-teamNo].minusTeam(i);
+                nextTeamStates[teamNo].plusTeam(i);
 
-            //     nextTeamInfos[teamNo].minusMember(i);
-            //     nextTeamInfos[teamNo].plusMember(i);
-            // }
+                nextTeamInfos[1-teamNo].minusMember(i);
+                nextTeamInfos[teamNo].plusMember(i);
+            }
 
             // Lv再計算
             updateLevel(currentTeamState);
             updateLevel(nextTeamStates[teamNo]);
+            updateLevel(nextTeamStates[1-teamNo]);
 
             return true;
 
@@ -160,7 +199,6 @@ public class TeamManager : MonoBehaviour
         }
 
         return false;
-
     }
 
     public void assignCurrentTeams(TeamInfo currentInfo){
@@ -170,13 +208,10 @@ public class TeamManager : MonoBehaviour
 
         // 保存
         currentTeamInfo = currentInfo;
-
         // チーム生成
         (currentTeamObject, currentTeamState) = createTeam(-1, currentTeamInfo.teamComp);
-
         // Lv再計算
         updateLevel(currentTeamState);
-
         // チーム描画
         displayTeam(currentTeamObject, currentTeamInfo.nodePos);
     }
@@ -190,18 +225,16 @@ public class TeamManager : MonoBehaviour
         currentTeamInfo = currentInfo;
         nextTeamInfos = new List<TeamInfo>(nextInfos);
 
-        // 現チームの処理開始
+        /* 現チームの処理開始 */
 
         // チーム生成
         (currentTeamObject, currentTeamState) = createTeam(-1, currentTeamInfo.teamComp);
-
         // チーム描画
-        displayTeam(currentTeamObject, currentTeamInfo.nodePos);
-
+        displayTeam(currentTeamObject, currentTeamInfo.nodePos, dx: -1.5f, dy: 0f);
         // Lv更新
         updateLevel(currentTeamState);
 
-        // 次チームの処理開始
+        /* 次チームの処理開始 */
 
         nextTeamObjects = new List<GameObject>(); // リセット
         nextTeamStates = new List<TeamState>(); // リセット
@@ -210,17 +243,19 @@ public class TeamManager : MonoBehaviour
             // チーム生成
             var (nextTeamObject, nextTeamState) = createTeam(i, new int[]{0, 0});
             // チーム描画
-            displayTeam(nextTeamObject, nextTeamInfos[i].nodePos);
-
+            displayTeam(nextTeamObject, nextTeamInfos[i].nodePos, dx: 1.8f, dy: 0f);
             // 追加
             nextTeamObjects.Add(nextTeamObject);
             nextTeamStates.Add(nextTeamState);
-
             // Lv更新
             updateLevel(nextTeamStates[i]);
         }
 
+        // ボタン生成
+        createButtons();
     }
+
+    
 
     public (GameObject, TeamState) createTeam(int teamNo, int[] comp){
         // チームオブジェクト生成し、場所指定
@@ -234,12 +269,12 @@ public class TeamManager : MonoBehaviour
         return (team, teamState);
     }
 
-    // チーム表示（UI座標変換）
-    public void displayTeam(GameObject team, Vector2 pos){
-        mainCamera = Camera.main;
+    // ワールド座標をUI座標に変換
+    public Vector2 WorldToUI(Vector2 pos, float dx=0f, float dy=0f){
+        // mainCamera = Camera.main;
 
         // ワールド座標 -> スクリーン座標変換
-        var targetWorldPos = new Vector3(pos.x, pos.y, 0);
+        var targetWorldPos = new Vector3(pos.x+dx, pos.y+dy, 0);
         var targetScreenPos = mainCamera.WorldToScreenPoint(targetWorldPos);
 
         // スクリーン座標 -> UIローカル座標変換
@@ -252,7 +287,12 @@ public class TeamManager : MonoBehaviour
             out var uiLocalPos // この変数に出力される
         );
 
-        team.transform.localPosition = uiLocalPos;
+        return uiLocalPos;
+    }
+
+    // チーム表示
+    public void displayTeam(GameObject team, Vector2 pos, float dx=0f, float dy=0f){
+        team.transform.localPosition = WorldToUI(pos, dx, dy);
     }
 
     public void destroyTeams(){
@@ -266,24 +306,8 @@ public class TeamManager : MonoBehaviour
         nextTeamStates = new List<TeamState>();
     }
 
-    // チーム表示（UI座標変換）
+    // 顧客情報表示
     public void displayCustomer(Vector2 pos, CustomerData customerData){
-        mainCamera = Camera.main;
-
-        // ワールド座標 -> スクリーン座標変換
-        var targetWorldPos = new Vector3(pos.x, pos.y-1.2f, 0);
-        var targetScreenPos = mainCamera.WorldToScreenPoint(targetWorldPos);
-
-        // スクリーン座標 -> UIローカル座標変換
-        RectTransform parentUI = this.gameObject.GetComponent<RectTransform>();
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            parentUI,
-            targetScreenPos,
-            mainCamera, // オーバーレイモードの場合はnull
-            out var uiLocalPos // この変数に出力される
-        );
-
         // ダイアログ表示
         nodePopup = Instantiate(NodePopup) as GameObject;
         nodePopup.transform.SetParent (canvas.transform, false);
@@ -293,12 +317,51 @@ public class TeamManager : MonoBehaviour
         NP.initialize(customerData);
 
         // 座標指定
-        NP.transform.localPosition = uiLocalPos;
+        NP.transform.localPosition = WorldToUI(pos, dx: 0f, dy: -1.2f);
     }
 
     // チーム表示（UI座標変換）
     public void destroyCustomer(){
         Destroy(nodePopup);
+    }
+
+    public void createButtons(){
+        // 天秤ボタン生成
+        GameObject balance = Instantiate(Balance) as GameObject;
+        balance.transform.SetParent (canvas.transform, false);
+        balance.transform.localPosition = WorldToUI(currentTeamInfo.nodePos,
+                                        dx: 0f, dy: 1.2f); // 座標指定
+        // ボタンの関数
+        CustomButton balanceButton = balance.GetComponent<CustomButton>();
+        balanceButton.onClickCallback = () => {
+            balanceFunc();
+        };
+
+        BalanceInstance = balance; // 保存
+
+        for (int i=0; i<2; i++){
+            // ホイッスルボタン生成
+            GameObject whistle = Instantiate(Whistle) as GameObject;
+            whistle.transform.SetParent (canvas.transform, false);
+            whistle.transform.localPosition = WorldToUI(nextTeamInfos[i].nodePos, 
+                                            dx: 0f, dy: 1.5f); // 座標指定
+
+            // ボタンの関数
+            CustomButton whistleButton = whistle.GetComponent<CustomButton>();
+            int index = i;
+            whistleButton.onClickCallback = () => {
+                whistleFunc(index);
+            };
+
+            WhistleInstances.Add(whistle); // 保存
+        }
+    }
+
+    public void destroyButtons(){
+        foreach (var whistle in WhistleInstances){
+            Destroy(whistle);
+        }
+        Destroy(BalanceInstance);
     }
 
 }

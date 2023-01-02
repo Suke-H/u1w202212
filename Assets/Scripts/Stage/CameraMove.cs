@@ -19,6 +19,8 @@ public class CameraMove : MonoBehaviour
     [SerializeField] GameManager gameManager;
     [SerializeField] TeamManager teamManager;
 
+    [SerializeField] float gridSize;
+
     Vector2Int standardPos = new Vector2Int(0, 0);
     Vector2Int cameraPos = new Vector2Int(0, 0);
 
@@ -58,8 +60,7 @@ public class CameraMove : MonoBehaviour
 
         var delta = currentPos - pastPos;
 
-        // Vector3 direction = new Vector3(delta.x*3f, -delta.y*3f, 0f);
-        Vector3 direction = new Vector3(delta.x*3f, 0, 0f);
+        Vector3 direction = new Vector3(delta.x*gridSize, 0, 0f);
 
         await this.transform.DOBlendableMoveBy(direction, 0.5f)
         .SetEase(moveEase) // アニメーションの種類
@@ -78,19 +79,19 @@ public class CameraMove : MonoBehaviour
 
         if (type == "Left"){ 
             cameraPos.x -= 1;
-            direction = new Vector3(-3.0f,0.0f,0.0f);
+            direction = new Vector3(-gridSize,0.0f,0.0f);
         }
         else if (type == "Right"){ 
             cameraPos.x += 1;
-            direction = new Vector3(3.0f,0.0f,0.0f); 
+            direction = new Vector3(gridSize,0.0f,0.0f); 
         }
         else if (type == "Up"){ 
             cameraPos.y -= 1;
-            direction = new Vector3(0.0f,3.0f,0.0f); 
+            direction = new Vector3(0.0f,gridSize,0.0f); 
         }
         else { 
             cameraPos.y += 1;
-            direction = new Vector3(0.0f,-3.0f,0.0f); }
+            direction = new Vector3(0.0f,-gridSize,0.0f); }
 
         await this.transform.DOBlendableMoveBy(direction, 0.5f)
         .SetEase(moveEase) // アニメーションの種類
@@ -102,7 +103,7 @@ public class CameraMove : MonoBehaviour
     async public UniTask repositCamera(){
         var delta = standardPos - cameraPos;
 
-        Vector3 direction = new Vector3(delta.x*3f, -delta.y*3f, 0f);
+        Vector3 direction = new Vector3(delta.x*gridSize, -delta.y*gridSize, 0f);
 
         await this.transform.DOBlendableMoveBy(direction, 0.5f)
         .SetEase(moveEase) // アニメーションの種類

@@ -14,10 +14,17 @@ public class Tutorial : MonoBehaviour
     int textNo = 0;
     int endNo;
 
-    bool[] endFlags = new bool[]{false, false, false, false, false, false, false}; 
+    bool[] endFlags; 
 
     void Start(){
         endNo = explains.Length;
+
+        if (StageStore.stageName == "Tutorial"){
+            endFlags = new bool[]{false, false, false, false, false, false, false};
+        }
+        else{
+            endFlags = new bool[]{true, true, true, true, true, true, true};
+        }
     }
 
     public void setButtonsActive(bool flag){

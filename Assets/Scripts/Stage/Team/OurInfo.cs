@@ -5,10 +5,10 @@ using UnityEngine;
 public class OurInfo
 {
     // スキル力
-    public static int[] skills {get; set;}
+    public static int[] skills {get; private set;}
 
     // 合計メンバー
-    public static int[] totalComp {get; set;}
+    public static int[] totalComp {get; private set;}
 
     public static void initialize(){
         skills = new int[]{10, 10};
@@ -29,4 +29,6 @@ public class OurInfo
 
         return salesScore + engineerScore;
     }
+
+    
 }

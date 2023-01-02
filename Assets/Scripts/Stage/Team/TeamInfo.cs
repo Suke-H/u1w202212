@@ -24,7 +24,6 @@ public class TeamInfo
         teamComp[i] = value;
     }
 
-
     public void printInfo(){
         Debug.Log($"teamComp: {teamComp[0]}, {teamComp[1]}");
         Debug.Log($"Order: {nodeOrder}, Pos: {nodePos}, Type: {nodeType}");

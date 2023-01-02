@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d14a9561c702b4d9ae03dd53c6761b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: 3
+  gridSize: 4
   nodeBase: {fileID: 822458046050270915, guid: da9609ff788043045ba50e3183fab2fd, type: 3}
   nodeTypes:
   - {fileID: 3466878087503202299, guid: db7b3a875216d98468d1692d810a88d4, type: 3}
@@ -1033,6 +1033,7 @@ MonoBehaviour:
   positionButton: {fileID: 1359750347}
   gameManager: {fileID: 953779351}
   teamManager: {fileID: 965539795}
+  gridSize: 4
 --- !u!1 &558589868
 GameObject:
   m_ObjectHideFlags: 0
@@ -1713,6 +1714,8 @@ MonoBehaviour:
   Team: {fileID: 7406754317000082211, guid: 5e6c52efd166cef40aa56f275269ed41, type: 3}
   NodePopup: {fileID: 435980428878493209, guid: 5b3731c5ff570bc4ab89541561a0c7e1, type: 3}
   canvas: {fileID: 1722787640}
+  Whistle: {fileID: 3363706390293229802, guid: bb21ed7bf0ac3e44fbbb5068887b3ffe, type: 3}
+  Balance: {fileID: 6749188096938961493, guid: 70f79db98261a134e8e27fecd80a114d, type: 3}
 --- !u!1001 &1218319824
 PrefabInstance:
   m_ObjectHideFlags: 0
