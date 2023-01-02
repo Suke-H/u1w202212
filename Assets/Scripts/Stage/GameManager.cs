@@ -133,7 +133,9 @@ public class GameManager : MonoBehaviour
         OD.initialize();
 
         // ランキング
-        naichilab.RankingLoader.Instance.SendScoreAndShowRanking (OurInfo.totalScore());
+        if (stageName != "Tutorial"){
+            naichilab.RankingLoader.Instance.SendScoreAndShowRanking (OurInfo.totalScore());
+        }
 
         // ボタン押し待ち
         await OD.buttonWait();
