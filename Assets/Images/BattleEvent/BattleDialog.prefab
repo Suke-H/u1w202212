@@ -555,7 +555,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 225.7, y: 225.6}
-  m_SizeDelta: {x: 267.37, y: 48.74}
+  m_SizeDelta: {x: 450, y: 48.74}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7257621731101436288
 CanvasRenderer:
@@ -585,7 +585,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u30B4\u30EA\u30E9\u4E0D\u52D5\u7523"
+  m_text: "\u30AC\u30B9\u4F1A\u793E\u30AA\u30A4\u30EB\u30B7\u30E7\u30C3\u30AF"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}
   m_sharedMaterial: {fileID: -6448188821289821790, guid: 2d37e09d6cb2d3d458e10f4a5c52d5d4, type: 2}
@@ -824,7 +824,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 335.2, y: -34.1}
+  m_AnchoredPosition: {x: 341, y: -112.579994}
   m_SizeDelta: {x: 63.08, y: 48.76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7257621731247020894
@@ -864,8 +864,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282127580
-  m_fontColor: {r: 0.8627451, g: 0.078431375, b: 0.23529412, a: 1}
+    rgba: 4287582766
+  m_fontColor: {r: 0.18039216, g: 0.32156864, b: 0.56078434, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2593,7 +2593,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 335.2, y: -114}
+  m_AnchoredPosition: {x: 341, y: -34}
   m_SizeDelta: {x: 63.08, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7257621732981305614
@@ -2633,8 +2633,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4287582766
-  m_fontColor: {r: 0.18039216, g: 0.32156864, b: 0.56078434, a: 1}
+    rgba: 4282127580
+  m_fontColor: {r: 0.8627451, g: 0.078431375, b: 0.23529412, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

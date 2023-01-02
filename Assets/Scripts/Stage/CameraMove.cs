@@ -24,6 +24,8 @@ public class CameraMove : MonoBehaviour
     Vector2Int standardPos = new Vector2Int(0, 0);
     Vector2Int cameraPos = new Vector2Int(0, 0);
 
+    bool initFlag = true;
+
     string moveType = "None";
     
     async void Start()
@@ -55,12 +57,23 @@ public class CameraMove : MonoBehaviour
         await CameraLoop();
     }
 
-    async public UniTask cameraAutoMove(Vector2Int currentPos, Vector2Int pastPos){
+    // async public UniTask cameraAutoMove(Vector2Int currentPos, Vector2Int pastPos){
+    async public UniTask cameraAutoMove(Vector2Int currentPos){
+
+        // 初回のみ初期化
+        if (initFlag){
+            standardPos.x = currentPos.x;
+            standardPos.y = currentPos.y;
+            cameraPos.x = currentPos.x;
+            cameraPos.y = currentPos.y;
+            initFlag = false;
+        }
+
         moveType = "Auto";
 
-        var delta = currentPos - pastPos;
-
-        Vector3 direction = new Vector3(delta.x*gridSize, 0, 0f);
+        // var delta = currentPos - pastPos;
+        var delta = currentPos - cameraPos;
+        Vector3 direction = new Vector3(delta.x*gridSize, -delta.y*gridSize, 0f);
 
         await this.transform.DOBlendableMoveBy(direction, 0.5f)
         .SetEase(moveEase) // アニメーションの種類

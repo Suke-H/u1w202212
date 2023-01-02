@@ -213,7 +213,8 @@ public class GameManager : MonoBehaviour
         BGM.BGMChange("Normal");
 
         // 最初のみ弊社情報を初期化
-        if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "test"){
+        // if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "test"){
+        if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "Stage-2"){
             OurInfo.initialize();
         }
 
@@ -263,12 +264,6 @@ public class GameManager : MonoBehaviour
             // 現在チームごとに処理
             for (int i = 0; i < currentTeamInfos.Count; i++){
 
-                // カメラ移動
-                var currentPos = mapManager.searchNodePos(currentTeamInfos[i].nodeOrder);
-                await cameraMove.cameraAutoMove(currentPos, pastPos);
-                pastPos.x = currentPos.x;
-                pastPos.y = currentPos.y;
-
                 // 次ノードを探索
                 var nextOrders = mapManager.searchNextOrders(currentTeamInfos[i].nodeOrder);
 
@@ -298,6 +293,15 @@ public class GameManager : MonoBehaviour
                     pattern = 2; 
                 }
 
+                // カメラ移動
+                // if (pattern != 2){
+                Vector2Int currentPos = mapManager.searchNodePos(currentTeamInfos[i].nodeOrder);
+                // await cameraMove.cameraAutoMove(currentPos, pastPos);
+                await cameraMove.cameraAutoMove(currentPos);
+                pastPos.x = currentPos.x;
+                pastPos.y = currentPos.y;
+                // }
+
                 // 現在ノードの情報
                 var currentInfo = currentTeamInfos[i];
 
@@ -313,6 +317,16 @@ public class GameManager : MonoBehaviour
 
                 // 分岐ありの場合、チームアサイン処理へ
                 if ( pattern == 2 ){
+
+                    // カメラ（分岐が⤴→か⤵→かで変更）
+                    int currentY = mapManager.searchNodePos(currentInfo.nodeOrder).y;
+                    int nextY = mapManager.searchNodePos(tmpTeamInfos[1].nodeOrder).y;
+
+                    // ⤵→の場合、カメラを1つ下げる
+                    if (currentY+1 == nextY){
+                        await cameraMove.cameraMove("Down");
+                    }
+
                     // 現チームの人員を全て次ノードへアサインする
                     await teamAssignSequence(currentInfo, tmpTeamInfos);
 
