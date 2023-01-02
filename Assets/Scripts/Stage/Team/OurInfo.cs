@@ -12,9 +12,12 @@ public class OurInfo
 
     public static void initialize(){
         skills = new int[]{10, 10};
-        // totalComp = new int[]{5, 5};
+
+        // skills = new int[]{30, 30};
+
+        totalComp = new int[]{5, 5};
         // totalComp = new int[]{12, 22};
-        totalComp = new int[]{140, 110};
+        // totalComp = new int[]{40, 35};
     }
 
     public static void skillUp(int no, int value){

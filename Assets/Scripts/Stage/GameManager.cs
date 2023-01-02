@@ -176,9 +176,12 @@ public class GameManager : MonoBehaviour
                     await gameEnd("GiveUp");
                 }
 
-                // 次のステージへ
-                StageStore.advanceStage();
-                SceneManager.LoadScene("Stage");
+                else{
+                    // 次のステージへ
+                    StageStore.advanceStage();
+                    SceneManager.LoadScene("Stage");
+                }
+                
             }
         }
     }
@@ -222,7 +225,7 @@ public class GameManager : MonoBehaviour
         BGM.BGMChange("Normal");
 
         // 最初のみ弊社情報を初期化
-        if (stageName == "Stage-2" || stageName == "Tutorial" || stageName == "test"){
+        if (stageName == "Stage-1" || stageName == "Tutorial" || stageName == "test"){
             OurInfo.initialize();
         }
 
@@ -302,13 +305,10 @@ public class GameManager : MonoBehaviour
                 }
 
                 // カメラ移動
-                // if (pattern != 2){
                 Vector2Int currentPos = mapManager.searchNodePos(currentTeamInfos[i].nodeOrder);
-                // await cameraMove.cameraAutoMove(currentPos, pastPos);
                 await cameraMove.cameraAutoMove(currentPos);
                 pastPos.x = currentPos.x;
                 pastPos.y = currentPos.y;
-                // }
 
                 // 現在ノードの情報
                 var currentInfo = currentTeamInfos[i];

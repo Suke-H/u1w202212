@@ -6,7 +6,7 @@ public class StageStore
 {
     // public static string stageName {get; set;} = "Tutorial";
     // public static string stageName {get; set;} = "test";
-    public static string stageName {get; set;} = "Stage-2";
+    public static string stageName {get; set;} = "Stage-1";
 
     public static int getStageNo(){
         string[] arr = stageName.Split('-');

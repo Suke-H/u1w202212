@@ -11,7 +11,7 @@ public class NodePopup : MonoBehaviour
 
     public void initialize(CustomerData customerData){
         this.customerName.text = customerData.customerName;
-        salesLv.text = $"Lv {customerData.demandLv[0]}";
-        engineerLv.text = $"Lv {customerData.demandLv[1]}";
+        salesLv.text = $"{customerData.demandLv[0]}";
+        engineerLv.text = $"{customerData.demandLv[1]}";
     }
 }

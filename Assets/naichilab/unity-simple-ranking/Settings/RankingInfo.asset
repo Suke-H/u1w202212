@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RankingInfo
   m_EditorClassIdentifier: 
   BoardName: "\u5F0A\u793E\u306E\u7DCF\u5408\u30B9\u30AD\u30EB"
-  ClassName: TotalSkill_test
+  ClassName: OurTotalSkill
   Type: 0
   Order: 1
   CustomFormat: 
